@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script>document.documentElement.classList.add('js');</script>
-  <title>{% block title %}BEBO Betonboren & Zagen - boren, zagen & frezen in regio Rotterdam{% endblock %}</title>
-  <meta name="description" content="{% block description %}BEBO Betonboren & Zagen: vakkundig betonboren, wand- en vloerzagen, frezen en precisiesloop in de regio Rotterdam. Schoon, recht en op maat. Vraag vrijblijvend een offerte aan.{% endblock %}">
+  <title>{% block title %}BEBO Betonboren & Zagen - boren, zagen & frezen in Zuid-Holland{% endblock %}</title>
+  <meta name="description" content="{% block description %}BEBO Betonboren & Zagen: vakkundig betonboren, wand- en vloerzagen, frezen en precisiesloop in Zuid-Holland. Schoon, recht en op maat. Vraag vrijblijvend een offerte aan.{% endblock %}">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="{{ site_url }}{{ request.path }}">
 
@@ -44,7 +44,7 @@
     "@context": "https://schema.org",
     "@type": "GeneralContractor",
     "name": "BEBO Betonboren & Zagen",
-    "description": "Vakkundig betonboren, wand- en vloerzagen, frezen en precisiesloop in de regio Rotterdam. Schoon, recht en op maat.",
+    "description": "Vakkundig betonboren, wand- en vloerzagen, frezen en precisiesloop in Zuid-Holland. Schoon, recht en op maat.",
     "image": "{{ site_url }}{{ url_for('static', filename='img/og-image.jpg') }}",
     "url": "{{ site_url }}/",
     "telephone": "{{ bedrijf.tel_link }}",
@@ -56,7 +56,7 @@
       "addressLocality": "Berkel en Rodenrijs",
       "addressCountry": "NL"
     },
-    "areaServed": ["Rotterdam", "Berkel en Rodenrijs", "Lansingerland", "Pijnacker", "Zoetermeer", "Delft", "Den Haag"]
+    "areaServed": {"@type": "AdministrativeArea", "name": "Zuid-Holland"}
   }
   </script>
 
@@ -110,13 +110,13 @@
         <h4>Werkzaamheden</h4>
         <a href="#diensten">Betonboren</a>
         <a href="#diensten">Wand- &amp; vloerzagen</a>
-        <a href="#diensten">Sleuven &amp; frezen</a>
+        <a href="#diensten">Sleuven frezen</a>
         <a href="#diensten">Precisiesloop</a>
       </div>
     </div>
     <div class="wrap footer__bottom">
       <span>© {{ 2026 }} {{ bedrijf.naam }} · KvK {{ bedrijf.kvk }}</span>
-      <span>Berkel en Rodenrijs · regio Rotterdam</span>
+      <span>Berkel en Rodenrijs · Zuid-Holland</span>
     </div>
   </footer>
 

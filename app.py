@@ -54,32 +54,32 @@ DIENSTEN = [
         "index": "01",
         "titel": "Betonboren",
         "spec": "Ø 12-900 mm",
-        "tekst": "Diamantboren voor sparingen, leidingen, ventilatie en kernen. "
-        "Schoon, recht en exact op maat - ook stofvrij waar geen water mag.",
+        "tekst": "Diamantboren met precisie. Droog en stofbeperkt waar gebruik "
+        "van water geen optie is.",
     },
     {
         "id": "wandzagen",
         "index": "02",
         "titel": "Wandzagen",
         "spec": "tot 60 cm diep",
-        "tekst": "Strakke deur- en raamsparingen en complete doorbraken in wanden "
-        "van beton en steen, met nette kanten en minimale overlast.",
+        "tekst": "Deur- en raamsparingen en complete doorbraken in wanden van beton "
+        "en steen – vakkundig ingezaagd met een strak resultaat en minimale overlast.",
     },
     {
         "id": "vloerzagen",
         "index": "03",
         "titel": "Vloerzagen",
-        "spec": "trapgaten · sleuven",
-        "tekst": "Trapgaten, leidingsleuven, kruipluiken, dilatatievoegen en "
-        "liftsparingen - recht ingezaagd en zonder scheurwerk.",
+        "spec": "sparingen en sleuven",
+        "tekst": "Trapgaten, liftsparingen, kruipluiken, leidingsleuven, dilatatievoegen "
+        "– vakkundig ingezaagd met een strak resultaat en minimale overlast.",
     },
     {
         "id": "sleuven-frezen",
         "index": "04",
-        "titel": "Sleuven & frezen",
+        "titel": "Sleuven frezen",
         "spec": "droog of nat",
-        "tekst": "Frezen en sleuven zagen voor leidingen en kabels in ruwbouw, "
-        "nieuwbouw of bewoonde situatie - netjes en stofbeperkt.",
+        "tekst": "Leiding- en kabelsleuven in ruwbouw, nieuwbouw of bewoonde situaties "
+        "– vakkundig gefreesd met een strak resultaat en minimale stofoverlast.",
     },
     {
         "id": "sloopwerk",
@@ -123,7 +123,7 @@ SECTOREN = [
 # Trust-strip: ALLEEN aantoonbaar juiste items tonen. Zet VCA/jaren pas aan als
 # Marco dat bevestigt (anders zijn het valse claims).
 USPS = [
-    {"label": "Regio Rotterdam", "sub": "snel ter plaatse"},
+    {"label": "Zuid-Holland", "sub": "vanuit Berkel en Rodenrijs"},
     {"label": "Stofarm & schoon", "sub": "water- en stofafzuiging"},
     {"label": "Puin afgevoerd", "sub": "netjes opgeleverd"},
     {"label": "KvK " + BEDRIJF["kvk"], "sub": "geregistreerd bedrijf"},
