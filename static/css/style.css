@@ -211,6 +211,8 @@ h3.display { font-size: clamp(1.35rem, 1.8vw, 1.7rem); font-weight: 600; }
   padding: 7px;
 }
 .brand__mark i { background: #fff; display: block; }
+/* Officieel logo (stijlguide 1.0), niet hertekenen */
+.brand__logo { display: block; height: 52px; width: auto; }
 .brand__txt { line-height: 1; }
 .brand__name {
   display: block;

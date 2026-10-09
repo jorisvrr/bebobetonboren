@@ -1,7 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" width="40" height="40" role="img" aria-label="BEBO">
-  <rect width="40" height="40" rx="2" fill="#D8201F"/>
-  <rect x="6" y="6" width="12" height="12" fill="#FFFFFF"/>
-  <rect x="22" y="6" width="12" height="12" fill="#FFFFFF"/>
-  <rect x="6" y="22" width="12" height="12" fill="#FFFFFF"/>
-  <rect x="22" y="22" width="12" height="12" fill="#FFFFFF"/>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 178.59 178.59"><rect width="178.59" height="178.59" fill="#3D3833"/><g transform="translate(2.975 0)"><path fill="#3D3833" d="M0 0h172.64v178.59h-172.64z"/><path fill="#FFFFFF" d="M89.88 92.36h61.88v64.28h-61.88z"/><path fill="#FFFFFF" d="M146.96 71.54L146.96 61.19L151.76 61.19L151.76 43.02L146.96 43.02L146.96 32.66L151.76 32.66L151.76 21.49L89.88 21.49L89.88 85.77L151.76 85.77L151.76 71.54L146.96 71.54"/><path fill="#FFFFFF" d="M81.6 21.59L20.38 21.59L20.38 32.66L25.06 32.66L25.06 43.01L20.38 43.01L20.38 61.19L25.06 61.19L25.06 71.54L20.38 71.54L20.38 85.67L81.6 85.67L81.6 63.76L69.08 53.63L81.6 43.49L81.6 21.59"/><path fill="#FFFFFF" d="M81.6 92.36L20.38 92.36L20.38 105.06L25.06 105.06L25.06 115.41L20.38 115.41L20.38 133.58L25.06 133.58L25.06 143.93L20.38 143.93L20.38 156.44L81.6 156.44L81.6 134.53L69.08 124.4L81.6 114.26L81.6 92.36"/></g></svg>

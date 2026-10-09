@@ -42,7 +42,7 @@ if (menuRoot) {
       displayItemNumbering={true}
       accentColor="#D8201F"
       colors={['#1a1b1f', '#D8201F']}
-      logoUrl="/static/img/bebo-mark.svg"
+      logoUrl="/static/img/brand/bebo-logo.svg"
       menuButtonColor="#16171B"
       openMenuButtonColor="#16171B"
       changeMenuColorOnOpen={false}

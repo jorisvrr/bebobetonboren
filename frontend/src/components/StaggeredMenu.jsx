@@ -372,7 +372,7 @@ export const StaggeredMenu = ({
         <a className="sm-logo" href="/" aria-label="BEBO - naar boven">
           <img
             src={logoUrl}
-            alt="BEBO"
+            alt="BEBO Betonboren & Zagen"
             className="sm-logo-img"
             draggable={false}
             width={40}
