@@ -79,7 +79,7 @@ DIENSTEN = [
         "titel": "Sleuven frezen",
         "spec": "droog of nat",
         "tekst": "Leiding- en kabelsleuven in ruwbouw, nieuwbouw of bewoonde situaties "
-        "– vakkundig gefreesd met een strak resultaat en minimale stofoverlast.",
+        "– vakkundig gefreesd, uitgebroken en opgeruimd.",
     },
     {
         "id": "sloopwerk",
