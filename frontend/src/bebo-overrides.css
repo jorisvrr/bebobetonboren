@@ -5,12 +5,12 @@
 /* Target cursor in BEBO-rood, zonder difference-blend (past op licht én donker). */
 .target-cursor-wrapper { mix-blend-mode: normal; }
 .target-cursor-dot {
-  background: #D8201F;
+  background: #D2051E;
   width: 5px;
   height: 5px;
 }
 .target-cursor-corner {
-  border-color: #D8201F;
+  border-color: #D2051E;
   border-width: 2px;
 }
 

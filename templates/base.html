@@ -9,7 +9,7 @@
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="{{ site_url }}{{ request.path }}">
 
-  <!-- Open Graph / sociale media (link-previews op WhatsApp, LinkedIn, etc.) -->
+  <!-- Open Graph / sociale media (link-previews) -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="BEBO Betonboren & Zagen">
   <meta property="og:locale" content="nl_NL">
@@ -22,7 +22,7 @@
   <meta name="twitter:description" content="{{ self.description() }}">
   <meta name="twitter:image" content="{{ site_url }}{{ url_for('static', filename='img/og-image.jpg') }}">
 
-  <meta name="theme-color" content="#E9E8E4">
+  <meta name="theme-color" content="#FFFFFF">
 
   <!-- Favicons (BEBO-merkteken). SVG voor moderne browsers, PNG-fallbacks,
        apple-touch-icon voor iOS, .ico voor oudere browsers. -->
@@ -69,8 +69,7 @@
   <div id="staggered-menu"
        data-tel="{{ bedrijf.tel }}"
        data-tel-link="{{ bedrijf.tel_link }}"
-       data-email="{{ bedrijf.email }}"
-       data-whatsapp="{{ bedrijf.whatsapp }}"></div>
+       data-email="{{ bedrijf.email }}"></div>
   <noscript>
     <nav class="nav-fallback" aria-label="Menu">
       <a href="#diensten">Werkzaamheden</a>
@@ -91,7 +90,7 @@
       <div class="footer__col">
         <a href="{{ url_for('index') }}" class="brand" style="margin-bottom:1.4rem;">
           <img class="brand__logo" src="{{ url_for('static', filename='img/brand/bebo-logo.svg') }}"
-               alt="BEBO Betonboren &amp; Zagen" width="151" height="52">
+               alt="BEBO Betonboren &amp; Zagen" width="186" height="64">
         </a>
         <p style="color:var(--ink-2);max-width:32ch;">Boren, zagen, frezen en precisiesloop in beton en steen. Schoon, recht en op maat - voor aannemers, installateurs en particulieren.</p>
       </div>
@@ -105,10 +104,9 @@
 
       <div class="footer__col">
         <h4>Werkzaamheden</h4>
-        <a href="#diensten">Betonboren</a>
-        <a href="#diensten">Wand- &amp; vloerzagen</a>
-        <a href="#diensten">Sleuven frezen</a>
-        <a href="#diensten">Precisiesloop</a>
+        {% for d in diensten %}
+        <a href="{{ url_for('index') }}#diensten">{{ d.titel }}</a>
+        {% endfor %}
       </div>
     </div>
     <div class="wrap footer__bottom">
@@ -118,8 +116,8 @@
   </footer>
 
   <div class="float" id="float">
-    <a href="https://wa.me/{{ bedrijf.whatsapp }}" class="wa" aria-label="WhatsApp" target="_blank" rel="noopener">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.9-4.45 9.9-9.91C21.95 6.45 17.5 2 12.04 2zm5.8 14.16c-.24.68-1.4 1.3-1.94 1.38-.5.07-1.13.1-1.82-.11-.42-.13-.96-.31-1.65-.61-2.9-1.25-4.8-4.17-4.94-4.37-.15-.2-1.19-1.58-1.19-3.01 0-1.43.75-2.13 1.02-2.42.27-.29.58-.36.78-.36.19 0 .39 0 .56.01.18.01.42-.07.66.5.24.59.83 2.02.9 2.17.07.15.12.32.02.51-.09.2-.14.32-.28.5-.14.17-.3.38-.42.51-.14.14-.29.29-.12.57.16.29.73 1.2 1.56 1.94 1.07.95 1.97 1.25 2.26 1.39.28.15.45.12.61-.07.16-.2.7-.82.89-1.1.19-.29.37-.24.62-.14.25.09 1.6.76 1.87.9.27.14.45.21.52.32.07.12.07.69-.17 1.37z"/></svg>
+    <a href="mailto:{{ bedrijf.email }}" aria-label="Mail BEBO">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 4.2-8 5-8-5V6l8 5 8-5v2.2z"/></svg>
     </a>
     <a href="tel:{{ bedrijf.tel_link }}" aria-label="Bel BEBO">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.62 10.79a15.5 15.5 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24c1.12.37 2.33.57 3.57.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1.02l-2.2 2.2z"/></svg>
@@ -127,7 +125,7 @@
   </div>
 
   <!-- Maker-signature ("ident"): verschijnt alleen bij de footer, op dezelfde
-       plek/hoogte en grootte als de WhatsApp-knop. Hover onthult "jorisvrr". -->
+       plek/hoogte en grootte als de bovenste contactknop. Hover onthult "jorisvrr". -->
   <div class="ident__wrap" id="ident">
     <a class="ident" href="https://jorisvrr.com/" target="_blank" rel="noopener noreferrer" aria-label="Website gemaakt door jorisvrr">
       <span class="ident__name">jorisvrr</span>

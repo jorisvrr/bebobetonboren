@@ -6,9 +6,10 @@ Een moderne, lead-genererende site met een offerte-aanvraag als kern.
 Belangrijk voor deployment (Railway):
 - Start command: `gunicorn app:app`  (staat ook in Procfile)
 - De PORT wordt door Railway via de omgevingsvariabele PORT aangeleverd.
-- Leads worden weggeschreven naar data/leads.jsonl. Wil je e-mailnotificaties?
-  Zet dan de SMTP_* env vars (zie .env.example). Zonder die vars werkt de site
-  gewoon door en worden leads alleen lokaal opgeslagen.
+- Offerteaanvragen worden gemaild naar MAIL_TO (standaard info@bebobetonboren.nl)
+  via de SMTP_* env vars (zie .env.example) en bijgeschreven in data/leads.jsonl.
+  Op Vercel is de schijf niet blijvend: zonder werkende SMTP krijgt de bezoeker
+  daar een foutmelding met het telefoonnummer in plaats van een bedankpagina.
 """
 
 import os
@@ -39,7 +40,8 @@ SITE_URL = os.environ.get("SITE_URL", "https://bebobetonboren.nl").rstrip("/")
 
 @app.context_processor
 def inject_seo_globals():
-    return {"site_url": SITE_URL}
+    # diensten: ook de footer leest uit deze ene lijst (zelfde namen en volgorde).
+    return {"site_url": SITE_URL, "diensten": DIENSTEN}
 
 DATA_DIR = Path(__file__).parent / "data"
 DATA_DIR.mkdir(exist_ok=True)
@@ -54,14 +56,14 @@ DIENSTEN = [
         "index": "01",
         "titel": "Betonboren",
         "spec": "Ø 12-900 mm",
-        "tekst": "Diamantboren met precisie. Droog en stofbeperkt waar gebruik "
+        "tekst": "Diamantboren met precisie. Droog en stofarm waar gebruik "
         "van water geen optie is.",
     },
     {
         "id": "wandzagen",
         "index": "02",
         "titel": "Wandzagen",
-        "spec": "tot 60 cm diep",
+        "spec": "sparingen",
         "tekst": "Deur- en raamsparingen en complete doorbraken in wanden van beton "
         "en steen – vakkundig ingezaagd met een strak resultaat en minimale overlast.",
     },
@@ -69,7 +71,7 @@ DIENSTEN = [
         "id": "vloerzagen",
         "index": "03",
         "titel": "Vloerzagen",
-        "spec": "sparingen en sleuven",
+        "spec": "sparingen",
         "tekst": "Trapgaten, liftsparingen, kruipluiken, leidingsleuven, dilatatievoegen "
         "– vakkundig ingezaagd met een strak resultaat en minimale overlast.",
     },
@@ -108,7 +110,6 @@ BEDRIJF = {
     "email": "info@bebobetonboren.nl",
     "tel": "010-3220232",
     "tel_link": "+31103220232",
-    "whatsapp": "31103220232",
     "kvk": "59493038",
 }
 
@@ -118,17 +119,8 @@ SECTOREN = [
     {"titel": "Installateurs", "tekst": "Kernboringen en sleuven voor leidingen, ventilatie en elektra, exact op maat."},
     {"titel": "Vastgoed & beheer", "tekst": "Nette uitvoering in bewoonde en verhuurde panden, met minimale overlast."},
     {"titel": "Particulieren", "tekst": "Van een enkele doorvoer tot een compleet trapgat, netjes opgeleverd."},
-]
-
-# Trust-strip: ALLEEN aantoonbaar juiste items tonen. Zet VCA/jaren pas aan als
-# Marco dat bevestigt (anders zijn het valse claims).
-USPS = [
-    {"label": "Zuid-Holland", "sub": "vanuit Berkel en Rodenrijs"},
-    {"label": "Stofarm & schoon", "sub": "water- en stofafzuiging"},
-    {"label": "Puin afgevoerd", "sub": "netjes opgeleverd"},
-    {"label": "KvK " + BEDRIJF["kvk"], "sub": "geregistreerd bedrijf"},
-    # {"label": "VCA-gecertificeerd", "sub": "veilig werken"},        # aanzetten als bevestigd
-    # {"label": "15+ jaar ervaring", "sub": "vakwerk sinds 20XX"},    # aanzetten met echt getal
+    # Tekst samengesteld uit goedgekeurde formuleringen; nog door de klant te bevestigen.
+    {"titel": "Zorginstellingen", "tekst": "Stofarm werken met minimale overlast, ook in bewoonde situaties."},
 ]
 
 # Reviews en cases: LEEG laten tot je ECHTE content hebt. De secties renderen
@@ -145,23 +137,33 @@ REVIEW_RATING = None
 CASES = []
 
 
-def _save_lead(lead: dict) -> None:
-    """Schrijf de lead regel-voor-regel weg (append-only, crash-bestendig)."""
-    with LEADS_FILE.open("a", encoding="utf-8") as fh:
-        fh.write(json.dumps(lead, ensure_ascii=False) + "\n")
+def _save_lead(lead: dict) -> bool:
+    """Schrijf de lead regel-voor-regel weg (append-only). True als het gelukt is."""
+    try:
+        with LEADS_FILE.open("a", encoding="utf-8") as fh:
+            fh.write(json.dumps(lead, ensure_ascii=False) + "\n")
+        return True
+    except OSError as exc:  # bijv. alleen-lezen schijf op Vercel
+        app.logger.warning("Lead opslaan mislukt: %s", exc)
+        return False
 
 
-def _maybe_email(lead: dict) -> None:
-    """Stuur optioneel een notificatiemail. Faalt nooit hard."""
+def _email_lead(lead: dict) -> bool:
+    """Mail de offerteaanvraag naar het bedrijf. True als de mailserver hem aannam.
+
+    Ontvanger: MAIL_TO, standaard het bedrijfsadres (info@bebobetonboren.nl).
+    """
     host = os.environ.get("SMTP_HOST")
     if not host:
-        return
+        return False
     try:
         msg = EmailMessage()
         diensten = ", ".join(DIENST_LABELS.get(d, d) for d in lead["diensten"]) or "-"
         msg["Subject"] = f"Nieuwe offerteaanvraag - {lead['naam']}"
         msg["From"] = os.environ.get("SMTP_FROM", os.environ["SMTP_USER"])
         msg["To"] = os.environ.get("MAIL_TO", BEDRIJF["email"])
+        if lead["email"]:
+            msg["Reply-To"] = lead["email"]
         msg.set_content(
             f"Nieuwe aanvraag via de website\n\n"
             f"Naam:       {lead['naam']}\n"
@@ -173,12 +175,14 @@ def _maybe_email(lead: dict) -> None:
             f"Omschrijving:\n{lead['omschrijving']}\n\n"
             f"Ontvangen:  {lead['ontvangen']}\n"
         )
-        with smtplib.SMTP(host, int(os.environ.get("SMTP_PORT", 587))) as s:
+        with smtplib.SMTP(host, int(os.environ.get("SMTP_PORT", 587)), timeout=15) as s:
             s.starttls()
             s.login(os.environ["SMTP_USER"], os.environ["SMTP_PASS"])
             s.send_message(msg)
-    except Exception as exc:  # noqa: BLE001 - notificatie mag de lead nooit blokkeren
-        app.logger.warning("E-mailnotificatie mislukt: %s", exc)
+        return True
+    except Exception as exc:  # noqa: BLE001 - de bezoeker krijgt hieronder een nette melding
+        app.logger.warning("Offerte-mail mislukt: %s", exc)
+        return False
 
 
 def _save_intake(record: dict) -> None:
@@ -251,14 +255,17 @@ def _email_intake(data: dict) -> None:
       SMTP_PASS=<Gmail app-wachtwoord>, INTAKE_MAIL_TO=jouw@gmail.com
     """
     host = os.environ.get("SMTP_HOST")
-    if not host:
+    # Alleen naar het expliciet ingestelde adres van de developer; nooit
+    # terugvallen op SMTP_USER (dat is het bedrijfsadres voor klantaanvragen).
+    ontvanger = os.environ.get("INTAKE_MAIL_TO")
+    if not host or not ontvanger:
         return
     try:
         msg = EmailMessage()
         naam = (data.get("bedrijf") or {}).get("naam") or "onbekend bedrijf"
         msg["Subject"] = "Website-content ingevuld - " + naam
         msg["From"] = os.environ.get("SMTP_FROM", os.environ["SMTP_USER"])
-        msg["To"] = os.environ.get("INTAKE_MAIL_TO", os.environ.get("SMTP_USER", ""))
+        msg["To"] = ontvanger
         msg.set_content(_format_intake(data) + "\n\n--\nDe volledige JSON zit als bijlage.")
         msg.add_attachment(
             json.dumps(data, ensure_ascii=False, indent=2).encode("utf-8"),
@@ -309,7 +316,6 @@ def index():
         diensten=DIENSTEN,
         bedrijf=BEDRIJF,
         sectoren=SECTOREN,
-        usps=USPS,
         reviews=REVIEWS,
         review_rating=REVIEW_RATING,
         cases=CASES,
@@ -351,8 +357,18 @@ def offerte():
         "ontvangen": datetime.datetime.now().isoformat(timespec="seconds"),
         "bron": request.headers.get("Referer", "direct"),
     }
-    _save_lead(lead)
-    _maybe_email(lead)
+    opgeslagen = _save_lead(lead)
+    gemaild = _email_lead(lead)
+    # Alleen "bedankt" tonen als de aanvraag echt is aangekomen: gemaild, of
+    # opgeslagen op een schijf die blijft bestaan. Op Vercel verdwijnt de schijf
+    # na elke aanvraag, dus daar telt alleen de mail.
+    if not (gemaild or (opgeslagen and not os.environ.get("VERCEL"))):
+        flash(
+            "Het versturen is niet gelukt. Bel ons op {} of mail naar {}, "
+            "dan helpen we je direct.".format(BEDRIJF["tel"], BEDRIJF["email"]),
+            "error",
+        )
+        return redirect(url_for("index") + "#offerte")
     return redirect(url_for("bedankt"))
 
 

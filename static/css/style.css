@@ -14,22 +14,23 @@
 @import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap');
 
 :root {
-  /* Koel betonpalet - bewust geen warme cream */
-  --paper:        #E9E8E4;
-  --paper-2:      #E1E0DB;
-  --concrete:     #C9C7C2;
+  /* BEBO stijlguide 1.0: rood, zwart en wit. Wit voor de grote vlakken,
+     rood als accent, donker voor de offertesectie. */
+  --paper:        #FFFFFF;
+  --paper-2:      #F6F6F5;
+  --concrete:     #B2B2B2;   /* concrete gray */
   --ink:          #16171B;
-  --ink-2:        #34353A;
+  --ink-2:        #3D3833;   /* dark gray */
   --muted:        #5C5E63;
-  --line:         rgba(22, 23, 27, .15);
-  --line-soft:    rgba(22, 23, 27, .08);
-  --red:          #D8201F;
-  --red-deep:     #AC1413;
+  --line:         rgba(22, 23, 27, .14);
+  --line-soft:    rgba(22, 23, 27, .07);
+  --red:          #D2051E;   /* BEBO-rood */
+  --red-deep:     #A80418;
   --dark:         #18191D;
   --dark-2:       #202127;
-  --on-dark:      #E9E8E4;
-  --on-dark-mut:  #9A9CA2;
-  --line-dark:    rgba(233, 232, 228, .14);
+  --on-dark:      #FFFFFF;
+  --on-dark-mut:  #A3A4A8;
+  --line-dark:    rgba(255, 255, 255, .14);
 
   --maxw: 1240px;
   --gutter: clamp(1.25rem, 5vw, 4rem);
@@ -190,7 +191,7 @@ h3.display { font-size: clamp(1.35rem, 1.8vw, 1.7rem); font-weight: 600; }
   border-bottom: 1px solid transparent;
 }
 .nav.is-stuck {
-  background: rgba(233, 232, 228, .82);
+  background: rgba(255, 255, 255, .86);
   backdrop-filter: blur(14px) saturate(1.2);
   border-bottom-color: var(--line);
 }
@@ -212,7 +213,8 @@ h3.display { font-size: clamp(1.35rem, 1.8vw, 1.7rem); font-weight: 600; }
 }
 .brand__mark i { background: #fff; display: block; }
 /* Officieel logo (stijlguide 1.0), niet hertekenen */
-.brand__logo { display: block; height: 52px; width: auto; }
+.brand__logo { display: block; height: 64px; width: auto; }
+@media (max-width: 860px) { .brand__logo { height: 52px; } }
 .brand__txt { line-height: 1; }
 .brand__name {
   display: block;
@@ -287,16 +289,9 @@ body.menu-open .burger span:nth-child(3) { transform: translateY(-5px) rotate(-4
   padding-top: clamp(8rem, 16vh, 11rem);
   padding-bottom: var(--section);
 }
-/* Full-bleed React Bits-achtergrond (Particles), transparant canvas */
-#hero-bg {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-}
 .hero > .wrap { position: relative; z-index: 1; }
 
-/* Zwevende merk-marker rechts (geen kader), over het stofveld */
+/* Zwevende merk-marker rechts (geen kader) */
 .hero__marker {
   display: flex;
   flex-direction: column;
@@ -700,7 +695,7 @@ body.menu-open .burger span:nth-child(3) { transform: translateY(-5px) rotate(-4
 }
 .form__note { font-size: .85rem; color: var(--on-dark-mut); max-width: 30ch; }
 .flash {
-  background: rgba(216, 32, 31, .12);
+  background: rgba(210, 5, 30, .14);
   border: 1px solid var(--red);
   color: #ffd9d8;
   padding: .9rem 1.1rem;
@@ -766,8 +761,6 @@ body.menu-open .burger span:nth-child(3) { transform: translateY(-5px) rotate(-4
 @media (hover: hover) and (pointer: fine) {
   .float a:hover { transform: scale(1.07); }
 }
-.float a.wa { background: #25D366; color: #fff; }
-.float a.wa:hover { background: #1eb858; }
 
 /* ======================================================================== */
 /* Scroll-reveal                                                            */
@@ -855,7 +848,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 .nav-fallback a:hover { color: var(--red); }
 
 /* Maker-signature ("ident"): vast rechtsonder, op dezelfde plek/hoogte en
-   grootte als de bovenste (WhatsApp) floating knop. Alleen zichtbaar bij de
+   grootte als de bovenste floating knop. Alleen zichtbaar bij de
    footer; tijdens scrollen staan daar de contactknoppen. */
 .ident__wrap {
   position: fixed;
@@ -925,13 +918,8 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 /* ======================================================================== */
 /* Trust-strip, sectoren, reviews, cases                                    */
 /* ======================================================================== */
-.trust { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); background: var(--paper-2); }
-.trust__row { display: flex; flex-wrap: wrap; gap: 1.1rem 2.4rem; padding-top: 1.15rem; padding-bottom: 1.15rem; }
-.trust__item { display: flex; flex-direction: column; gap: .1rem; }
-.trust__label { font-family: var(--f-mono); font-weight: 700; font-size: .9rem; color: var(--ink); letter-spacing: -.01em; }
-.trust__sub { font-size: .78rem; color: var(--muted); }
-
-.sectoren { display: grid; grid-template-columns: repeat(4, 1fr); gap: clamp(1.2rem, 2.5vw, 2rem); }
+.sectoren { display: grid; grid-template-columns: repeat(5, 1fr); gap: clamp(1.2rem, 2.5vw, 2rem); }
+@media (max-width: 1180px) { .sectoren { grid-template-columns: repeat(3, 1fr); } }
 .sector { border-top: 2px solid var(--red); padding-top: 1rem; }
 .sector__titel { font-family: var(--f-display); font-weight: 700; font-size: 1.25rem; line-height: 1.1; letter-spacing: -.01em; margin: 0 0 .45rem; }
 .sector p { color: var(--ink-2); font-size: .95rem; margin: 0; text-wrap: pretty; }

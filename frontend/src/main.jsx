@@ -17,7 +17,6 @@ if (menuRoot) {
   const tel = menuRoot.dataset.tel || '';
   const telLink = menuRoot.dataset.telLink || '';
   const email = menuRoot.dataset.email || '';
-  const whatsapp = menuRoot.dataset.whatsapp || '';
 
   const items = [
     { label: 'Werkzaamheden', ariaLabel: 'Naar werkzaamheden', link: '/#diensten' },
@@ -28,8 +27,7 @@ if (menuRoot) {
   ];
   const socialItems = [
     { label: tel, link: 'tel:' + telLink },
-    { label: 'E-mail', link: 'mailto:' + email },
-    { label: 'WhatsApp', link: 'https://wa.me/' + whatsapp }
+    { label: 'E-mail', link: 'mailto:' + email }
   ];
 
   createRoot(menuRoot).render(
@@ -40,8 +38,8 @@ if (menuRoot) {
       socialItems={socialItems}
       displaySocials={true}
       displayItemNumbering={true}
-      accentColor="#D8201F"
-      colors={['#1a1b1f', '#D8201F']}
+      accentColor="#D2051E"
+      colors={['#1a1b1f', '#D2051E']}
       logoUrl="/static/img/brand/bebo-logo.svg"
       menuButtonColor="#16171B"
       openMenuButtonColor="#16171B"
@@ -100,28 +98,4 @@ if (beamsRoot && !prefersReduced && !isSmall) {
   } else {
     mountBeams();
   }
-}
-
-/* 3) Particles ("betonstof") als volledige hero-achtergrond. Transparant
-   canvas, dus de lichte hero blijft zichtbaar en de tekst leesbaar. Boven de
-   vouw, dus direct mounten. Alleen desktop + geen reduced-motion.
-   Wil je terug naar LightRays of een foto? Zie templates/index.html. */
-const heroBg = document.getElementById('hero-bg');
-if (heroBg && !prefersReduced && !isSmall) {
-  import('./components/Particles.jsx').then(({ default: Particles }) => {
-    createRoot(heroBg).render(
-      <Particles
-        particleCount={140}
-        particleSpread={11}
-        speed={0.08}
-        particleColors={['#2a2b2e', '#6f7176', '#c8413a']}
-        moveParticlesOnHover={false}
-        alphaParticles={true}
-        particleBaseSize={80}
-        sizeRandomness={1.2}
-        cameraDistance={18}
-        disableRotation={true}
-      />
-    );
-  });
 }

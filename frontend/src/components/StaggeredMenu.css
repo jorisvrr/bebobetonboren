@@ -24,7 +24,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1.4rem clamp(1.25rem, 5vw, 4rem);
+  /* BEBO: minder verticale padding, zodat het grotere logo de balk niet hoger maakt */
+  padding: 0.85rem clamp(1.25rem, 5vw, 4rem);
   background: transparent;
   pointer-events: none;
   z-index: 20;
@@ -35,7 +36,7 @@
 /* Achtergrond zodra je scrolt, zodat logo/toggle leesbaar blijven over
    alle secties (ook de donkere offerte-sectie). */
 .staggered-menu-header.is-scrolled {
-  background: rgba(233, 232, 228, 0.86);
+  background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   border-bottom-color: var(--line, #d6d5d0);
@@ -54,7 +55,7 @@
 
 .sm-logo-img {
   display: block;
-  height: 38px;
+  height: 56px;
   width: auto;
   object-fit: contain;
 }
@@ -77,7 +78,7 @@
 }
 
 .sm-toggle:focus-visible {
-  outline: 2px solid var(--red, #d8201f);
+  outline: 2px solid var(--red, #d2051e);
   outline-offset: 4px;
   border-radius: 2px;
 }
@@ -132,7 +133,7 @@
   top: 50%;
   width: 100%;
   height: 2px;
-  background: var(--red, #d8201f);
+  background: var(--red, #d2051e);
   border-radius: 0;
   transform: translate(-50%, -50%);
   will-change: transform;
@@ -148,7 +149,7 @@
   right: 0;
   width: clamp(300px, 42vw, 500px);
   height: 100%;
-  background: var(--paper, #e9e8e4);
+  background: var(--paper, #ffffff);
   display: flex;
   flex-direction: column;
   padding: 6.5rem clamp(2rem, 4vw, 3.4rem) 2.4rem;
@@ -215,7 +216,7 @@
   font-weight: 700;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--red, #d8201f);
+  color: var(--red, #d2051e);
 }
 
 .sm-socials-list {
@@ -241,7 +242,7 @@
 }
 
 .sm-socials-link:focus-visible {
-  outline: 2px solid var(--red, #d8201f);
+  outline: 2px solid var(--red, #d2051e);
   outline-offset: 3px;
 }
 
@@ -266,7 +267,7 @@
 }
 
 .sm-socials-link:hover {
-  color: var(--red, #d8201f);
+  color: var(--red, #d2051e);
 }
 
 .sm-panel-list {
@@ -301,7 +302,7 @@
 }
 
 .sm-panel-item:hover {
-  color: var(--red, #d8201f);
+  color: var(--red, #d2051e);
 }
 
 .sm-panel-list[data-numbering] {
@@ -317,7 +318,7 @@
   font-family: var(--f-mono, "Space Mono", monospace);
   font-size: 0.8rem;
   font-weight: 400;
-  color: var(--red, #d8201f);
+  color: var(--red, #d2051e);
   letter-spacing: 0;
   pointer-events: none;
   user-select: none;

@@ -4,11 +4,6 @@
 
 <!-- ================= HERO ================= -->
 <section class="hero">
-  <!-- Volledige hero-achtergrond: React Bits Particles ("betonstof").
-       Wil je een ander effect, LightRays of een foto? Zie frontend/src/main.jsx
-       (de mount) en deze sectie. -->
-  <div id="hero-bg" aria-hidden="true"></div>
-
   <div class="wrap">
     <div class="hero__grid">
       <div class="hero__copy">
@@ -34,7 +29,7 @@
         </div>
       </div>
 
-      <!-- Zwevende merk-marker over het stofveld (geen kader) -->
+      <!-- Zwevende merk-marker (geen kader) -->
       <div class="hero__marker reveal" data-delay="2" aria-hidden="true">
         <span class="crosshair crosshair--lg"><span class="h"></span><span class="v"></span><span class="ring"></span></span>
         <span class="hero__tag">kernboring · <b>Ø&nbsp;132&nbsp;mm</b></span>
@@ -45,24 +40,13 @@
     <div class="hero__facts reveal">
       <div class="fact"><div class="n">25+</div><div class="l">jaar ervaring in de bouwsector</div></div>
       <div class="fact"><div class="n">Ø900</div><div class="l">mm max. boordiameter</div></div>
-      <div class="fact"><div class="n">Stofarm</div><div class="l">water- en stofafzuiging</div></div>
-      <div class="fact"><div class="n">60&nbsp;cm</div><div class="l">max. zaagdiepte wandzagen</div></div>
+      <div class="fact"><div class="n">Stofarm en schoon</div><div class="l">water- en stofafzuiging</div></div>
+      <div class="fact"><div class="n">Zuid-Holland</div><div class="l">werkgebied</div></div>
     </div>
   </div>
 </section>
 
 <!-- ================= DIENSTEN ================= -->
-<div class="trust reveal">
-  <div class="wrap trust__row">
-    {% for u in usps %}
-    <div class="trust__item">
-      <span class="trust__label">{{ u.label }}</span>
-      <span class="trust__sub">{{ u.sub }}</span>
-    </div>
-    {% endfor %}
-  </div>
-</div>
-
 <section class="section" id="diensten">
   <div class="wrap">
     <div class="sec-head reveal">
@@ -113,7 +97,7 @@
       <div class="step reveal" data-delay="2">
         <span class="step__n">03</span>
         <h3 class="display">Uitvoering</h3>
-        <p>Strak en stofbeperkt op locatie, ook in bewoonde situaties. Rechte kanten, geen scheurwerk.</p>
+        <p>Strak en stofbeperkt op locatie, ook in bewoonde situaties. Vakkundig uitgevoerd met een strak resultaat.</p>
       </div>
       <div class="step reveal" data-delay="3">
         <span class="step__n">04</span>
@@ -131,9 +115,9 @@
       <p class="eyebrow">Waarom BEBO</p>
       <h2 class="display">Vakwerk dat je<br>niet hoeft over te doen.</h2>
       <ul class="usp">
-        <li><span class="usp__plus">+</span><div><b>Schoon en stofarm.</b> <span>We werken met water- en stofafzuiging, ook in bewoonde situaties.</span></div></li>
-        <li><span class="usp__plus">+</span><div><b>Recht en op maat.</b> <span>Diamanttechniek voor een strak resultaat.</span></div></li>
-        <li><span class="usp__plus">+</span><div><b>Eén aanspreekpunt.</b> <span>Korte lijnen, duidelijke afspraken en een ploeg die op tijd staat.</span></div></li>
+        <li><span class="usp__plus">+</span><div><b>Schoon en stofarm.</b> <span>Waterkoeling met vakkundige wateropvang, of droogtechniek met afzuiging op locaties waar water geen optie is.</span></div></li>
+        <li><span class="usp__plus">+</span><div><b>Strak maatwerk.</b> <span>Diamanttechniek voor een strak resultaat.</span></div></li>
+        <li><span class="usp__plus">+</span><div><b>Betrouwbare planning.</b> <span>Eén vast aanspreekpunt, korte lijnen en een team dat altijd op tijd klaarstaat.</span></div></li>
       </ul>
     </div>
 
@@ -247,9 +231,6 @@
       <div class="offerte__direct">
         <a href="tel:{{ bedrijf.tel_link }}">
           <span class="ico">●</span> {{ bedrijf.tel }}
-        </a>
-        <a href="https://wa.me/{{ bedrijf.whatsapp }}" target="_blank" rel="noopener">
-          <span class="ico">●</span> WhatsApp ons direct
         </a>
         <a href="mailto:{{ bedrijf.email }}">
           <span class="ico">●</span> {{ bedrijf.email }}
