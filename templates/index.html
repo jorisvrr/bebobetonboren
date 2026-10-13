@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% from "_project.html" import project_beeld %}
 
 {% block content %}
 
@@ -71,6 +72,33 @@
     </div>
   </div>
 </section>
+
+{% if uitgelicht %}
+<!-- ================= UITGELICHT PROJECT (uit PROJECTEN in app.py) ========= -->
+<section class="section uitgelicht-sectie" id="uitgelicht">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div>
+        <p class="eyebrow">Uitgelicht project</p>
+        <h2 class="display">Ons werk in de praktijk.</h2>
+      </div>
+    </div>
+    <article class="uitgelicht">
+      <div class="uitgelicht__beeld reveal">
+        {{ project_beeld(uitgelicht) }}
+      </div>
+      <div class="uitgelicht__info reveal" data-delay="1">
+        {% if uitgelicht.label %}<p class="project__meta"><span class="project__cat">{{ uitgelicht.label }}</span></p>{% endif %}
+        <h3 class="display">{{ uitgelicht.titel }}</h3>
+        {% for alinea in uitgelicht.tekst %}
+        <p>{{ alinea }}</p>
+        {% endfor %}
+        <a href="{{ url_for('projecten') }}" class="btn uitgelicht__cta">Bekijk alle projecten <span class="arrow">→</span></a>
+      </div>
+    </article>
+  </div>
+</section>
+{% endif %}
 
 <!-- ================= WERKWIJZE (echte sequentie → nummering terecht) ===== -->
 <section class="section werkwijze" id="werkwijze">
@@ -171,31 +199,6 @@
         <blockquote>{{ r.tekst }}</blockquote>
         <figcaption>{{ r.naam }}{% if r.rol %} · <span>{{ r.rol }}</span>{% endif %}</figcaption>
       </figure>
-      {% endfor %}
-    </div>
-  </div>
-</section>
-{% endif %}
-
-{% if cases %}
-<section class="section" id="cases">
-  <div class="wrap">
-    <div class="sec-head reveal">
-      <div>
-        <p class="eyebrow">Recent werk</p>
-        <h2 class="display">Een greep uit<br>onze projecten.</h2>
-      </div>
-    </div>
-    <div class="cases">
-      {% for c in cases %}
-      <article class="case reveal" data-delay="{{ loop.index0 % 3 }}">
-        {% if c.img %}<div class="case__img"><img src="{{ url_for('static', filename='img/' + c.img) }}" alt="{{ c.titel }}" loading="lazy"></div>{% endif %}
-        <div class="case__body">
-          {% if c.meta %}<p class="case__meta">{{ c.meta }}</p>{% endif %}
-          <h3 class="display">{{ c.titel }}</h3>
-          <p>{{ c.tekst }}</p>
-        </div>
-      </article>
       {% endfor %}
     </div>
   </div>

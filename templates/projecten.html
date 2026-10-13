@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% from "_project.html" import project_beeld, project_galerij %}
+{% block title %}Projecten | BEBO Betonboren & Zagen{% endblock %}
+{% block description %}Bekijk projecten van BEBO Betonboren & Zagen, van betonboringen en zaagwerk tot renovaties en precisiesloop.{% endblock %}
+
+{% block content %}
+
+<!-- ================= PROJECTEN: kop ================= -->
+<section class="section pagina-kop">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div>
+        <p class="eyebrow">Projecten</p>
+        <h1 class="display">Ons werk in de praktijk.</h1>
+      </div>
+      <p class="sec-head__aside">{{ intro }}</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PROJECTEN: overzicht ================= -->
+<section class="section projecten-sectie">
+  <div class="wrap">
+    <div class="projecten">
+      {% for p in projecten %}
+      <article class="project reveal" id="{{ p.id }}" data-delay="{{ loop.index0 % 2 }}">
+        {{ project_beeld(p, lazy=loop.index > 2) }}
+        <p class="project__meta">
+          <span class="project__nr">{{ p.nr }}</span>
+          {% if p.label %}<span class="project__cat">{{ p.label }}</span>{% endif %}
+        </p>
+        <h2 class="display">{{ p.titel }}</h2>
+        {% for alinea in p.tekst %}
+        <p>{{ alinea }}</p>
+        {% endfor %}
+        {{ project_galerij(p) }}
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- ================= Afsluiter: naar de bestaande offerte ================= -->
+<section class="section offerte projecten-cta">
+  <div class="wrap projecten-cta__in">
+    <div class="offerte__intro reveal">
+      <p class="eyebrow">Offerte</p>
+      <h2 class="display">Ook een project<br>in voorbereiding?</h2>
+      <p>Neem contact op en bespreek de mogelijkheden voor uw project.</p>
+    </div>
+    <div class="reveal" data-delay="1">
+      <a href="{{ url_for('index') }}#offerte" class="btn btn--red btn--lg">Offerte aanvragen <span class="arrow">→</span></a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

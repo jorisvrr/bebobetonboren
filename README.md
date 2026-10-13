@@ -108,3 +108,15 @@ Kleur intentioneel (rood enkel als precisie-accent) · typografie als hiërarchi
 één duidelijke CTA-route (de offerte) · royale witruimte · terughoudende trust
 signals (feiten + één quote i.p.v. logo-soup). Signatuur: het rode richtkruis als
 "het exacte punt waar geboord/gezaagd wordt".
+
+## Projecten
+- Eén bron: `PROJECTEN` in `app.py`. De homepage toont het project met `"uitgelicht": True`
+  (tussen Werkzaamheden en Werkwijze); `/projecten` toont ze allemaal, in deze volgorde.
+- Templates: `templates/projecten.html` (pagina), `templates/_project.html` (beeld + galerij,
+  gedeeld met de homepage). Opmaak: blok "PROJECTEN" in `static/css/style.css`.
+- Foto's: zet ze in `static/img/projecten/` en vul bij het project `cover` en eventueel
+  `galerij` in (elk met `bestand` en `alt`). Zonder cover staat er een tijdelijk beeldvlak
+  met dezelfde 3:2-verhouding, dus de opmaak verschuift niet als de foto erbij komt.
+- Titels, categorieën en teksten zijn letterlijk van de klant. Een lege `categorie` toont
+  geen label. Het categorielabel wordt zonder slotpunt getoond.
+- `PROJECTEN_INTRO` (de zin rechtsboven op `/projecten`) is een voorstel van de bouwer.

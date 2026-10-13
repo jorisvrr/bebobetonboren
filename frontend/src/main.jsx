@@ -20,6 +20,7 @@ if (menuRoot) {
 
   const items = [
     { label: 'Werkzaamheden', ariaLabel: 'Naar werkzaamheden', link: '/#diensten' },
+    { label: 'Projecten', ariaLabel: 'Naar de projecten', link: '/projecten' },
     { label: 'Werkwijze', ariaLabel: 'Naar werkwijze', link: '/#werkwijze' },
     { label: 'Waarom BEBO', ariaLabel: 'Naar waarom BEBO', link: '/#waarom' },
     { label: 'Werkgebied', ariaLabel: 'Naar werkgebied', link: '/#werkgebied' },

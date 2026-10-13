@@ -933,15 +933,152 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 .review figcaption { font-family: var(--f-mono); font-size: .8rem; color: var(--muted); margin-top: auto; }
 @media (max-width: 860px) { .reviews { grid-template-columns: 1fr; } }
 
-.cases { display: grid; grid-template-columns: repeat(2, 1fr); gap: clamp(1.2rem, 2.5vw, 2rem); }
-.case { border: 1px solid var(--line); background: var(--paper); }
-.case__img { aspect-ratio: 16 / 10; overflow: hidden; border-bottom: 1px solid var(--line); }
-.case__img img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.case__body { padding: 1.3rem 1.4rem 1.4rem; }
-.case__meta { font-family: var(--f-mono); font-size: .78rem; color: var(--red); margin: 0 0 .5rem; }
-.case h3 { margin: 0 0 .5rem; font-size: 1.3rem; }
-.case p { color: var(--ink-2); margin: 0; text-wrap: pretty; }
-@media (max-width: 720px) { .cases { grid-template-columns: 1fr; } }
+/* ======================================================================== */
+/* PROJECTEN - uitgelicht project (home) en overzicht (/projecten)          */
+/* Eén set bouwstenen voor beide plekken; data staat in PROJECTEN (app.py). */
+/* ======================================================================== */
+
+/* Projectbeeld: altijd 3:2, met of zonder foto. Komt er later een foto bij,
+   dan verschuift er dus niets in de opmaak. */
+.pbeeld {
+  position: relative;
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+  background: #E8E8E8;
+  background: color-mix(in srgb, var(--concrete) 30%, var(--paper));
+}
+.pbeeld img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform .7s var(--ease);
+}
+@media (hover: hover) and (pointer: fine) {
+  .project:hover .pbeeld img,
+  .uitgelicht:hover .pbeeld img { transform: scale(1.025); }
+}
+/* Tijdelijk beeldvlak tot de klant foto's aanlevert: tekenkader + richtkruis. */
+.pbeeld__leeg {
+  --kader: clamp(.8rem, 2.2vw, 1.5rem);
+  position: absolute; inset: 0;
+  display: grid; place-items: center;
+}
+.pbeeld__leeg::before {
+  content: "";
+  position: absolute; inset: var(--kader);
+  border: 1px solid rgba(22, 23, 27, .16);
+  pointer-events: none;
+}
+/* Het richtkruis van de site, hier ingetogen: dunne grijze lijnen, open rood ringetje */
+.pbeeld__leeg .crosshair {
+  width: clamp(44px, 6vw, 70px);
+  height: clamp(44px, 6vw, 70px);
+}
+.pbeeld__leeg .crosshair .h,
+.pbeeld__leeg .crosshair .v { background: rgba(22, 23, 27, .28); }
+.pbeeld__leeg .crosshair .h { height: 1px; }
+.pbeeld__leeg .crosshair .v { width: 1px; }
+.pbeeld__leeg .crosshair .ring {
+  width: 16px; height: 16px;
+  background: #E8E8E8;
+  background: color-mix(in srgb, var(--concrete) 30%, var(--paper));
+  border: 1.5px solid var(--red);
+}
+.pbeeld__label {
+  position: absolute;
+  left: calc(var(--kader) + .9rem);
+  bottom: calc(var(--kader) + .75rem);
+  font-family: var(--f-mono);
+  font-size: .68rem;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* Nummer + categorie boven de projecttitel */
+.project__meta {
+  display: flex; flex-wrap: wrap; align-items: baseline;
+  gap: .4rem .9rem;
+  margin: 0 0 .7rem;
+  font-family: var(--f-mono);
+  font-size: .72rem;
+  letter-spacing: .04em;
+}
+.project__nr { color: var(--muted); }
+.project__cat { color: var(--red); }
+
+/* --- Homepage: één uitgelicht project ------------------------------------ */
+.uitgelicht-sectie { padding-top: 0; }
+.uitgelicht {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  gap: clamp(2rem, 5vw, 4.5rem);
+  align-items: end;
+}
+.uitgelicht__info h3 {
+  font-size: clamp(1.7rem, 2.7vw, 2.5rem);
+  font-weight: 700;
+  margin: 0 0 1.1rem;
+  overflow-wrap: break-word;
+}
+.uitgelicht__info > p:not(.project__meta) {
+  color: var(--ink-2);
+  margin: 0 0 .9rem;
+  max-width: 46ch;
+  text-wrap: pretty;
+}
+.uitgelicht__cta { margin-top: 1.3rem; }
+
+/* --- /projecten ---------------------------------------------------------- */
+.pagina-kop { padding-top: clamp(8rem, 16vh, 11rem); padding-bottom: 0; }
+.pagina-kop .sec-head { margin-bottom: 0; }
+/* Paginakop in de maat van de sectiekoppen, geen aparte grote hero */
+.pagina-kop h1.display { font-size: clamp(2.1rem, 4.6vw, 3.6rem); font-weight: 700; }
+.projecten-sectie { padding-top: clamp(2.8rem, 5vw, 4.5rem); }
+.projecten {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: clamp(1.6rem, 4vw, 3.5rem);
+  row-gap: clamp(3rem, 6vw, 5rem);
+}
+.project .pbeeld { margin-bottom: 1.3rem; }
+.project h2 {
+  font-size: clamp(1.45rem, 2.2vw, 2rem);
+  margin: 0 0 .8rem;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+.project > p:not(.project__meta) {
+  color: var(--ink-2);
+  margin: 0 0 .7rem;
+  max-width: 52ch;
+  text-wrap: pretty;
+}
+/* Extra foto's bij een project (zodra ze er zijn) */
+.pgalerij {
+  list-style: none; margin: 1.1rem 0 0; padding: 0;
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .5rem;
+}
+.pgalerij a { display: block; aspect-ratio: 3 / 2; overflow: hidden; background: var(--paper-2); }
+.pgalerij img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* Afsluiter op /projecten: tekst links, knop rechts, in de donkere offertestijl */
+.projecten-cta__in {
+  display: flex; flex-wrap: wrap;
+  align-items: flex-end; justify-content: space-between;
+  gap: 2rem 3rem;
+}
+
+@media (max-width: 1000px) {
+  .uitgelicht { grid-template-columns: 1fr; align-items: start; gap: 1.8rem; }
+}
+@media (max-width: 760px) {
+  .projecten { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pbeeld img { transition: none; }
+  .project:hover .pbeeld img, .uitgelicht:hover .pbeeld img { transform: none; }
+}
 
 /* ======================================================================== */
 /* LETTERTYPE-PREVIEW: Titillium Web (BEBO-stijlguide) - nog niet definitief */

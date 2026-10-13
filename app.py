@@ -131,18 +131,128 @@ SECTOREN = [
     {"titel": "Particulieren", "tekst": "Van een enkele doorvoer tot een compleet trapgat, netjes opgeleverd."},
 ]
 
-# Reviews en cases: LEEG laten tot je ECHTE content hebt. De secties renderen
-# alleen als de lijst gevuld is, dus er gaat nooit iets verzonnen live.
+# Reviews: LEEG laten tot je ECHTE content hebt. De sectie rendert alleen als de
+# lijst gevuld is, dus er gaat nooit iets verzonnen live.
 # Voorbeeldstructuur:
 #   REVIEWS = [{"tekst": "Strak werk, netjes achtergelaten.", "naam": "J. de Vries",
 #               "rol": "aannemer, Rotterdam", "ster": 5}]
 REVIEWS = []
 # Aggregaat-score, bijv. {"score": "4.9", "aantal": "27", "bron": "Google"}. None = verbergen.
 REVIEW_RATING = None
-#   CASES = [{"titel": "28 sparingen in 2 dagen", "tekst": "Kantoor bleef open dankzij
-#             geluidsbeperkende technieken.", "meta": "2 dagen · centrum Rotterdam",
-#             "img": "cases/kantoor.jpg"}]  # img is optioneel (echte projectfoto)
-CASES = []
+
+# ---------------------------------------------------------------------------
+# PROJECTEN - één bron voor de homepage (uitgelicht project) en /projecten.
+# Titels, categorieën en teksten zijn letterlijk van de klant
+# (inzending BEBO-20261013-1405-5ZKN). Niets bijverzinnen.
+#
+# Foto's toevoegen (zodra de klant ze aanlevert):
+#   1. Zet de bestanden in static/img/projecten/, bijv. vmbo-trias-1.jpg
+#   2. Vul hieronder in:
+#        "cover":   {"bestand": "projecten/vmbo-trias-1.jpg",
+#                    "alt": "Beschrijf wat er op de foto te zien is"},
+#        "galerij": [{"bestand": "projecten/vmbo-trias-2.jpg", "alt": "..."}],
+#   Zonder cover toont de site automatisch een tijdelijk beeldvlak met dezelfde
+#   verhouding, dus de opmaak verandert niet als de foto erbij komt.
+#
+# "uitgelicht": True bij precies één project; dat staat op de homepage.
+# "categorie" mag leeg zijn; dan wordt er geen categorielabel getoond.
+# ---------------------------------------------------------------------------
+PROJECTEN = [
+    {
+        "id": "vmbo-trias",
+        "titel": "VMBO Trias",
+        "categorie": "Verduurzamingsproject.",
+        "tekst": [
+            "Boren van nieuwe doorvoeren en sparingen t.b.v. de nieuwe klimaatinstallatie.",
+        ],
+        "cover": None,
+        "galerij": [],
+        "uitgelicht": False,
+    },
+    {
+        "id": "rwzi-heinenoord",
+        "titel": "Rioolwaterzuiveringsinstallatie Heinenoord",
+        "categorie": "Renovatie pompinstallatie.",
+        "tekst": [
+            "Nieuwe doorvoeren geboord t.b.v. renovatie van de rioolwaterzuiveringsinstallatie.",
+        ],
+        "cover": None,
+        "galerij": [],
+        "uitgelicht": False,
+    },
+    {
+        "id": "vve-dedemsvaartweg-den-haag",
+        "titel": "VvE Dedemsvaartweg Den Haag",
+        "categorie": "Renovatie rookgaskanalen.",
+        "tekst": [
+            "Zagen van sparingen t.b.v. renovatie van de bestaande rookgaskanalen.",
+            "Werkzaamheden zijn uitgevoerd d.m.v. droogtechniek m.b.v. bronafzuiging en "
+            "een aparte luchtreiniger om stofoverlast tot een minimum te beperken.",
+        ],
+        "cover": None,
+        "galerij": [],
+        "uitgelicht": True,
+    },
+    {
+        "id": "obs-de-vogelenzang",
+        "titel": "Openbare basisschool De Vogelenzang",
+        "categorie": "Verduurzamingsproject.",
+        "tekst": [
+            "Doorvoeren geboord t.b.v. de nieuwe klimaatinstallatie.",
+        ],
+        "cover": None,
+        "galerij": [],
+        "uitgelicht": False,
+    },
+    {
+        "id": "monumentaal-gebouw-schiedam",
+        "titel": "Monumentaal gebouw Schiedam",
+        "categorie": "Voorbereiding elektra en bouwkundige aanpassingen.",
+        "tekst": [
+            "Boren van dozen en frezen van sleuven t.b.v. elektra.",
+            "Inzagen van nieuwe deuropening.",
+        ],
+        "cover": None,
+        "galerij": [],
+        "uitgelicht": False,
+    },
+    {
+        "id": "diverse-kruipluiken",
+        "titel": "Diverse kruipluiken",
+        "categorie": "",  # niet aangeleverd door de klant; geen label tonen
+        "tekst": [
+            "Aanbrengen van sparingen t.b.v. bereikbaarheid kruipruimtes incl. leveren "
+            "en monteren van kruipluiken.",
+        ],
+        "cover": None,
+        "galerij": [],
+        "uitgelicht": False,
+    },
+]
+
+# Introtekst op /projecten. Dit is een voorstel van de websitebouwer, geen tekst
+# van de klant; hier aan te passen.
+PROJECTEN_INTRO = (
+    "Een selectie van projecten waarin precisie, vakmanschap en een nette "
+    "uitvoering centraal staan."
+)
+
+
+def _projecten() -> list:
+    """Projecten met volgnummer ("01") en categorielabel zonder slotpunt."""
+    uit = []
+    for i, p in enumerate(PROJECTEN, start=1):
+        q = dict(p)
+        q["nr"] = "{:02d}".format(i)
+        q["label"] = (p.get("categorie") or "").strip().rstrip(".")
+        uit.append(q)
+    return uit
+
+
+def _uitgelicht():
+    """Het ene project voor de homepage (het eerste met uitgelicht=True)."""
+    alle = _projecten()
+    return next((p for p in alle if p.get("uitgelicht")), alle[0] if alle else None)
 
 
 def _save_lead(lead: dict) -> bool:
@@ -310,8 +420,10 @@ def sitemap():
     body = (
         '<?xml version="1.0" encoding="UTF-8"?>\n'
         '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
-        "  <url><loc>{}/</loc><changefreq>monthly</changefreq>"
+        "  <url><loc>{0}/</loc><changefreq>monthly</changefreq>"
         "<priority>1.0</priority></url>\n"
+        "  <url><loc>{0}/projecten</loc><changefreq>monthly</changefreq>"
+        "<priority>0.7</priority></url>\n"
         "</urlset>\n"
     ).format(SITE_URL)
     return Response(body, mimetype="application/xml")
@@ -326,7 +438,17 @@ def index():
         sectoren=SECTOREN,
         reviews=REVIEWS,
         review_rating=REVIEW_RATING,
-        cases=CASES,
+        uitgelicht=_uitgelicht(),
+    )
+
+
+@app.route("/projecten")
+def projecten():
+    return render_template(
+        "projecten.html",
+        bedrijf=BEDRIJF,
+        projecten=_projecten(),
+        intro=PROJECTEN_INTRO,
     )
 
 

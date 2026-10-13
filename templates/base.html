@@ -77,11 +77,12 @@
        data-email="{{ bedrijf.email }}"></div>
   <noscript>
     <nav class="nav-fallback" aria-label="Menu">
-      <a href="#diensten">Werkzaamheden</a>
-      <a href="#werkwijze">Werkwijze</a>
-      <a href="#waarom">Waarom BEBO</a>
-      <a href="#werkgebied">Werkgebied</a>
-      <a href="#offerte">Offerte aanvragen</a>
+      <a href="{{ url_for('index') }}#diensten">Werkzaamheden</a>
+      <a href="{{ url_for('projecten') }}">Projecten</a>
+      <a href="{{ url_for('index') }}#werkwijze">Werkwijze</a>
+      <a href="{{ url_for('index') }}#waarom">Waarom BEBO</a>
+      <a href="{{ url_for('index') }}#werkgebied">Werkgebied</a>
+      <a href="{{ url_for('index') }}#offerte">Offerte aanvragen</a>
     </nav>
   </noscript>
 

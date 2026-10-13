@@ -1,0 +1,26 @@
+{# Projectbeeld voor de homepage en /projecten.
+   Met cover: de echte foto. Zonder cover: een tijdelijk beeldvlak met exact
+   dezelfde verhouding, zodat de opmaak niet verschuift als de foto erbij komt. #}
+{% macro project_beeld(p, lazy=True) %}
+<div class="pbeeld">
+  {% if p.cover %}
+  <img src="{{ url_for('static', filename='img/' + p.cover.bestand) }}" alt="{{ p.cover.alt }}"{% if lazy %} loading="lazy"{% endif %} decoding="async">
+  {% else %}
+  <div class="pbeeld__leeg" role="img" aria-label="Foto van dit project volgt nog">
+    <span class="crosshair" aria-hidden="true"><span class="h"></span><span class="v"></span><span class="ring"></span></span>
+    <span class="pbeeld__label" aria-hidden="true">Foto volgt</span>
+  </div>
+  {% endif %}
+</div>
+{% endmacro %}
+
+{# Extra foto's van een project (alleen als ze er zijn). #}
+{% macro project_galerij(p) %}
+{% if p.galerij %}
+<ul class="pgalerij" aria-label="Meer foto's van {{ p.titel }}">
+  {% for g in p.galerij %}
+  <li><a href="{{ url_for('static', filename='img/' + g.bestand) }}" target="_blank" rel="noopener"><img src="{{ url_for('static', filename='img/' + g.bestand) }}" alt="{{ g.alt }}" loading="lazy" decoding="async"></a></li>
+  {% endfor %}
+</ul>
+{% endif %}
+{% endmacro %}
