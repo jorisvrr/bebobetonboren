@@ -139,12 +139,17 @@
     var r = podium.getBoundingClientRect();
     var vw = r.width, vh = r.height;
     var smal = vw < 700, midden = vw < 1100;
-    // breedte van een staande 3:4-foto
-    // (bewust niet schermvullend: de foto's hangen als een rij in de ruimte, met lucht eromheen)
-    var w3 = smal ? Math.min(vw * 0.70, vh * 0.74 * 0.75)
-           : midden ? Math.min(vw * 0.32, vh * 0.66 * 0.75)
-           : Math.min(vw * 0.19, vh * 0.66 * 0.75);
-    w3 = Math.max(120, Math.round(w3));
+    // Hoogte van de actieve foto (een staande foto is 3:4, dus breedte = 0,75 x hoogte).
+    // Groot genoeg om het werk goed te bekijken, maar nooit hoger dan het podium:
+    //   desktop  ca. 450-640 px, meegroeiend met de schermhoogte
+    //   tablet   ca. 350-450 px
+    //   telefoon de foto vult het grootste deel van de schermbreedte
+    var sh = window.innerHeight;
+    var hoog = smal ? vw * 0.80 / 0.75
+             : midden ? Math.min(klem(sh * 0.56, 350, 450), vw * 0.46 / 0.75)
+             : Math.min(klem(sh * 0.58, 450, 640), vw * 0.30 / 0.75);
+    hoog = Math.min(hoog, vh * (smal ? 0.90 : 0.84));
+    var w3 = Math.max(120, Math.round(hoog * 0.75));
     // Afstand tussen twee gedraaide buren, en (iets ruimer) van de actieve foto
     // tot zijn buur. Zo passen er op een breed scherm vijf foto's naast elkaar
     // terwijl de middelste groot blijft.

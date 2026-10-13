@@ -291,6 +291,22 @@ body.menu-open .burger span:nth-child(3) { transform: translateY(-5px) rotate(-4
 }
 .hero > .wrap { position: relative; z-index: 1; }
 
+/* Homepage: hero en Werkzaamheden sluiten compact op elkaar aan, met een dunne
+   lijn ertussen op de breedte van de inhoud. De lijn hoort bij de container van
+   Werkzaamheden (geen losse sectie); boven en onder evenveel lucht. */
+.hero--compact,
+.hero--compact + .section { --naad: clamp(1.4rem, 2.8vw, 2.4rem); }
+.hero--compact { padding-bottom: var(--naad); }
+.hero--compact + .section { padding-top: 0; }
+.hero--compact + .section > .wrap::before {
+  content: "";
+  display: block;
+  border-top: 1px solid rgba(0, 0, 0, .12);
+  /* het label eronder heeft zelf ca. .6rem lucht boven de letters (regelhoogte);
+     die trekken we hier af, zodat het boven en onder de lijn even ruim oogt */
+  margin-bottom: calc(var(--naad) - .6rem);
+}
+
 /* Zwevende merk-marker rechts (geen kader) */
 .hero__marker {
   display: flex;
