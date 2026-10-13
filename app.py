@@ -142,17 +142,20 @@ REVIEW_RATING = None
 
 # ---------------------------------------------------------------------------
 # PROJECTEN - één bron voor de homepage (uitgelicht project) en /projecten.
-# Titels, categorieën en teksten zijn letterlijk van de klant
-# (inzending BEBO-20261013-1405-5ZKN). Niets bijverzinnen.
+# Titels, categorieën en teksten zijn letterlijk van de klant (inzendingen
+# BEBO-20261013-1405-5ZKN en BEBO-20261013-1422-5Z0T). Niets bijverzinnen.
 #
-# Foto's toevoegen (zodra de klant ze aanlevert):
-#   1. Zet de bestanden in static/img/projecten/, bijv. vmbo-trias-1.jpg
-#   2. Vul hieronder in:
-#        "cover":   {"bestand": "projecten/vmbo-trias-1.jpg",
-#                    "alt": "Beschrijf wat er op de foto te zien is"},
-#        "galerij": [{"bestand": "projecten/vmbo-trias-2.jpg", "alt": "..."}],
-#   Zonder cover toont de site automatisch een tijdelijk beeldvlak met dezelfde
-#   verhouding, dus de opmaak verandert niet als de foto erbij komt.
+# Foto's
+#   Origineel:  bronmateriaal/projectfotos/<id>/<nr>.jpg   (niet aanpassen)
+#   Website:    static/img/projecten/<id>/<nr>-640|960|1280|groot.webp
+#   De webversies maak je met:  python tools/projectfotos.py
+#   "fotos":       (nr, alt) in de volgorde van de klant; alt beschrijft wat er
+#                  te zien is, zonder iets toe te voegen dat we niet weten.
+#   "cover":       nr van de foto die als hoofdbeeld dient.
+#   "cover_focus": welk deel van de foto in het liggende coverkader valt
+#                  (CSS object-position, "horizontaal verticaal"). In de
+#                  fotoweergave staat altijd de hele foto.
+#   Een project zonder foto's krijgt automatisch het tijdelijke beeldvlak.
 #
 # "uitgelicht": True bij precies één project; dat staat op de homepage.
 # "categorie" mag leeg zijn; dan wordt er geen categorielabel getoond.
@@ -165,8 +168,18 @@ PROJECTEN = [
         "tekst": [
             "Boren van nieuwe doorvoeren en sparingen t.b.v. de nieuwe klimaatinstallatie.",
         ],
-        "cover": None,
-        "galerij": [],
+        "cover": "06",
+        "cover_focus": "50% 50%",
+        "fotos": [
+            ("01", "Betonwand boven een deur met geboorde ronde doorvoeren en een rechthoekige sparing"),
+            ("02", "Twee kernboringen in een betonbalk, daaronder afdekfolie"),
+            ("03", "Hal met een rij geboorde doorvoeren in de betonwand boven de deuren"),
+            ("04", "Rechthoekige sparing en ronde doorvoer in de betonwand boven een deur"),
+            ("05", "Twee geboorde sparingen in de betonwand boven een deurkozijn"),
+            ("06", "Boorstelling op een rolsteiger met afscherming in de hal, naast de trap"),
+            ("07", "Kernboormachine op een boorstatief tegen de betonwand, boven de afgeschermde steiger"),
+            ("08", "Vier kernboringen in de betonvloer van een gang"),
+        ],
         "uitgelicht": False,
     },
     {
@@ -174,10 +187,17 @@ PROJECTEN = [
         "titel": "Rioolwaterzuiveringsinstallatie Heinenoord",
         "categorie": "Renovatie pompinstallatie.",
         "tekst": [
-            "Nieuwe doorvoeren geboord t.b.v. renovatie van de rioolwaterzuiveringsinstallatie.",
+            "Nieuwe doorvoeren geboord t.b.v. renovatie van de "
+            "rioolwaterzuiveringsinstallatie.",
         ],
-        "cover": None,
-        "galerij": [],
+        "cover": "02",
+        "cover_focus": "50% 50%",
+        "fotos": [
+            ("01", "Pompruimte met een rolsteiger naast de leidingen en afsluiters"),
+            ("02", "Medewerker op de rolsteiger bij de leidingen in de pompruimte"),
+            ("03", "Medewerker met gehoorbescherming aan het werk op de rolsteiger in de pompruimte"),
+            ("04", "Zicht door een geboorde doorvoer op een leidingflens"),
+        ],
         "uitgelicht": False,
     },
     {
@@ -186,11 +206,18 @@ PROJECTEN = [
         "categorie": "Renovatie rookgaskanalen.",
         "tekst": [
             "Zagen van sparingen t.b.v. renovatie van de bestaande rookgaskanalen.",
-            "Werkzaamheden zijn uitgevoerd d.m.v. droogtechniek m.b.v. bronafzuiging en "
-            "een aparte luchtreiniger om stofoverlast tot een minimum te beperken.",
+            "Werkzaamheden zijn uitgevoerd d.m.v. droogtechniek m.b.v. bronafzuiging "
+            "en een aparte luchtreiniger om stofoverlast tot een minimum te beperken.",
         ],
-        "cover": None,
-        "galerij": [],
+        "cover": "01",
+        "cover_focus": "50% 61%",
+        "fotos": [
+            ("01", "Gezaagde sparing in een wand met daarachter de rookgaskanalen"),
+            ("02", "Het appartementengebouw gezien vanaf de parkeerplaats"),
+            ("03", "Gezaagde sparing in de wand van een hal, met zicht op de kanalen in de schacht"),
+            ("04", "Zicht in de schacht met de rookgaskanalen"),
+            ("05", "Gezaagde sparing in een wand met zicht op de kanalen in de schacht"),
+        ],
         "uitgelicht": True,
     },
     {
@@ -200,8 +227,19 @@ PROJECTEN = [
         "tekst": [
             "Doorvoeren geboord t.b.v. de nieuwe klimaatinstallatie.",
         ],
-        "cover": None,
-        "galerij": [],
+        "cover": "07",
+        "cover_focus": "50% 50%",
+        "fotos": [
+            ("01", "Lokaal met twee geboorde doorvoeren in de bakstenen wand"),
+            ("02", "Twee ronde doorvoeren in een bakstenen binnenwand"),
+            ("03", "Medewerker boort met een kernboormachine een doorvoer in de bakstenen wand"),
+            ("04", "Twee doorvoeren in de buitengevel, gezien vanuit de tuin"),
+            ("05", "Entree van de school met twee doorvoeren in de gevel ernaast"),
+            ("06", "Gevel van de school met twee paar geboorde doorvoeren"),
+            ("07", "Twee paar geboorde doorvoeren in de bakstenen gevel"),
+            ("08", "Twee geboorde doorvoeren in de bakstenen gevel van dichtbij"),
+            ("09", "Gevel met aan weerszijden van de regenpijp twee geboorde doorvoeren"),
+        ],
         "uitgelicht": False,
     },
     {
@@ -212,8 +250,16 @@ PROJECTEN = [
             "Boren van dozen en frezen van sleuven t.b.v. elektra.",
             "Inzagen van nieuwe deuropening.",
         ],
-        "cover": None,
-        "galerij": [],
+        "cover": "04",
+        "cover_focus": "50% 50%",
+        "fotos": [
+            ("01", "Het monumentale pand gezien vanaf de straat"),
+            ("02", "Twee gefreesde sleuven in een gestucte wand, van dichtbij"),
+            ("03", "Twee verticale sleuven met een geboorde doos in een gestucte wand"),
+            ("04", "Hal met gefreesde leidingsleuven en geboorde dozen in de wanden"),
+            ("05", "Verticale sleuf en geboorde dozen naast een boogdeur op de overloop"),
+            ("06", "Nieuw ingezaagde deuropening met stalen latei"),
+        ],
         "uitgelicht": False,
     },
     {
@@ -224,8 +270,46 @@ PROJECTEN = [
             "Aanbrengen van sparingen t.b.v. bereikbaarheid kruipruimtes incl. leveren "
             "en monteren van kruipluiken.",
         ],
-        "cover": None,
-        "galerij": [],
+        "cover": "05",
+        "cover_focus": "50% 21%",
+        "fotos": [
+            ("01", "Omtrek van een kruipluik uitgeboord in een betonvloer"),
+            ("02", "Gemonteerd kruipluik in een betonvloer"),
+            ("03", "Kruipluik in de vloer bij een entree, naast de deurmat"),
+            ("04", "Kruipluik in een tegelvloer onder een trap"),
+            ("05", "Geopend kruipluik in een tegelvloer met zicht in de kruipruimte"),
+            ("06", "Kruipluik in een tegelvloer naast een trap"),
+            ("07", "Kruipluik in een gietvloer onder een stalen trap"),
+            ("08", "Kruipluik in de vloer van een trappenhuis"),
+            ("09", "Kruipluik in de vloer voor een stalen trap"),
+            ("10", "Uitgeboorde sparing met ingestort kader voor een kruipluik"),
+            ("11", "Kruipluik in de vloer achter een toegangsdeur"),
+        ],
+        "uitgelicht": False,
+    },
+    {
+        "id": "leidingsleuven",
+        "titel": "Leidingsleuven",
+        "categorie": "Kantoorruimtes en Particulier.",
+        "tekst": [
+            "Een overzicht van aangebrachte leidingsleuven op uiteenlopende projecten.",
+        ],
+        "cover": "02",
+        "cover_focus": "50% 65%",
+        "fotos": [
+            ("01", "Lange leidingsleuf in een dekvloer in een kantoorruimte in aanbouw"),
+            ("02", "Leidingsleuf in de vloer van een kantoorruimte, tussen verwijderde tapijttegels"),
+            ("03", "Leidingsleuf in een dekvloer van dichtbij"),
+            ("04", "Brede sleuf in een betonvloer met afgetekende markering"),
+            ("05", "Kernboring in een vloer met een mantelbuis erdoor"),
+            ("06", "Keukenwand met gefreesde sleuven en geboorde dozen"),
+            ("07", "Gefreesde sleuven en geboorde dozen in een keukenwand, van dichtbij"),
+            ("08", "Keukenwand met een horizontale leidingsleuf naar een wandcontactdoos"),
+            ("09", "Gefreesde sleuven en geboorde dozen in een betonwand"),
+            ("10", "Betonwand met gefreesde leidingsleuven, schuin gezien"),
+            ("11", "Verticale sleuf met twee geboorde dozen in een witte wand"),
+            ("12", "Verticale sleuf met een dubbele doos in een witte wand, van dichtbij"),
+        ],
         "uitgelicht": False,
     },
 ]
@@ -237,14 +321,48 @@ PROJECTEN_INTRO = (
     "uitvoering centraal staan."
 )
 
+# Afmetingen van de webversies, geschreven door tools/projectfotos.py.
+try:
+    with (Path(__file__).parent / "static" / "img" / "projecten" / "fotos.json").open(
+        encoding="utf-8"
+    ) as _fh:
+        FOTO_MATEN = json.load(_fh)
+except (OSError, ValueError):
+    FOTO_MATEN = {}
+
+
+def _foto(pid: str, nr: str, alt: str):
+    """Eén projectfoto met paden en afmetingen; None als de webversie ontbreekt."""
+    maat = FOTO_MATEN.get(pid, {}).get(nr)
+    if not maat:
+        return None
+    basis = "img/projecten/{}/{}".format(pid, nr)
+    breedte, hoogte = maat
+    return {
+        "nr": nr,
+        "alt": alt,
+        "klein": basis + "-640.webp",
+        "midden": basis + "-960.webp",
+        "ruim": basis + "-1280.webp",
+        "groot": basis + "-groot.webp",
+        "breedte": breedte,
+        "hoogte": hoogte,
+    }
+
 
 def _projecten() -> list:
-    """Projecten met volgnummer ("01") en categorielabel zonder slotpunt."""
+    """Projecten met volgnummer ("01"), categorielabel zonder slotpunt en foto's."""
     uit = []
     for i, p in enumerate(PROJECTEN, start=1):
         q = dict(p)
         q["nr"] = "{:02d}".format(i)
         q["label"] = (p.get("categorie") or "").strip().rstrip(".")
+        fotos = [f for f in (_foto(p["id"], nr, alt) for nr, alt in p.get("fotos", [])) if f]
+        # cover vooraan, zodat de fotoweergave met het hoofdbeeld begint
+        cover = next((f for f in fotos if f["nr"] == p.get("cover")), fotos[0] if fotos else None)
+        q["cover"] = cover
+        q["fotos"] = ([cover] + [f for f in fotos if f is not cover]) if cover else []
+        q["cover_focus"] = p.get("cover_focus") or "50% 50%"
         uit.append(q)
     return uit
 

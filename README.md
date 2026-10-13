@@ -110,13 +110,32 @@ signals (feiten + één quote i.p.v. logo-soup). Signatuur: het rode richtkruis 
 "het exacte punt waar geboord/gezaagd wordt".
 
 ## Projecten
-- Eén bron: `PROJECTEN` in `app.py`. De homepage toont het project met `"uitgelicht": True`
-  (tussen Werkzaamheden en Werkwijze); `/projecten` toont ze allemaal, in deze volgorde.
-- Templates: `templates/projecten.html` (pagina), `templates/_project.html` (beeld + galerij,
-  gedeeld met de homepage). Opmaak: blok "PROJECTEN" in `static/css/style.css`.
-- Foto's: zet ze in `static/img/projecten/` en vul bij het project `cover` en eventueel
-  `galerij` in (elk met `bestand` en `alt`). Zonder cover staat er een tijdelijk beeldvlak
-  met dezelfde 3:2-verhouding, dus de opmaak verschuift niet als de foto erbij komt.
+- Eén bron: `PROJECTEN` in `app.py` (zeven projecten). De homepage toont het project met
+  `"uitgelicht": True` (tussen Werkzaamheden en Werkwijze); `/projecten` toont ze allemaal.
 - Titels, categorieën en teksten zijn letterlijk van de klant. Een lege `categorie` toont
   geen label. Het categorielabel wordt zonder slotpunt getoond.
 - `PROJECTEN_INTRO` (de zin rechtsboven op `/projecten`) is een voorstel van de bouwer.
+- Templates: `templates/projecten.html`, `templates/_project.html` (beeld + fotolijst,
+  gedeeld met de homepage). Opmaak: blok "PROJECTEN" in `static/css/style.css`.
+
+### Projectfoto's
+```
+bronmateriaal/projectfotos/<id>/<nr>.jpg        originelen van de klant (niet aanpassen;
+                                                gaan niet mee in de deploy)
+static/img/projecten/<id>/<nr>-640.webp         cover op kleine schermen
+                          <nr>-960.webp         cover / fotoweergave
+                          <nr>-1280.webp        cover op scherpe schermen / fotoweergave
+                          <nr>-groot.webp       fotoweergave (max. 2000 px)
+static/img/projecten/fotos.json                 afmetingen, geschreven door het script
+tools/projectfotos.py                           maakt de webversies uit de originelen
+static/js/galerij.js                            fotoweergave (alleen op /projecten geladen)
+```
+- **Foto toevoegen:** zet het origineel in de bronmap, draai `pip install pillow` en
+  `python tools/projectfotos.py`, en voeg in `PROJECTEN` bij `fotos` een regel `(nr, alt)` toe.
+- **Andere cover:** pas `cover` aan (het nummer van de foto). `cover_focus` bepaalt welk
+  deel in het liggende 3:2-kader valt, bijv. `"50% 20%"` voor de bovenkant van een staande foto.
+- De webversies zijn alleen verkleind en als WebP opgeslagen: geen filters, geen uitsneden,
+  geen opnamegegevens. In de fotoweergave staat altijd de hele foto.
+- Laden: de homepage haalt alleen de cover van het uitgelichte project op. `/projecten`
+  haalt de zeven covers op; de overige foto's pas als iemand de fotoweergave opent.
+- Een project zonder foto's krijgt automatisch het tijdelijke beeldvlak ("Foto volgt").

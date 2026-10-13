@@ -1,25 +1,38 @@
 {# Projectbeeld voor de homepage en /projecten.
-   Met cover: de echte foto. Zonder cover: een tijdelijk beeldvlak met exact
-   dezelfde verhouding, zodat de opmaak niet verschuift als de foto erbij komt. #}
-{% macro project_beeld(p, lazy=True) %}
+   Met foto: de cover in een vast 3:2-kader (cover_focus bepaalt de uitsnede).
+   De cover vraagt hooguit de 1280px-versie op; de grote versie is voor de
+   fotoweergave.
+   Zonder foto: een tijdelijk beeldvlak met exact dezelfde verhouding.
+   galerij=True maakt van het beeld een link die de fotoweergave opent
+   (static/js/galerij.js); zonder JavaScript opent de link de grote foto. #}
+{% macro project_beeld(p, lazy=True, sizes="100vw", galerij=False) %}
+{% set c = p.cover %}
+{% if c %}
+{% set n = p.fotos|length %}
+{% if galerij %}<a class="pbeeld pbeeld--klik" href="{{ url_for('static', filename=c.groot) }}" data-galerij aria-label="Bekijk {{ 'de ' ~ n ~ ' foto\'s' if n > 1 else 'de foto' }} van {{ p.titel }}">{% else %}<div class="pbeeld">{% endif %}
+  <img src="{{ url_for('static', filename=c.midden) }}"
+       srcset="{{ url_for('static', filename=c.klein) }} 640w, {{ url_for('static', filename=c.midden) }} 960w, {{ url_for('static', filename=c.ruim) }} 1280w"
+       sizes="{{ sizes }}" width="{{ c.breedte }}" height="{{ c.hoogte }}" alt="{{ c.alt }}"
+       style="object-position: {{ p.cover_focus }};"{% if lazy %} loading="lazy"{% endif %} decoding="async">
+  {% if galerij %}<span class="pbeeld__aantal" aria-hidden="true">{{ n }} {{ "foto's" if n > 1 else "foto" }}</span>{% endif %}
+{% if galerij %}</a>{% else %}</div>{% endif %}
+{% else %}
 <div class="pbeeld">
-  {% if p.cover %}
-  <img src="{{ url_for('static', filename='img/' + p.cover.bestand) }}" alt="{{ p.cover.alt }}"{% if lazy %} loading="lazy"{% endif %} decoding="async">
-  {% else %}
   <div class="pbeeld__leeg" role="img" aria-label="Foto van dit project volgt nog">
     <span class="crosshair" aria-hidden="true"><span class="h"></span><span class="v"></span><span class="ring"></span></span>
     <span class="pbeeld__label" aria-hidden="true">Foto volgt</span>
   </div>
-  {% endif %}
 </div>
+{% endif %}
 {% endmacro %}
 
-{# Extra foto's van een project (alleen als ze er zijn). #}
-{% macro project_galerij(p) %}
-{% if p.galerij %}
-<ul class="pgalerij" aria-label="Meer foto's van {{ p.titel }}">
-  {% for g in p.galerij %}
-  <li><a href="{{ url_for('static', filename='img/' + g.bestand) }}" target="_blank" rel="noopener"><img src="{{ url_for('static', filename='img/' + g.bestand) }}" alt="{{ g.alt }}" loading="lazy" decoding="async"></a></li>
+{# Alle foto's van één project, als lijst met links. De fotoweergave leest
+   deze lijst; er wordt hier nog geen enkele foto geladen. #}
+{% macro project_fotolijst(p) %}
+{% if p.fotos %}
+<ul class="project__fotos" hidden>
+  {% for f in p.fotos %}
+  <li><a href="{{ url_for('static', filename=f.groot) }}" data-midden="{{ url_for('static', filename=f.midden) }}" data-ruim="{{ url_for('static', filename=f.ruim) }}" data-b="{{ f.breedte }}" data-h="{{ f.hoogte }}">{{ f.alt }}</a></li>
   {% endfor %}
 </ul>
 {% endif %}

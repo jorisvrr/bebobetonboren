@@ -7,3 +7,4 @@ data/leads.jsonl
 data/intake.jsonl
 .DS_Store
 node_modules/
+bronmateriaal/

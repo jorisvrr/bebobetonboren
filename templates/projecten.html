@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% from "_project.html" import project_beeld, project_galerij %}
+{% from "_project.html" import project_beeld, project_fotolijst %}
 {% block title %}Projecten | BEBO Betonboren & Zagen{% endblock %}
 {% block description %}Bekijk projecten van BEBO Betonboren & Zagen, van betonboringen en zaagwerk tot renovaties en precisiesloop.{% endblock %}
 
@@ -24,7 +24,7 @@
     <div class="projecten">
       {% for p in projecten %}
       <article class="project reveal" id="{{ p.id }}" data-delay="{{ loop.index0 % 2 }}">
-        {{ project_beeld(p, lazy=loop.index > 2) }}
+        {{ project_beeld(p, lazy=loop.index > 2, sizes="(max-width: 760px) 80vw, (max-width: 1240px) 46vw, 560px", galerij=True) }}
         <p class="project__meta">
           <span class="project__nr">{{ p.nr }}</span>
           {% if p.label %}<span class="project__cat">{{ p.label }}</span>{% endif %}
@@ -33,7 +33,7 @@
         {% for alinea in p.tekst %}
         <p>{{ alinea }}</p>
         {% endfor %}
-        {{ project_galerij(p) }}
+        {{ project_fotolijst(p) }}
       </article>
       {% endfor %}
     </div>
@@ -54,4 +54,8 @@
   </div>
 </section>
 
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/galerij.js') }}" defer></script>
 {% endblock %}

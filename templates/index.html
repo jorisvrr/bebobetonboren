@@ -85,7 +85,7 @@
     </div>
     <article class="uitgelicht">
       <div class="uitgelicht__beeld reveal">
-        {{ project_beeld(uitgelicht) }}
+        {{ project_beeld(uitgelicht, sizes="(max-width: 760px) 80vw, (max-width: 1000px) 100vw, (max-width: 1240px) 55vw, 670px") }}
       </div>
       <div class="uitgelicht__info reveal" data-delay="1">
         {% if uitgelicht.label %}<p class="project__meta"><span class="project__cat">{{ uitgelicht.label }}</span></p>{% endif %}
