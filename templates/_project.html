@@ -9,7 +9,11 @@
 {% set c = p.cover %}
 {% if c %}
 {% set n = p.fotos|length %}
-{% if galerij %}<a class="pbeeld pbeeld--klik" href="{{ url_for('static', filename=c.groot) }}" data-galerij data-start="{{ p.cover_index }}" data-titel="{{ p.titel }}" aria-label="Bekijk {{ 'de ' ~ n ~ ' foto\'s' if n > 1 else 'de foto' }} van {{ p.titel }}">{% else %}<div class="pbeeld">{% endif %}
+{# EXPERIMENT 2.5D: bestaan er dieptelagen voor deze cover, dan legt static/js/diepte.js
+   ze over de gewone foto heen. De gewone foto hieronder blijft de terugval. #}
+{% set d = p.diepte %}
+{% set dattr %}{% if d %} data-diepte data-achter="{{ url_for('static', filename=d.achter) }}" data-midden="{{ url_for('static', filename=d.midden) }}" data-voor="{{ url_for('static', filename=d.voor) }}" data-pad-x="{{ d.pad_x }}" data-pad-y="{{ d.pad_y }}"{% endif %}{% endset %}
+{% if galerij %}<a class="pbeeld pbeeld--klik" href="{{ url_for('static', filename=c.groot) }}" data-galerij data-start="{{ p.cover_index }}" data-titel="{{ p.titel }}"{{ dattr }} aria-label="Bekijk {{ 'de ' ~ n ~ ' foto\'s' if n > 1 else 'de foto' }} van {{ p.titel }}">{% else %}<div class="pbeeld"{{ dattr }}>{% endif %}
   <img src="{{ url_for('static', filename=c.midden) }}"
        srcset="{{ url_for('static', filename=c.klein) }} 640w, {{ url_for('static', filename=c.midden) }} 960w, {{ url_for('static', filename=c.ruim) }} 1280w"
        sizes="{{ sizes }}" width="{{ c.breedte }}" height="{{ c.hoogte }}" alt="{{ c.alt }}"

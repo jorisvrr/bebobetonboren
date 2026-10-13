@@ -146,3 +146,18 @@ static/js/carrousel.js                          fotocarrousel (opent bij klik op
   naar het voorbeeld van React Bits Pro "Skewed Carousel" (eigen code, geen afhankelijkheden).
   `BeboCarrousel.open({titel, fotos, start, opener})` is ook los te gebruiken.
 - Een project zonder foto's krijgt automatisch het tijdelijke beeldvlak ("Foto volgt").
+
+## 2.5D-diepte-effect (EXPERIMENT, alleen op branch `experiment/diepte-parallax`)
+- Wat: een projectcover is opgesplitst in drie lagen uit dezelfde foto (achter / midden /
+  voor). Die bewegen elk een eigen stukje mee met de muis (8 / 16 / 28 px) en met scrollen
+  (3 / 6 / 10 px). In rust zie je de gewone foto.
+- Waar: op covers waarvoor lagen bestaan in `static/img/projecten/<id>/diepte/`
+  (nu alleen VvE Dedemsvaartweg: homepage en zijn cover op `/projecten`). Niet in de carrousel.
+- Onderdeel: `static/js/diepte.js` (`new BeboDiepte(houder, {achter, midden, voor, padX,
+  padY, intensiteit})`), opmaak in `style.css` (blok "DepthParallax").
+- Terugval: de gewone cover staat er altijd onder. Geen lagen bij "minder beweging", als een
+  laag ontbreekt of niet laadt; op aanraakschermen alleen het scrolldeel.
+- Uitzetten: `DIEPTE_PARALLAX=off` (env) of de map `diepte/` weghalen.
+- Lagen maken: `tools/dieptekaart.py` (dieptekaart met Depth Anything V2) en
+  `tools/dieptelagen.py` (maskers, randen, aanvullen achter de laag, WebP met alfa).
+

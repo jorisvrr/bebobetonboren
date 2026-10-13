@@ -1190,6 +1190,29 @@ html.sc-open { overflow: hidden; }
   .sc__streep { width: 14px; }
 }
 
+/* --- DepthParallax / 2.5D-foto (static/js/diepte.js) - EXPERIMENT ----------
+   Drie lagen uit dezelfde foto, over de gewone cover heen. Het kader (.pbeeld)
+   staat stil en knipt af; alleen de lagen schuiven. */
+.diepte {
+  position: absolute; inset: 0;
+  opacity: 0;
+  transition: opacity .5s var(--ease);
+  pointer-events: none;
+}
+.diepte.is-klaar { opacity: 1; }
+.diepte__laag {
+  position: absolute;
+  max-width: none;
+  object-fit: fill !important;
+  will-change: transform;
+  transition: none !important;   /* de beweging wordt per beeldje gedempt in het script */
+  -webkit-user-drag: none;
+}
+/* geen hover-zoom op de foto eronder zolang de lagen erover liggen */
+.pbeeld--diepte > img { transform: none !important; }
+.pbeeld--diepte .pbeeld__aantal { z-index: 2; }
+@media (prefers-reduced-motion: reduce) { .diepte { display: none; } }
+
 /* Afsluiter op /projecten: tekst links, knop rechts, in de donkere offertestijl */
 .projecten-cta__in {
   display: flex; flex-wrap: wrap;

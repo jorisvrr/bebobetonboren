@@ -58,4 +58,7 @@
 
 {% block scripts %}
 <script src="{{ url_for('static', filename='js/carrousel.js') }}" defer></script>
+{% if projecten|selectattr('diepte')|list %}
+<script src="{{ url_for('static', filename='js/diepte.js') }}" defer></script>
+{% endif %}
 {% endblock %}

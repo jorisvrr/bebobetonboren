@@ -320,4 +320,7 @@
 {% if uitgelicht and uitgelicht.fotos %}
 <script src="{{ url_for('static', filename='js/carrousel.js') }}" defer></script>
 {% endif %}
+{% if uitgelicht and uitgelicht.diepte %}
+<script src="{{ url_for('static', filename='js/diepte.js') }}" defer></script>
+{% endif %}
 {% endblock %}

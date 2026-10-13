@@ -63,6 +63,13 @@ FONT_PREVIEW = os.environ.get("FONT_PREVIEW", "titillium").strip().lower()
 if FONT_PREVIEW in ("0", "off", "uit", "none", "false"):
     FONT_PREVIEW = ""
 
+# EXPERIMENT: 2.5D-diepte-effect op projectcovers waarvoor lagen bestaan
+# (static/img/projecten/<id>/diepte/). Uitzetten: DIEPTE_PARALLAX=off; dan
+# staat overal weer de gewone foto.
+DIEPTE_PARALLAX = os.environ.get("DIEPTE_PARALLAX", "on").strip().lower() not in (
+    "0", "off", "uit", "none", "false"
+)
+
 
 @app.context_processor
 def inject_seo_globals():
@@ -409,6 +416,24 @@ def _foto(pid: str, nr: str, alt: str):
     }
 
 
+def _dieptelagen(pid: str, nr: str):
+    """Paden van de drie dieptelagen van een cover; None als ze niet (compleet) bestaan."""
+    map_ = Path(__file__).parent / "static" / "img" / "projecten" / pid / "diepte"
+    try:
+        with (map_ / "{}-lagen.json".format(nr)).open(encoding="utf-8") as fh:
+            meta = json.load(fh)
+    except (OSError, ValueError):
+        return None
+    lagen = {}
+    for laag in ("achter", "midden", "voor"):
+        if not (map_ / "{}-{}.webp".format(nr, laag)).exists():
+            return None
+        lagen[laag] = "img/projecten/{}/diepte/{}-{}.webp".format(pid, nr, laag)
+    lagen["pad_x"] = meta.get("pad_x", 0.08)
+    lagen["pad_y"] = meta.get("pad_y", 0.10)
+    return lagen
+
+
 def _projecten() -> list:
     """Projecten met volgnummer ("01"), categorielabel zonder slotpunt en foto's."""
     uit = []
@@ -423,6 +448,7 @@ def _projecten() -> list:
         q["cover_index"] = fotos.index(cover) if cover else 0
         q["fotos"] = fotos
         q["cover_focus"] = p.get("cover_focus") or "50% 50%"
+        q["diepte"] = _dieptelagen(p["id"], cover["nr"]) if cover and DIEPTE_PARALLAX else None
         uit.append(q)
     return uit
 
