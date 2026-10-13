@@ -14,9 +14,13 @@
   border-width: 2px;
 }
 
-/* Verberg de OS-cursor volledig zodra de target-cursor actief is - overal,
-   inclusief links, knoppen, formuliervelden en tijdens tekstselectie.
-   Alleen actief op desktop (de class wordt enkel daar gezet). */
+/* Zolang de crosshair de muis nog niet aantoonbaar volgt, blijft hij verborgen en
+   toont de browser de gewone systeemcursor: nooit geen cursor, nooit twee. */
+html:not(.bebo-cursor-on) .target-cursor-wrapper { visibility: hidden; }
+
+/* Verberg de OS-cursor zodra de crosshair actief is - overal, inclusief links,
+   knoppen, formuliervelden en tijdens tekstselectie. main.jsx zet de class pas
+   na een echte muisbeweging waarbij de crosshair op de muispositie staat. */
 html.bebo-cursor-on,
 html.bebo-cursor-on *,
 html.bebo-cursor-on *::before,

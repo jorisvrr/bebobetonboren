@@ -413,8 +413,6 @@ body.menu-open .burger span:nth-child(3) { transform: translateY(-5px) rotate(-4
   margin-bottom: clamp(2.8rem, 5vw, 4.5rem);
 }
 .sec-head .lede { margin-top: 1.4rem; }
-/* Langere koppen: regels even lang, geen los woord op de laatste regel */
-.sec-head h2 { text-wrap: balance; }
 .sec-head__aside { text-align: right; max-width: 26ch; color: var(--muted); font-size: .95rem; }
 
 .diensten {
@@ -944,3 +942,23 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 .case h3 { margin: 0 0 .5rem; font-size: 1.3rem; }
 .case p { color: var(--ink-2); margin: 0; text-wrap: pretty; }
 @media (max-width: 720px) { .cases { grid-template-columns: 1fr; } }
+
+/* ======================================================================== */
+/* LETTERTYPE-PREVIEW: Titillium Web (BEBO-stijlguide) - nog niet definitief */
+/* Staat alleen aan als <html> de class "font-titillium" heeft; die komt van */
+/* FONT_PREVIEW in app.py (of de env var). Zonder die class doet dit blok    */
+/* niets en gebruikt de site weer Bricolage Grotesque / Inter / Space Mono.  */
+/* Groottes, witruimte en opmaak blijven gelijk; alleen familie en gewicht.  */
+/* ======================================================================== */
+html.font-titillium {
+  --f-display: 'Titillium Web', 'Inter', system-ui, sans-serif;
+  --f-body: 'Titillium Web', system-ui, -apple-system, sans-serif;
+  --f-mono: 'Titillium Web', system-ui, -apple-system, sans-serif;
+}
+/* Titillium Web kent geen 500 en 800: kies het dichtstbijzijnde gewicht dat de
+   bestaande rangorde (kop > tussenkop > nadruk > lopende tekst) overeind houdt. */
+html.font-titillium h1.display { font-weight: 700; }
+html.font-titillium .textlink,
+html.font-titillium .nav__links a,
+html.font-titillium .chip,
+html.font-titillium .sm-socials-link { font-weight: 600; }

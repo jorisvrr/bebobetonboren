@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="nl">
+<html lang="nl"{% if font_preview == "titillium" %} class="font-titillium"{% endif %}>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -33,6 +33,10 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  {% if font_preview == "titillium" %}
+  <!-- Lettertype-preview (FONT_PREVIEW in app.py): Titillium Web uit de stijlguide -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@400;600;700&display=swap">
+  {% endif %}
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
   <!-- React Bits-bundel (TargetCursor + Beams). Wordt gegenereerd met
        `npm run build` in /frontend; ontbreekt-ie, dan werkt de site gewoon door. -->
@@ -49,6 +53,7 @@
     "url": "{{ site_url }}/",
     "telephone": "{{ bedrijf.tel_link }}",
     "email": "{{ bedrijf.email }}",
+    "vatID": "{{ bedrijf.btw }}",
     "address": {
       "@type": "PostalAddress",
       "streetAddress": "{{ bedrijf.straat }}",
@@ -110,7 +115,7 @@
       </div>
     </div>
     <div class="wrap footer__bottom">
-      <span>© {{ 2026 }} {{ bedrijf.naam }} · KvK {{ bedrijf.kvk }}</span>
+      <span>© {{ 2026 }} {{ bedrijf.naam }} · KvK&nbsp;{{ bedrijf.kvk }} · BTW&nbsp;{{ bedrijf.btw }}</span>
       <span>Berkel en Rodenrijs · Zuid-Holland</span>
     </div>
   </footer>

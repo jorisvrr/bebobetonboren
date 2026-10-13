@@ -48,22 +48,51 @@ if (menuRoot) {
   );
 }
 
-/* 1) Target cursor - alleen op desktop met een echte muis.
-   De component zet zichzelf ook intern uit op mobiel; dit is de extra gate. */
+/* 1) Target cursor (crosshair) - alleen met een echte muis.
+   Veiligheid voorop: de systeemcursor blijft staan tot de crosshair aantoonbaar
+   de muis volgt. Tekent de component niets (bijv. op Android/iPad of een smal
+   venster op een touchscreen-laptop) of gaat er iets mis, dan houdt de bezoeker
+   gewoon de normale cursor. Zo is er nooit een moment zonder cursor, en nooit twee. */
 if (!isTouch && !prefersReduced) {
   const host = document.createElement('div');
   host.id = 'target-cursor-root';
   document.body.appendChild(host);
-  // Markeer de pagina zodat we de OS-cursor overal kunnen verbergen
-  // (ook op links/knoppen/velden en tijdens selecteren) via CSS.
-  document.documentElement.classList.add('bebo-cursor-on');
   createRoot(host).render(
     <TargetCursor
       targetSelector=".btn, .textlink, .dienst, .chip, .regio__list span, .sm-toggle, .sm-panel-item, .sm-socials-link, .sm-logo, .float a, .offerte__direct a, .footer__col a, .ident, .field input, .field textarea, .field select"
       spinDuration={3}
-      hideDefaultCursor={true}
+      hideDefaultCursor={false}
     />
   );
+
+  // De class "bebo-cursor-on" verbergt de systeemcursor en toont de crosshair
+  // (zie bebo-overrides.css). Hij gaat pas aan na een echte muisbeweging waarbij
+  // de crosshair op de muispositie staat, en weer uit bij aanraking of pen.
+  const root = document.documentElement;
+  let aan = false;
+  const zetAan = () => { if (!aan) { aan = true; root.classList.add('bebo-cursor-on'); } };
+  const zetUit = () => { if (aan) { aan = false; root.classList.remove('bebo-cursor-on'); } };
+  let bezig = false;
+  let x = 0, y = 0;   // laatst bekende muispositie
+  const controleer = (e) => {
+    if (e.pointerType && e.pointerType !== 'mouse') { zetUit(); return; }
+    x = e.clientX; y = e.clientY;
+    if (aan || bezig) return;
+    bezig = true;
+    // even wachten: de crosshair beweegt met een korte animatie naar de muis toe.
+    // Staat hij daarna bij de laatste muispositie, dan volgt hij de muis echt.
+    setTimeout(() => {
+      bezig = false;
+      const el = document.querySelector('.target-cursor-wrapper');
+      if (!el || getComputedStyle(el).display === 'none') return;
+      const r = el.getBoundingClientRect();
+      if (Math.abs(r.left - x) < 60 && Math.abs(r.top - y) < 60) zetAan();
+    }, 160);
+  };
+  const beweegEvent = 'onpointermove' in window ? 'pointermove' : 'mousemove';
+  window.addEventListener(beweegEvent, controleer, { passive: true });
+  window.addEventListener('pointerdown', (e) => { if (e.pointerType && e.pointerType !== 'mouse') zetUit(); }, { passive: true });
+  window.addEventListener('touchstart', zetUit, { passive: true });
 }
 
 /* 2) Beams-achtergrond in de offerte-sectie - three.js wordt lazy geladen

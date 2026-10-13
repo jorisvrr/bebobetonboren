@@ -37,11 +37,19 @@ app.secret_key = os.environ.get("SECRET_KEY", "verander-mij-in-productie")
 # de env var SITE_URL op je eigen domein, bijv. https://www.bebobetonboren.nl
 SITE_URL = os.environ.get("SITE_URL", "https://bebobetonboren.nl").rstrip("/")
 
+# Lettertype-preview voor de klant (nog niet definitief gekozen).
+#   "titillium" = Titillium Web uit de BEBO-stijlguide
+#   ""/"off"    = het oorspronkelijke lettertype (Bricolage Grotesque / Inter / Space Mono)
+# Terugzetten kan hier, of zonder code via de env var FONT_PREVIEW=off.
+FONT_PREVIEW = os.environ.get("FONT_PREVIEW", "titillium").strip().lower()
+if FONT_PREVIEW in ("0", "off", "uit", "none", "false"):
+    FONT_PREVIEW = ""
+
 
 @app.context_processor
 def inject_seo_globals():
     # diensten: ook de footer leest uit deze ene lijst (zelfde namen en volgorde).
-    return {"site_url": SITE_URL, "diensten": DIENSTEN}
+    return {"site_url": SITE_URL, "diensten": DIENSTEN, "font_preview": FONT_PREVIEW}
 
 DATA_DIR = Path(__file__).parent / "data"
 DATA_DIR.mkdir(exist_ok=True)
@@ -111,6 +119,7 @@ BEDRIJF = {
     "tel": "010-3220232",
     "tel_link": "+31103220232",
     "kvk": "59493038",
+    "btw": "NL853524464B02",
 }
 
 # Voor wie: doelgroepen met de door de klant goedgekeurde teksten (intake 13-10-2026).
@@ -118,8 +127,8 @@ SECTOREN = [
     {"titel": "Aannemers", "tekst": "Samenwerken aan een strakke planning. Zo kan de volgende ploeg direct aan de slag."},
     {"titel": "Installateurs", "tekst": "Kernboringen, sparingen of sleuven voor iedere technische installatie."},
     {"titel": "Vastgoed & beheer", "tekst": "Nette uitvoering in bewoonde en verhuurde panden, met minimale overlast."},
-    {"titel": "Particulieren", "tekst": "Van een enkele doorvoer tot een compleet trapgat, netjes opgeleverd."},
     {"titel": "Zorginstellingen", "tekst": "Stofarm werken met minimale overlast, ook in bewoonde situaties."},
+    {"titel": "Particulieren", "tekst": "Van een enkele doorvoer tot een compleet trapgat, netjes opgeleverd."},
 ]
 
 # Reviews en cases: LEEG laten tot je ECHTE content hebt. De secties renderen
