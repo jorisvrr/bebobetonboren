@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% from "_project.html" import project_beeld %}
+{% from "_project.html" import project_beeld, project_fotolijst %}
 
 {% block content %}
 
@@ -85,7 +85,8 @@
     </div>
     <article class="uitgelicht">
       <div class="uitgelicht__beeld reveal">
-        {{ project_beeld(uitgelicht, sizes="(max-width: 760px) 80vw, (max-width: 1000px) 100vw, (max-width: 1240px) 55vw, 670px") }}
+        {{ project_beeld(uitgelicht, sizes="(max-width: 760px) 80vw, (max-width: 1000px) 100vw, (max-width: 1240px) 55vw, 670px", galerij=True) }}
+        {{ project_fotolijst(uitgelicht) }}
       </div>
       <div class="uitgelicht__info reveal" data-delay="1">
         {% if uitgelicht.label %}<p class="project__meta"><span class="project__cat">{{ uitgelicht.label }}</span></p>{% endif %}
@@ -313,4 +314,10 @@
   </div>
 </section>
 
+{% endblock %}
+
+{% block scripts %}
+{% if uitgelicht and uitgelicht.fotos %}
+<script src="{{ url_for('static', filename='js/carrousel.js') }}" defer></script>
+{% endif %}
 {% endblock %}

@@ -60,7 +60,7 @@ if (!isTouch && !prefersReduced) {
   document.body.appendChild(host);
   createRoot(host).render(
     <TargetCursor
-      targetSelector=".btn, .textlink, .dienst, .chip, .regio__list span, .sm-toggle, .sm-panel-item, .sm-socials-link, .sm-logo, .pbeeld--klik, .lb__knop, .float a, .offerte__direct a, .footer__col a, .ident, .field input, .field textarea, .field select"
+      targetSelector=".btn, .textlink, .dienst, .chip, .regio__list span, .sm-toggle, .sm-panel-item, .sm-socials-link, .sm-logo, .pbeeld--klik, .sc__knop, .float a, .offerte__direct a, .footer__col a, .ident, .field input, .field textarea, .field select"
       spinDuration={3}
       hideDefaultCursor={false}
     />

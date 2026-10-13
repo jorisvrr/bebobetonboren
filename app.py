@@ -161,7 +161,7 @@ REVIEW_RATING = None
 # ---------------------------------------------------------------------------
 # PROJECTEN - één bron voor de homepage (uitgelicht project) en /projecten.
 # Titels, categorieën en teksten zijn letterlijk van de klant (inzendingen
-# BEBO-20261013-1405-5ZKN en BEBO-20261013-1422-5Z0T). Niets bijverzinnen.
+# BEBO-20261013-1405-5ZKN, -1422-5Z0T en -1535-F4WN). Niets bijverzinnen.
 #
 # Foto's
 #   Origineel:  bronmateriaal/projectfotos/<id>/<nr>.jpg   (niet aanpassen)
@@ -330,6 +330,47 @@ PROJECTEN = [
         ],
         "uitgelicht": False,
     },
+    {
+        "id": "kinderopvang-partou",
+        "titel": "Kinderopvang Partou",
+        "categorie": "Verduurzamingsproject.",
+        "tekst": [
+            "Doorvoeren geboord t.b.v. de nieuwe klimaatinstallatie.",
+        ],
+        "cover": "07",
+        "cover_focus": "50% 50%",
+        "fotos": [
+            ("01", "Speelruimte met twee geboorde doorvoeren in de wand naast het raam, met afzuigapparatuur ervoor"),
+            ("02", "Buitengevel aan het speelplein met aan weerszijden geboorde doorvoeren"),
+            ("03", "Twee geboorde doorvoeren in de bakstenen buitengevel"),
+            ("04", "Twee doorvoeren in een wandpaneel tussen de ramen, met stofzuiger en luchtreiniger op de vloer"),
+            ("05", "Kantoorruimte met twee doorvoeren in het wandpaneel en afzuigapparatuur op de vloer"),
+            ("06", "Groepsruimte met twee paar geboorde doorvoeren in de wand"),
+            ("07", "Vier geboorde doorvoeren in de bakstenen gevel aan het dakterras"),
+            ("08", "Groepsruimte met twee paar doorvoeren in de wand, van bovenaf gezien"),
+            ("09", "Twee doorvoeren in de wand, afgeplakt met folie en tape"),
+        ],
+        "uitgelicht": False,
+    },
+    {
+        "id": "innocent-drinks",
+        "titel": "Innocent drinks",
+        "categorie": "Aanpassingen technische installaties",
+        "tekst": [
+            "Doorvoeren geboord t.b.v. aanpassingen aan de technische installaties.",
+        ],
+        "cover": "02",
+        "cover_focus": "50% 50%",
+        "fotos": [
+            ("01", "Technische ruimte met leidingwerk en een geboorde doorvoer in de wand"),
+            ("02", "Geboorde doorvoer in de wand boven het leidingwerk"),
+            ("03", "Het bedrijfspand gezien vanaf de parkeerplaats"),
+            ("04", "Afgetekende boorpunten op een wandpaneel, met een laserlijn"),
+            ("05", "Vier geboorde doorvoeren in de gevelbeplating"),
+            ("06", "Gevel met de geboorde doorvoeren, met een hoogwerker op het gras ervoor"),
+        ],
+        "uitgelicht": False,
+    },
 ]
 
 # Introtekst op /projecten. Dit is een voorstel van de websitebouwer, geen tekst
@@ -375,11 +416,12 @@ def _projecten() -> list:
         q = dict(p)
         q["nr"] = "{:02d}".format(i)
         q["label"] = (p.get("categorie") or "").strip().rstrip(".")
+        # foto's in de volgorde van de klant; de carrousel opent op de cover
         fotos = [f for f in (_foto(p["id"], nr, alt) for nr, alt in p.get("fotos", [])) if f]
-        # cover vooraan, zodat de fotoweergave met het hoofdbeeld begint
         cover = next((f for f in fotos if f["nr"] == p.get("cover")), fotos[0] if fotos else None)
         q["cover"] = cover
-        q["fotos"] = ([cover] + [f for f in fotos if f is not cover]) if cover else []
+        q["cover_index"] = fotos.index(cover) if cover else 0
+        q["fotos"] = fotos
         q["cover_focus"] = p.get("cover_focus") or "50% 50%"
         uit.append(q)
     return uit

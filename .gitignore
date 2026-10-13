@@ -10,3 +10,8 @@ venv/
 frontend/node_modules/
 frontend/dist/
 # static/bundle/ wordt BEWUST wel meegecommit (Flask serveert het)
+
+# Originelen met persoonsgegevens van kinderen (naam, foto, geboortedatum):
+# niet in de openbare repository. De webversie is onherkenbaar gemaakt.
+bronmateriaal/projectfotos/kinderopvang-partou/06.jpg
+bronmateriaal/projectfotos/kinderopvang-partou/08.jpg

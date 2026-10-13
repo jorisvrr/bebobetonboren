@@ -1072,87 +1072,123 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 .pbeeld--klik:hover .pbeeld__aantal,
 .pbeeld--klik:focus-visible .pbeeld__aantal { background: var(--red); }
 
-/* --- Fotoweergave (static/js/galerij.js) ---------------------------------- */
-html.lb-open { overflow: hidden; }
-.lb {
+/* --- Fotocarrousel (static/js/carrousel.js) ------------------------------
+   Actieve foto recht in het midden, buren gedraaid om hun verticale as.
+   Plaats, draaiing en schaal zet het script per beeldje.
+   Kleur: wit met zwart en BEBO-rood, zoals de rest van de site. Liever donker?
+   Geef .sc de class "sc--donker" (in bouw() in carrousel.js). */
+html.sc-open { overflow: hidden; }
+.sc {
   position: fixed; inset: 0;
   z-index: 300;
   display: grid;
   grid-template-rows: auto minmax(0, 1fr) auto;
-  background: #101114;
-  color: #fff;
+  --sc-bg: var(--paper);
+  --sc-tekst: var(--ink);
+  --sc-zacht: var(--muted);
+  --sc-streep: #D9D9D9;
+  --sc-actief: var(--red);
+  --sc-uit: #C4C4C4;
+  --sc-kaart: var(--paper-2);
+  background: var(--sc-bg);
+  color: var(--sc-tekst);
+  animation: sc-in .28s var(--ease);
 }
-.lb[hidden] { display: none; }
-.lb__kop, .lb__voet {
-  display: flex; align-items: center;
+.sc--donker {
+  --sc-bg: #0B0B0B; --sc-tekst: #fff; --sc-zacht: #9A9A9A;
+  --sc-streep: #343434; --sc-actief: #fff; --sc-uit: #3A3A3A; --sc-kaart: #17181B;
+}
+.sc[hidden] { display: none; }
+@keyframes sc-in { from { opacity: 0; } to { opacity: 1; } }
+.sc__kop {
+  display: flex; align-items: center; justify-content: space-between;
   gap: 1rem;
-  padding: .8rem clamp(1rem, 3vw, 2rem);
+  padding: 1rem clamp(1rem, 3vw, 2rem) .4rem;
 }
-.lb__kop { justify-content: space-between; }
-.lb__voet { justify-content: center; padding-bottom: max(.8rem, env(safe-area-inset-bottom)); }
-.lb__titel {
+.sc__titel {
   margin: 0;
+  display: flex; align-items: center; gap: .8rem;
   font-family: var(--f-display);
-  font-weight: 600;
-  font-size: clamp(1rem, 1.4vw, 1.2rem);
+  font-weight: 700;
+  font-size: clamp(1.05rem, 1.5vw, 1.3rem);
   line-height: 1.2;
+  letter-spacing: -.01em;
   overflow-wrap: anywhere;
 }
-.lb__teller {
+/* het rode streepje van de sectielabels op de site */
+.sc__titel::before { content: ""; flex: none; width: 26px; height: 2px; background: var(--red); }
+.sc__podium {
+  position: relative;
+  min-height: 0;
+  overflow: hidden;
+  touch-action: pan-y pinch-zoom;
+  -webkit-user-select: none; user-select: none;
+  cursor: grab;
+}
+.sc.is-sleep .sc__podium { cursor: grabbing; }
+.sc__kaart {
+  position: absolute; left: 50%; top: 50%;
+  background: var(--sc-kaart);
+  cursor: pointer;
+  will-change: transform;
+}
+.sc__kaart.is-actief { cursor: inherit; }
+.sc__kaart img {
+  display: block;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity .3s var(--ease);
+  pointer-events: none;
+  -webkit-user-drag: none;
+}
+.sc__kaart img.is-geladen { opacity: 1; }
+.sc__voet {
+  display: flex; flex-direction: column; align-items: center;
+  gap: .5rem;
+  /* ruimte onder de bediening, zodat die dicht onder de foto's staat */
+  padding: .5rem 1rem max(clamp(1.3rem, 8vh, 5.5rem), env(safe-area-inset-bottom));
+}
+.sc__teller {
   margin: 0;
-  min-width: 5.5rem;
-  text-align: center;
   font-family: var(--f-mono);
   font-size: .8rem;
-  letter-spacing: .12em;
-  color: var(--on-dark-mut);
+  letter-spacing: .16em;
+  color: var(--sc-zacht);
 }
-.lb__podium {
+.sc__nav { display: flex; align-items: center; gap: .9rem; max-width: 100%; }
+.sc__strepen { display: flex; align-items: center; gap: 10px; }
+.sc__streep {
   position: relative;
-  display: grid; place-items: center;
-  min-height: 0;
-  padding: 0 clamp(.5rem, 3vw, 2rem);
-  touch-action: pan-y pinch-zoom;
-}
-.lb__img {
-  display: block;
-  max-width: 100%; max-height: 100%;
-  width: auto; height: auto;
-  object-fit: contain;
-  opacity: 1;
-  transition: opacity .25s var(--ease);
-}
-.lb.is-laden .lb__img { opacity: 0; }
-.lb__status {
-  position: absolute; inset: 0;
-  margin: 0;
-  display: none; place-items: center;
-  font-family: var(--f-mono);
-  font-size: .78rem;
-  letter-spacing: .12em;
-  text-transform: uppercase;
-  color: var(--on-dark-mut);
-  pointer-events: none;
-}
-.lb.is-laden .lb__status, .lb.is-fout .lb__status { display: grid; }
-.lb.is-fout .lb__img { display: none; }
-.lb__knop {
   flex: none;
-  width: 48px; height: 48px;
-  display: grid; place-items: center;
-  background: transparent;
-  color: #fff;
-  border: 1px solid var(--line-dark);
-  border-radius: 2px;
-  font: inherit;
-  font-size: 1.25rem;
-  line-height: 1;
+  width: 28px; height: 2px;
+  background: var(--sc-streep);
   cursor: pointer;
-  transition: background .2s var(--ease), border-color .2s var(--ease);
+  transition: background .3s var(--ease);
 }
-.lb__knop:hover { background: var(--red); border-color: var(--red); }
-.lb__knop:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
-.lb__knop[hidden] { display: none; }
+.sc__streep::before { content: ""; position: absolute; inset: -12px -4px; }   /* ruimer raakvlak */
+.sc__streep.is-actief { background: var(--sc-actief); box-shadow: 0 0 0 .5px var(--sc-actief); }
+.sc__knop {
+  flex: none;
+  width: 44px; height: 44px;
+  display: grid; place-items: center;
+  padding: 0;
+  background: transparent;
+  color: var(--sc-tekst);
+  border: 0;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: color .2s var(--ease);
+}
+.sc__knop:hover { color: var(--red); }
+.sc__knop:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+.sc__knop[aria-disabled="true"] { color: var(--sc-uit); cursor: default; }
+.sc.is-enkel .sc__nav { display: none; }
+@media (max-width: 700px) {
+  .sc__nav { gap: .2rem; }
+  .sc__strepen { gap: 6px; }
+  .sc__streep { width: 14px; }
+}
 
 /* Afsluiter op /projecten: tekst links, knop rechts, in de donkere offertestijl */
 .projecten-cta__in {
@@ -1168,7 +1204,8 @@ html.lb-open { overflow: hidden; }
   .projecten { grid-template-columns: 1fr; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .lb__img, .lb__knop, .pbeeld__aantal { transition: none; }
+  .sc { animation: none; }
+  .sc__kaart img, .sc__knop, .sc__streep, .pbeeld__aantal { transition: none; }
   .pbeeld img { transition: none; }
   .project:hover .pbeeld img, .uitgelicht:hover .pbeeld img { transform: none; }
 }

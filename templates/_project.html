@@ -1,15 +1,15 @@
 {# Projectbeeld voor de homepage en /projecten.
    Met foto: de cover in een vast 3:2-kader (cover_focus bepaalt de uitsnede).
-   De cover vraagt hooguit de 1280px-versie op; de grote versie is voor de
-   fotoweergave.
-   Zonder foto: een tijdelijk beeldvlak met exact dezelfde verhouding.
-   galerij=True maakt van het beeld een link die de fotoweergave opent
-   (static/js/galerij.js); zonder JavaScript opent de link de grote foto. #}
+   De cover vraagt hooguit de 1280px-versie op; grotere versies zijn voor de
+   carrousel. Zonder foto: een tijdelijk beeldvlak met dezelfde verhouding.
+   galerij=True maakt van het beeld een link die de fotocarrousel opent
+   (static/js/carrousel.js), op de cover; zonder JavaScript opent de link de
+   grote foto. #}
 {% macro project_beeld(p, lazy=True, sizes="100vw", galerij=False) %}
 {% set c = p.cover %}
 {% if c %}
 {% set n = p.fotos|length %}
-{% if galerij %}<a class="pbeeld pbeeld--klik" href="{{ url_for('static', filename=c.groot) }}" data-galerij aria-label="Bekijk {{ 'de ' ~ n ~ ' foto\'s' if n > 1 else 'de foto' }} van {{ p.titel }}">{% else %}<div class="pbeeld">{% endif %}
+{% if galerij %}<a class="pbeeld pbeeld--klik" href="{{ url_for('static', filename=c.groot) }}" data-galerij data-start="{{ p.cover_index }}" data-titel="{{ p.titel }}" aria-label="Bekijk {{ 'de ' ~ n ~ ' foto\'s' if n > 1 else 'de foto' }} van {{ p.titel }}">{% else %}<div class="pbeeld">{% endif %}
   <img src="{{ url_for('static', filename=c.midden) }}"
        srcset="{{ url_for('static', filename=c.klein) }} 640w, {{ url_for('static', filename=c.midden) }} 960w, {{ url_for('static', filename=c.ruim) }} 1280w"
        sizes="{{ sizes }}" width="{{ c.breedte }}" height="{{ c.hoogte }}" alt="{{ c.alt }}"
@@ -26,13 +26,13 @@
 {% endif %}
 {% endmacro %}
 
-{# Alle foto's van één project, als lijst met links. De fotoweergave leest
-   deze lijst; er wordt hier nog geen enkele foto geladen. #}
+{# Alle foto's van één project, in de volgorde van de klant, als lijst met
+   links. De carrousel leest deze lijst; hier wordt nog geen foto geladen. #}
 {% macro project_fotolijst(p) %}
 {% if p.fotos %}
 <ul class="project__fotos" hidden>
   {% for f in p.fotos %}
-  <li><a href="{{ url_for('static', filename=f.groot) }}" data-midden="{{ url_for('static', filename=f.midden) }}" data-ruim="{{ url_for('static', filename=f.ruim) }}" data-b="{{ f.breedte }}" data-h="{{ f.hoogte }}">{{ f.alt }}</a></li>
+  <li><a href="{{ url_for('static', filename=f.groot) }}" data-klein="{{ url_for('static', filename=f.klein) }}" data-midden="{{ url_for('static', filename=f.midden) }}" data-ruim="{{ url_for('static', filename=f.ruim) }}" data-b="{{ f.breedte }}" data-h="{{ f.hoogte }}">{{ f.alt }}</a></li>
   {% endfor %}
 </ul>
 {% endif %}
