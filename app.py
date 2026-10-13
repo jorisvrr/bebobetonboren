@@ -14,6 +14,7 @@ Belangrijk voor deployment (Railway):
 
 import os
 import json
+import mimetypes
 import smtplib
 import datetime
 from email.message import EmailMessage
@@ -32,6 +33,23 @@ from flask import (
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "verander-mij-in-productie")
+
+# Python 3.12 (Vercel) kent .webp niet in zijn standaardlijst; zonder deze regel
+# gaan de projectfoto's de deur uit als "application/octet-stream".
+mimetypes.add_type("image/webp", ".webp")
+
+
+@app.after_request
+def cache_projectfotos(resp):
+    """Projectfoto's mogen in de browser en bij Vercel bewaard blijven.
+
+    Alleen voor static/img/projecten/: die bestanden veranderen zelden. CSS en
+    JavaScript houden bewust de standaard (altijd even navragen), zodat een
+    nieuwe versie van de site direct zichtbaar is.
+    """
+    if request.path.startswith("/static/img/projecten/") and resp.status_code == 200:
+        resp.headers["Cache-Control"] = "public, max-age=86400, s-maxage=604800"
+    return resp
 
 # Canonieke site-URL voor SEO (canonical, Open Graph, sitemap). Zet in productie
 # de env var SITE_URL op je eigen domein, bijv. https://www.bebobetonboren.nl
