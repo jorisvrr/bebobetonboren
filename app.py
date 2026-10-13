@@ -113,13 +113,12 @@ BEDRIJF = {
     "kvk": "59493038",
 }
 
-# Klanttypes / sectoren. Generiek en juist voor dit type bedrijf.
+# Voor wie: doelgroepen met de door de klant goedgekeurde teksten (intake 13-10-2026).
 SECTOREN = [
-    {"titel": "Aannemers", "tekst": "Sparingen en doorbraken die op tijd klaar zijn, zodat jouw planning niet schuift."},
-    {"titel": "Installateurs", "tekst": "Kernboringen en sleuven voor leidingen, ventilatie en elektra, exact op maat."},
+    {"titel": "Aannemers", "tekst": "Samenwerken aan een strakke planning. Zo kan de volgende ploeg direct aan de slag."},
+    {"titel": "Installateurs", "tekst": "Kernboringen, sparingen of sleuven voor iedere technische installatie."},
     {"titel": "Vastgoed & beheer", "tekst": "Nette uitvoering in bewoonde en verhuurde panden, met minimale overlast."},
     {"titel": "Particulieren", "tekst": "Van een enkele doorvoer tot een compleet trapgat, netjes opgeleverd."},
-    # Tekst samengesteld uit goedgekeurde formuleringen; nog door de klant te bevestigen.
     {"titel": "Zorginstellingen", "tekst": "Stofarm werken met minimale overlast, ook in bewoonde situaties."},
 ]
 

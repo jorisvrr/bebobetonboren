@@ -413,6 +413,8 @@ body.menu-open .burger span:nth-child(3) { transform: translateY(-5px) rotate(-4
   margin-bottom: clamp(2.8rem, 5vw, 4.5rem);
 }
 .sec-head .lede { margin-top: 1.4rem; }
+/* Langere koppen: regels even lang, geen los woord op de laatste regel */
+.sec-head h2 { text-wrap: balance; }
 .sec-head__aside { text-align: right; max-width: 26ch; color: var(--muted); font-size: .95rem; }
 
 .diensten {
