@@ -161,15 +161,22 @@ REVIEW_RATING = None
 # ---------------------------------------------------------------------------
 # PROJECTEN - één bron voor de homepage (uitgelicht project) en /projecten.
 # Titels, categorieën en teksten zijn letterlijk van de klant (inzendingen
-# BEBO-20261013-1405-5ZKN, -1422-5Z0T en -1535-F4WN). Niets bijverzinnen.
+# BEBO-20261013-1405-5ZKN, -1422-5Z0T, -1535-F4WN en BEBO-20261015-1438-E0BZ).
+# Niets bijverzinnen.
+#
+# Volgorde: precies de volgorde van deze lijst, door de klant vastgesteld
+# (15-10-2026). Niet sorteren.
 #
 # Foto's
 #   Origineel:  bronmateriaal/projectfotos/<id>/<nr>.jpg   (niet aanpassen)
-#   Website:    static/img/projecten/<id>/<nr>-640|960|1280|groot.webp
+#               <nr> volgt de nummering van de klant (Tr01.jpg -> 01.jpg).
+#   Website:    static/img/projecten/<id>/<nr>-<code>-640|960|1280|groot.webp
 #   De webversies maak je met:  python tools/projectfotos.py
 #   "fotos":       (nr, alt) in de volgorde van de klant; alt beschrijft wat er
 #                  te zien is, zonder iets toe te voegen dat we niet weten.
-#   "cover":       nr van de foto die als hoofdbeeld dient.
+#                  Deze volgorde geldt overal: cover, galerij, carrousel, teller.
+#   "cover":       (optioneel) nr van een andere foto als hoofdbeeld; zonder
+#                  "cover" is de eerste foto (01) het hoofdbeeld.
 #   "cover_focus": welk deel van de foto in het liggende coverkader valt
 #                  (CSS object-position, "horizontaal verticaal"). In de
 #                  fotoweergave staat altijd de hele foto.
@@ -186,17 +193,37 @@ PROJECTEN = [
         "tekst": [
             "Boren van nieuwe doorvoeren en sparingen t.b.v. de nieuwe klimaatinstallatie.",
         ],
-        "cover": "06",
         "cover_focus": "50% 50%",
         "fotos": [
-            ("01", "Betonwand boven een deur met geboorde ronde doorvoeren en een rechthoekige sparing"),
+            ("01", "Boorstelling op een rolsteiger met afscherming in de hal, naast de trap"),
             ("02", "Twee kernboringen in een betonbalk, daaronder afdekfolie"),
-            ("03", "Hal met een rij geboorde doorvoeren in de betonwand boven de deuren"),
-            ("04", "Rechthoekige sparing en ronde doorvoer in de betonwand boven een deur"),
-            ("05", "Twee geboorde sparingen in de betonwand boven een deurkozijn"),
-            ("06", "Boorstelling op een rolsteiger met afscherming in de hal, naast de trap"),
+            ("03", "Twee geboorde sparingen in de betonwand boven een deurkozijn"),
+            ("04", "Hal met een rij geboorde doorvoeren in de betonwand boven de deuren"),
+            ("05", "Betonwand boven een deur met geboorde ronde doorvoeren en een rechthoekige sparing"),
+            ("06", "Rechthoekige sparing en ronde doorvoer in de betonwand boven een deur"),
             ("07", "Kernboormachine op een boorstatief tegen de betonwand, boven de afgeschermde steiger"),
             ("08", "Vier kernboringen in de betonvloer van een gang"),
+        ],
+        "uitgelicht": False,
+    },
+    {
+        "id": "obs-de-vogelenzang",
+        "titel": "Openbare basisschool De Vogelenzang",
+        "categorie": "Verduurzamingsproject.",
+        "tekst": [
+            "Doorvoeren geboord t.b.v. de nieuwe klimaatinstallatie.",
+        ],
+        "cover_focus": "50% 50%",
+        "fotos": [
+            ("01", "Twee paar geboorde doorvoeren in de bakstenen gevel"),
+            ("02", "Lokaal met twee geboorde doorvoeren in de bakstenen wand"),
+            ("03", "Twee ronde doorvoeren in een bakstenen binnenwand"),
+            ("04", "Medewerker boort met een kernboormachine een doorvoer in de bakstenen wand"),
+            ("05", "Gevel van de school met twee paar geboorde doorvoeren"),
+            ("06", "Gevel met aan weerszijden van de regenpijp twee geboorde doorvoeren"),
+            ("07", "Twee geboorde doorvoeren in de bakstenen gevel van dichtbij"),
+            ("08", "Entree van de school met twee doorvoeren in de gevel ernaast"),
+            ("09", "Twee doorvoeren in de buitengevel, gezien vanuit de tuin"),
         ],
         "uitgelicht": False,
     },
@@ -208,13 +235,15 @@ PROJECTEN = [
             "Nieuwe doorvoeren geboord t.b.v. renovatie van de "
             "rioolwaterzuiveringsinstallatie.",
         ],
-        "cover": "02",
         "cover_focus": "50% 50%",
         "fotos": [
-            ("01", "Pompruimte met een rolsteiger naast de leidingen en afsluiters"),
-            ("02", "Medewerker op de rolsteiger bij de leidingen in de pompruimte"),
-            ("03", "Medewerker met gehoorbescherming aan het werk op de rolsteiger in de pompruimte"),
-            ("04", "Zicht door een geboorde doorvoer op een leidingflens"),
+            ("01", "Medewerker op de rolsteiger bij de leidingen in de pompruimte"),
+            ("02", "Pompruimte met de grote leidingen en afsluiters, met een steiger ernaast"),
+            ("03", "Pompruimte met een rolsteiger naast de leidingen en afsluiters"),
+            ("04", "Pompinstallatie achter de glazen gevel, met rolsteigers en een bouwstofzuiger"),
+            ("05", "Zicht door een geboorde doorvoer op een leidingflens"),
+            ("06", "Gevel van de pompruimte met opengegraven grond en gereedschap ervoor"),
+            ("07", "Kernboorstatief en gereedschap bij de gevel, naast de opengegraven grond"),
         ],
         "uitgelicht": False,
     },
@@ -227,38 +256,15 @@ PROJECTEN = [
             "Werkzaamheden zijn uitgevoerd d.m.v. droogtechniek m.b.v. bronafzuiging "
             "en een aparte luchtreiniger om stofoverlast tot een minimum te beperken.",
         ],
-        "cover": "01",
         "cover_focus": "50% 61%",
         "fotos": [
             ("01", "Gezaagde sparing in een wand met daarachter de rookgaskanalen"),
             ("02", "Het appartementengebouw gezien vanaf de parkeerplaats"),
             ("03", "Gezaagde sparing in de wand van een hal, met zicht op de kanalen in de schacht"),
-            ("04", "Zicht in de schacht met de rookgaskanalen"),
-            ("05", "Gezaagde sparing in een wand met zicht op de kanalen in de schacht"),
+            ("04", "Gezaagde sparing in een wand met zicht op de kanalen in de schacht"),
+            ("05", "Zicht in de schacht met de rookgaskanalen"),
         ],
         "uitgelicht": True,
-    },
-    {
-        "id": "obs-de-vogelenzang",
-        "titel": "Openbare basisschool De Vogelenzang",
-        "categorie": "Verduurzamingsproject.",
-        "tekst": [
-            "Doorvoeren geboord t.b.v. de nieuwe klimaatinstallatie.",
-        ],
-        "cover": "07",
-        "cover_focus": "50% 50%",
-        "fotos": [
-            ("01", "Lokaal met twee geboorde doorvoeren in de bakstenen wand"),
-            ("02", "Twee ronde doorvoeren in een bakstenen binnenwand"),
-            ("03", "Medewerker boort met een kernboormachine een doorvoer in de bakstenen wand"),
-            ("04", "Twee doorvoeren in de buitengevel, gezien vanuit de tuin"),
-            ("05", "Entree van de school met twee doorvoeren in de gevel ernaast"),
-            ("06", "Gevel van de school met twee paar geboorde doorvoeren"),
-            ("07", "Twee paar geboorde doorvoeren in de bakstenen gevel"),
-            ("08", "Twee geboorde doorvoeren in de bakstenen gevel van dichtbij"),
-            ("09", "Gevel met aan weerszijden van de regenpijp twee geboorde doorvoeren"),
-        ],
-        "uitgelicht": False,
     },
     {
         "id": "monumentaal-gebouw-schiedam",
@@ -268,65 +274,14 @@ PROJECTEN = [
             "Boren van dozen en frezen van sleuven t.b.v. elektra.",
             "Inzagen van nieuwe deuropening.",
         ],
-        "cover": "04",
         "cover_focus": "50% 50%",
+        # De inzending noemt 6 foto's; er zijn er 5 aangeleverd (01-05).
         "fotos": [
-            ("01", "Het monumentale pand gezien vanaf de straat"),
-            ("02", "Twee gefreesde sleuven in een gestucte wand, van dichtbij"),
-            ("03", "Twee verticale sleuven met een geboorde doos in een gestucte wand"),
-            ("04", "Hal met gefreesde leidingsleuven en geboorde dozen in de wanden"),
-            ("05", "Verticale sleuf en geboorde dozen naast een boogdeur op de overloop"),
-            ("06", "Nieuw ingezaagde deuropening met stalen latei"),
-        ],
-        "uitgelicht": False,
-    },
-    {
-        "id": "diverse-kruipluiken",
-        "titel": "Diverse kruipluiken",
-        "categorie": "",  # niet aangeleverd door de klant; geen label tonen
-        "tekst": [
-            "Aanbrengen van sparingen t.b.v. bereikbaarheid kruipruimtes incl. leveren "
-            "en monteren van kruipluiken.",
-        ],
-        "cover": "05",
-        "cover_focus": "50% 21%",
-        "fotos": [
-            ("01", "Omtrek van een kruipluik uitgeboord in een betonvloer"),
-            ("02", "Gemonteerd kruipluik in een betonvloer"),
-            ("03", "Kruipluik in de vloer bij een entree, naast de deurmat"),
-            ("04", "Kruipluik in een tegelvloer onder een trap"),
-            ("05", "Geopend kruipluik in een tegelvloer met zicht in de kruipruimte"),
-            ("06", "Kruipluik in een tegelvloer naast een trap"),
-            ("07", "Kruipluik in een gietvloer onder een stalen trap"),
-            ("08", "Kruipluik in de vloer van een trappenhuis"),
-            ("09", "Kruipluik in de vloer voor een stalen trap"),
-            ("10", "Uitgeboorde sparing met ingestort kader voor een kruipluik"),
-            ("11", "Kruipluik in de vloer achter een toegangsdeur"),
-        ],
-        "uitgelicht": False,
-    },
-    {
-        "id": "leidingsleuven",
-        "titel": "Leidingsleuven",
-        "categorie": "Kantoorruimtes en Particulier.",
-        "tekst": [
-            "Een overzicht van aangebrachte leidingsleuven op uiteenlopende projecten.",
-        ],
-        "cover": "02",
-        "cover_focus": "50% 65%",
-        "fotos": [
-            ("01", "Lange leidingsleuf in een dekvloer in een kantoorruimte in aanbouw"),
-            ("02", "Leidingsleuf in de vloer van een kantoorruimte, tussen verwijderde tapijttegels"),
-            ("03", "Leidingsleuf in een dekvloer van dichtbij"),
-            ("04", "Brede sleuf in een betonvloer met afgetekende markering"),
-            ("05", "Kernboring in een vloer met een mantelbuis erdoor"),
-            ("06", "Keukenwand met gefreesde sleuven en geboorde dozen"),
-            ("07", "Gefreesde sleuven en geboorde dozen in een keukenwand, van dichtbij"),
-            ("08", "Keukenwand met een horizontale leidingsleuf naar een wandcontactdoos"),
-            ("09", "Gefreesde sleuven en geboorde dozen in een betonwand"),
-            ("10", "Betonwand met gefreesde leidingsleuven, schuin gezien"),
-            ("11", "Verticale sleuf met twee geboorde dozen in een witte wand"),
-            ("12", "Verticale sleuf met een dubbele doos in een witte wand, van dichtbij"),
+            ("01", "Hal met gefreesde leidingsleuven en geboorde dozen in de wanden"),
+            ("02", "Twee verticale sleuven met een geboorde doos in een gestucte wand"),
+            ("03", "Twee gefreesde sleuven in een gestucte wand, van dichtbij"),
+            ("04", "Verticale sleuf en geboorde dozen naast een boogdeur op de overloop"),
+            ("05", "Nieuw ingezaagde deuropening met stalen latei"),
         ],
         "uitgelicht": False,
     },
@@ -337,18 +292,19 @@ PROJECTEN = [
         "tekst": [
             "Doorvoeren geboord t.b.v. de nieuwe klimaatinstallatie.",
         ],
-        "cover": "07",
         "cover_focus": "50% 50%",
+        # 02: strook met kinderfoto's onherkenbaar gemaakt (tools/projectfotos.py)
         "fotos": [
-            ("01", "Speelruimte met twee geboorde doorvoeren in de wand naast het raam, met afzuigapparatuur ervoor"),
-            ("02", "Buitengevel aan het speelplein met aan weerszijden geboorde doorvoeren"),
-            ("03", "Twee geboorde doorvoeren in de bakstenen buitengevel"),
+            ("01", "Vier geboorde doorvoeren in de bakstenen gevel aan het dakterras"),
+            ("02", "Groepsruimte met twee paar doorvoeren in de wand, van bovenaf gezien"),
+            ("03", "Speelruimte met twee geboorde doorvoeren in de wand naast het raam, met afzuigapparatuur ervoor"),
             ("04", "Twee doorvoeren in een wandpaneel tussen de ramen, met stofzuiger en luchtreiniger op de vloer"),
-            ("05", "Kantoorruimte met twee doorvoeren in het wandpaneel en afzuigapparatuur op de vloer"),
-            ("06", "Groepsruimte met twee paar geboorde doorvoeren in de wand"),
-            ("07", "Vier geboorde doorvoeren in de bakstenen gevel aan het dakterras"),
-            ("08", "Groepsruimte met twee paar doorvoeren in de wand, van bovenaf gezien"),
-            ("09", "Twee doorvoeren in de wand, afgeplakt met folie en tape"),
+            ("05", "Twee doorvoeren in de wand, afgeplakt met folie en tape"),
+            ("06", "Buitengevel aan het speelplein met aan weerszijden geboorde doorvoeren"),
+            ("07", "Twee geboorde doorvoeren in de bakstenen buitengevel"),
+            ("08", "Witte wand met twee geboorde doorvoeren boven een radiator"),
+            ("09", "Twee geboorde doorvoeren in een witte wand, van dichterbij"),
+            ("10", "Wit geperforeerd wandtoestel naast de buitendeur"),
         ],
         "uitgelicht": False,
     },
@@ -359,15 +315,101 @@ PROJECTEN = [
         "tekst": [
             "Doorvoeren geboord t.b.v. aanpassingen aan de technische installaties.",
         ],
-        "cover": "02",
         "cover_focus": "50% 50%",
         "fotos": [
-            ("01", "Technische ruimte met leidingwerk en een geboorde doorvoer in de wand"),
-            ("02", "Geboorde doorvoer in de wand boven het leidingwerk"),
+            ("01", "Geboorde doorvoer in de wand boven het leidingwerk"),
+            ("02", "Technische ruimte met leidingwerk en een geboorde doorvoer in de wand"),
             ("03", "Het bedrijfspand gezien vanaf de parkeerplaats"),
             ("04", "Afgetekende boorpunten op een wandpaneel, met een laserlijn"),
             ("05", "Vier geboorde doorvoeren in de gevelbeplating"),
             ("06", "Gevel met de geboorde doorvoeren, met een hoogwerker op het gras ervoor"),
+        ],
+        "uitgelicht": False,
+    },
+    {
+        "id": "rottanova-rotterdam",
+        "titel": "Kernboringen Nieuwbouwproject RottaNova Rotterdam",
+        "categorie": "Kernboringen Rotterdam Centrum",
+        "tekst": [
+            "Kernboringen uitgevoerd die worden gebruikt om de kwaliteit van de "
+            "heipalen te bepalen.",
+        ],
+        "cover_focus": "50% 50%",
+        "fotos": [
+            ("01", "Bouwput met stalen stempels en paalkoppen, met een graafmachine en een torenkraan"),
+            ("02", "Bouwput met stalen stempels en bekisting, met kranen erboven"),
+            ("03", "Kerngat in het beton van een paalkop, van dichtbij"),
+            ("04", "Kerngat in een paalkop tussen de wapening, met de boorkroon en een boorkern ernaast"),
+            ("05", "Bouwput met afgedekte paalkoppen tussen wapeningsstaal, met een kernboormachine op de voorgrond"),
+        ],
+        "uitgelicht": False,
+    },
+    {
+        "id": "bedrijfshal-berkel-en-rodenrijs",
+        "titel": "Bedrijfshal Berkel en Rodenrijs",
+        "categorie": "Voorbereiding technische installaties",
+        "tekst": [
+            "Boren van 26 stuks nieuwe doorvoeren door een 50cm dikke betonvloer. "
+            "In het onderliggende magazijn alle kernen opgevangen met behulp van "
+            "een stempelbak.",
+        ],
+        "cover_focus": "50% 50%",
+        "fotos": [
+            ("01", "Bedrijfshal met in groen gemarkeerde boorlocaties op de vloer, met afzuiging en een kernboormachine"),
+            ("02", "Groen gemarkeerde boorlocaties op de afgedekte vloer, met bouwstofzuiger en boorkroon"),
+            ("03", "Geboorde doorvoeren met ingezette buizen binnen de groene markering"),
+            ("04", "Overzicht van de hal met de gemarkeerde doorvoeren in de vloer"),
+            ("05", "Doorvoerbuizen in de vloer binnen oranje gemarkeerde vlakken"),
+            ("06", "Twee doorvoerbuizen in de vloer langs de wand, met aantekeningen op de vloer"),
+            ("07", "Stempelbak tegen het plafond van het onderliggende magazijn"),
+            ("08", "Stempelbak tegen het betonplafond, met ernaast een geboord gat"),
+        ],
+        "uitgelicht": False,
+    },
+    {
+        "id": "leidingsleuven",
+        "titel": "Leidingsleuven",
+        "categorie": "Kantoorruimtes en Particulier.",
+        "tekst": [
+            "Een overzicht van aangebrachte leidingsleuven op uiteenlopende projecten.",
+        ],
+        "cover_focus": "50% 65%",
+        "fotos": [
+            ("01", "Leidingsleuf in de vloer van een kantoorruimte, tussen verwijderde tapijttegels"),
+            ("02", "Leidingsleuf in een dekvloer van dichtbij"),
+            ("03", "Uitgehakte sparing met twee doorvoeren en leidingen in een bakstenen wand"),
+            ("04", "Haaks gefreesde sleuf en twee ronde doorvoeren in een bakstenen wand"),
+            ("05", "Gefreesde sleuven en geboorde dozen in een betonwand"),
+            ("06", "Betonwand met gefreesde leidingsleuven, schuin gezien"),
+            ("07", "Verticale sleuf met twee geboorde dozen in een witte wand"),
+            ("08", "Verticale sleuf met een dubbele doos in een witte wand, van dichtbij"),
+            ("09", "Kernboring in een vloer met een mantelbuis erdoor"),
+            ("10", "Brede sleuf in een betonvloer met afgetekende markering"),
+            ("11", "Keukenwand met gefreesde sleuven en geboorde dozen"),
+            ("12", "Twee afgetekende boorpunten op een wand, gemarkeerd met blauwe verf"),
+        ],
+        "uitgelicht": False,
+    },
+    {
+        "id": "diverse-kruipluiken",
+        "titel": "Kruipluiken",
+        "categorie": "",  # niet aangeleverd door de klant; geen label tonen
+        "tekst": [
+            "Aanbrengen van sparingen t.b.v. bereikbaarheid kruipruimtes incl. leveren "
+            "en monteren van kruipluiken.",
+        ],
+        "cover_focus": "50% 21%",
+        "fotos": [
+            ("01", "Geopend kruipluik in een tegelvloer met zicht in de kruipruimte"),
+            ("02", "Kruipluik in een tegelvloer bij een bakstenen wand"),
+            ("03", "Uitgeboorde sparing met ingestort kader voor een kruipluik"),
+            ("04", "Kruipluik in de vloer achter een toegangsdeur"),
+            ("05", "Kruipluik in de vloer bij een entree, naast de deurmat"),
+            ("06", "Omtrek van een kruipluik uitgeboord in een betonvloer"),
+            ("07", "Gemonteerd kruipluik in een betonvloer"),
+            ("08", "Kruipluik in de vloer van een trappenhuis"),
+            ("09", "Kruipluik in een gietvloer onder een stalen trap"),
+            ("10", "Kruipluik in de vloer voor een stalen trap"),
         ],
         "uitgelicht": False,
     },
@@ -395,8 +437,10 @@ def _foto(pid: str, nr: str, alt: str):
     maat = FOTO_MATEN.get(pid, {}).get(nr)
     if not maat:
         return None
-    basis = "img/projecten/{}/{}".format(pid, nr)
-    breedte, hoogte = maat
+    breedte, hoogte = maat[0], maat[1]
+    # de code in de bestandsnaam verandert mee met de inhoud van de foto
+    basis = "img/projecten/{}/{}-{}".format(pid, nr, maat[2]) if len(maat) > 2 \
+        else "img/projecten/{}/{}".format(pid, nr)
     return {
         "nr": nr,
         "alt": alt,
