@@ -1,25 +1,26 @@
 {# Projectbeelden voor de homepage en /projecten.
 
-   project_beeld: de cover in een vast 3:2-kader (cover_focus bepaalt de
-   uitsnede), voor het uitgelichte project op de homepage. Met link= wordt het
-   beeld een link (naar het project op /projecten), met het aantal foto's
-   linksonder. Zonder foto: een tijdelijk beeldvlak met dezelfde verhouding.
+   project_beeld: de coverfoto in een vast 3:2-kader (cover_focus bepaalt de
+   uitsnede, zoals door de klant goedgekeurd). Met viewer=True opent een klik
+   de fotoweergave (static/js/lightbox.js) met alle foto's van het project,
+   beginnend bij de cover; linksonder staat het aantal foto's. Zonder
+   JavaScript opent de link de grote coverfoto. Zonder foto: een tijdelijk
+   beeldvlak met dezelfde verhouding.
 
-   project_galerij: alle foto's van één project als statisch raster, in de
-   volgorde van de klant. Elke foto houdt zijn eigen verhouding (geen uitsnede);
-   de rijen zijn even hoog. Klik = vergroten (static/js/lightbox.js); zonder
-   JavaScript opent de link gewoon de grote foto. #}
-{% macro project_beeld(p, lazy=True, sizes="100vw", link=None) %}
+   project_fotolijst: alle foto's van één project, in de volgorde van de klant,
+   als verborgen lijst. De fotoweergave leest deze lijst; hier wordt nog geen
+   foto geladen. #}
+{% macro project_beeld(p, lazy=True, sizes="100vw", viewer=False) %}
 {% set c = p.cover %}
 {% if c %}
 {% set n = p.fotos|length %}
-{% if link %}<a class="pbeeld pbeeld--klik" href="{{ link }}" aria-label="Bekijk {{ 'de ' ~ n ~ ' foto\'s' if n > 1 else 'de foto' }} van {{ p.titel }}">{% else %}<div class="pbeeld">{% endif %}
+{% if viewer %}<a class="pbeeld pbeeld--klik" href="{{ url_for('static', filename=c.groot) }}" data-lightbox-open="{{ p.id }}" data-start="{{ p.cover_index }}" aria-label="Bekijk {{ 'de ' ~ n ~ ' foto\'s' if n > 1 else 'de foto' }} van {{ p.titel }}">{% else %}<div class="pbeeld">{% endif %}
   <img src="{{ url_for('static', filename=c.midden) }}"
        srcset="{{ url_for('static', filename=c.klein) }} 640w, {{ url_for('static', filename=c.midden) }} 960w, {{ url_for('static', filename=c.ruim) }} 1280w{% if c.breedte > 1280 %}, {{ url_for('static', filename=c.groot) }} {{ c.breedte }}w{% endif %}"
        sizes="{{ sizes }}" width="{{ c.breedte }}" height="{{ c.hoogte }}" alt="{{ c.alt }}"
        style="object-position: {{ p.cover_focus }};"{% if lazy %} loading="lazy"{% endif %} decoding="async">
-  {% if link %}<span class="pbeeld__aantal" aria-hidden="true">{{ n }} {{ "foto's" if n > 1 else "foto" }}</span>{% endif %}
-{% if link %}</a>{% else %}</div>{% endif %}
+  {% if viewer %}<span class="pbeeld__aantal" aria-hidden="true">{{ n }} {{ "foto's" if n > 1 else "foto" }}</span>{% endif %}
+{% if viewer %}</a>{% else %}</div>{% endif %}
 {% else %}
 <div class="pbeeld">
   <div class="pbeeld__leeg" role="img" aria-label="Foto van dit project volgt nog">
@@ -30,25 +31,12 @@
 {% endif %}
 {% endmacro %}
 
-{# eager: aantal foto's dat direct laadt (de eerste rij van het eerste project) #}
-{% macro project_galerij(p, eager=0) %}
+{% macro project_fotolijst(p) %}
 {% if p.fotos %}
-<ul class="pgrid" role="list" aria-label="Foto's van {{ p.titel }}">
+<ul class="project__fotos" data-lightbox-groep="{{ p.id }}" data-titel="{{ p.titel }}" hidden>
   {% for f in p.fotos %}
-  <li class="pgrid__item" style="--r: {{ '%.4f'|format(f.breedte / f.hoogte) }};">
-    <a class="pgrid__link" href="{{ url_for('static', filename=f.groot) }}"
-       data-lightbox="{{ p.id }}" data-titel="{{ p.titel }}"
-       data-ruim="{{ url_for('static', filename=f.ruim) }}" data-b="{{ f.breedte }}" data-h="{{ f.hoogte }}">
-      <img src="{{ url_for('static', filename=f.midden) }}"
-           srcset="{{ url_for('static', filename=f.klein) }} 640w, {{ url_for('static', filename=f.midden) }} 960w, {{ url_for('static', filename=f.ruim) }} 1280w"
-           sizes="(max-width: 599px) 100vw, (max-width: 1199px) 50vw, 30vw"
-           width="{{ f.breedte }}" height="{{ f.hoogte }}" alt="{{ f.alt }}"
-           {% if loop.index > eager %}loading="lazy" {% endif %}decoding="async">
-    </a>
-  </li>
+  <li><a href="{{ url_for('static', filename=f.groot) }}" data-ruim="{{ url_for('static', filename=f.ruim) }}" data-b="{{ f.breedte }}" data-h="{{ f.hoogte }}">{{ f.alt }}</a></li>
   {% endfor %}
 </ul>
-{% else %}
-{{ project_beeld(p) }}
 {% endif %}
 {% endmacro %}

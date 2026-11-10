@@ -60,10 +60,14 @@ const TargetCursor = ({
     return (hasTouchScreen && isSmallScreen) || isMobileUserAgent;
   }, []);
 
+  // BEBO: borderWidth gelijk aan de lijndikte uit bebo-overrides.css (2px).
+  // gap = vaste ruimte tussen het element en de hoekjes, zodat ze nooit op de
+  // eigen rand of het rode vlak van een knop vallen (rood op rood).
   const constants = useMemo(
     () => ({
-      borderWidth: 3,
-      cornerSize: 12
+      borderWidth: 2,
+      cornerSize: 12,
+      gap: 5
     }),
     []
   );
@@ -224,16 +228,26 @@ const TargetCursor = ({
       gsap.set(cursorRef.current, { rotation: 0 });
 
       const rect = target.getBoundingClientRect();
-      const { borderWidth, cornerSize } = constants;
+      const { borderWidth, cornerSize, gap } = constants;
       const { x: offsetX, y: offsetY } = getOffset();
       const cursorX = gsap.getProperty(cursorRef.current, 'x');
       const cursorY = gsap.getProperty(cursorRef.current, 'y');
 
+      // BEBO: hele pixels (scherpe lijnen) en altijd binnen het venster, ook
+      // bij elementen die tegen de rand van het scherm staan.
+      const uit = gap + borderWidth;
+      const maxX = window.innerWidth - cornerSize - 1;
+      const maxY = window.innerHeight - cornerSize - 1;
+      const px = (v, max) => Math.round(Math.min(Math.max(v, 1), max));
+      const links = px(rect.left - uit, maxX);
+      const rechts = px(rect.right + uit - cornerSize, maxX);
+      const boven = px(rect.top - uit, maxY);
+      const onder = px(rect.bottom + uit - cornerSize, maxY);
       targetCornerPositionsRef.current = [
-        { x: rect.left - borderWidth - offsetX, y: rect.top - borderWidth - offsetY },
-        { x: rect.right + borderWidth - cornerSize - offsetX, y: rect.top - borderWidth - offsetY },
-        { x: rect.right + borderWidth - cornerSize - offsetX, y: rect.bottom + borderWidth - cornerSize - offsetY },
-        { x: rect.left - borderWidth - offsetX, y: rect.bottom + borderWidth - cornerSize - offsetY }
+        { x: links - offsetX, y: boven - offsetY },
+        { x: rechts - offsetX, y: boven - offsetY },
+        { x: rechts - offsetX, y: onder - offsetY },
+        { x: links - offsetX, y: onder - offsetY }
       ];
 
       isActiveRef.current = true;

@@ -175,8 +175,8 @@ h3.display { font-size: clamp(1.35rem, 1rem + .75vw, 1.9rem); font-weight: 600; 
   position: absolute;
   background: var(--red);
 }
-.crosshair .h { top: 50%; left: 0; width: 100%; height: 1.5px; transform: translateY(-50%); }
-.crosshair .v { left: 50%; top: 0; width: 1.5px; height: 100%; transform: translateX(-50%); }
+.crosshair .h { top: calc(50% - 1px); left: 0; width: 100%; height: 2px; }
+.crosshair .v { left: calc(50% - 1px); top: 0; width: 2px; height: 100%; }
 .crosshair .ring {
   position: absolute; inset: 50% auto auto 50%;
   width: 22px; height: 22px;
@@ -965,6 +965,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
   transition: transform .7s var(--ease);
 }
 @media (hover: hover) and (pointer: fine) {
+  .project:hover .pbeeld img,
   .uitgelicht:hover .pbeeld img { transform: scale(1.025); }
 }
 /* Tijdelijk beeldvlak tot de klant foto's aanlevert: tekenkader + richtkruis. */
@@ -986,8 +987,8 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 }
 .pbeeld__leeg .crosshair .h,
 .pbeeld__leeg .crosshair .v { background: rgba(22, 23, 27, .28); }
-.pbeeld__leeg .crosshair .h { height: 1px; }
-.pbeeld__leeg .crosshair .v { width: 1px; }
+.pbeeld__leeg .crosshair .h { height: 1px; top: 50%; }
+.pbeeld__leeg .crosshair .v { width: 1px; left: 50%; }
 .pbeeld__leeg .crosshair .ring {
   width: 16px; height: 16px;
   background: #E8E8E8;
@@ -1046,84 +1047,39 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 .pagina-kop h1.display { font-size: clamp(2.1rem, 1.2rem + 2.9vw, 4.4rem); font-weight: 700; }
 .projecten-sectie { padding-top: clamp(2.8rem, 5vw, 4.5rem); }
 
-/* Eén project per rij: tekst + alle foto's. Op brede schermen de tekst links
-   (schuift mee tijdens het scrollen), de foto's rechts. */
+/* Eén project per rij: één grote coverfoto + tekst. De overige foto's zitten
+   achter de cover (klik = fotoweergave). Op brede schermen wisselt de foto
+   per project van kant (.project--om), tekst onderaan uitgelijnd. */
 .project {
-  padding-block: clamp(2.5rem, 1.5rem + 3vw, 5rem);
+  padding-block: clamp(2.5rem, 1.5rem + 3vw, 5.5rem);
   border-top: 1px solid var(--line);
   scroll-margin-top: 5.5rem;
 }
 .project:first-child { border-top: 0; padding-top: 0; }
-.project__kop { margin-bottom: clamp(1.4rem, 1rem + 1.4vw, 2.4rem); }
+.project__beeld { margin-bottom: clamp(1.2rem, 1rem + 1vw, 1.8rem); }
 .project h2 {
   font-size: clamp(1.6rem, 1.1rem + 1.3vw, 2.6rem);
   margin: 0 0 .8rem;
   overflow-wrap: break-word;
   hyphens: auto;
 }
-.project__kop > p:not(.project__meta):not(.project__aantal) {
+.project__kop > p:not(.project__meta) {
   color: var(--ink-2);
   margin: 0 0 .7rem;
-  max-width: 52ch;
+  max-width: 46ch;
   text-wrap: pretty;
 }
-.project__aantal {
-  margin: 1.4rem 0 0;
-  font-family: var(--f-mono);
-  font-size: .72rem;
-  letter-spacing: .14em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-@media (min-width: 1200px) {
+@media (min-width: 1000px) {
   .project {
     display: grid;
-    grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+    grid-template-columns: minmax(0, 8fr) minmax(0, 4fr);
     column-gap: calc(var(--col-gap) * 2);
-    align-items: start;
+    align-items: end;
   }
-  .project__kop { position: sticky; top: 7rem; margin-bottom: 0; }
+  .project__beeld { margin-bottom: 0; }
+  .project--om { grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); }
+  .project--om .project__beeld { order: 2; }
 }
-
-/* Fotoraster (statisch). Rijen zijn even hoog; elke foto houdt zijn eigen
-   verhouding (--r = breedte/hoogte), dus geen uitsnede. Volgorde loopt van
-   links naar rechts, rij voor rij, precies zoals in PROJECTEN.
-   --rij is de streefhoogte van een rij: ca. 3 foto's naast elkaar op brede
-   schermen, 2 op tablet, 1 kolom op smalle telefoons. */
-.pgrid {
-  /* afgestemd zodat een liggende + staande foto samen op een rij passen,
-     maar drie staande niet (= 2 per rij); vanaf ca. 1850px passen er 3 */
-  --rij: clamp(200px, 41vw, 420px);
-  --gat: clamp(.5rem, .35rem + .5vw, 1rem);
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--gat);
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-.pgrid::after { content: ""; flex: 100000 1 0px; }   /* laatste rij niet oprekken */
-.pgrid__item {
-  flex: calc(var(--r) * 100) 1 calc(var(--r) * var(--rij));
-  min-width: 0;
-  /* een foto die alleen op een rij belandt, wordt niet reusachtig */
-  max-width: calc(var(--r) * var(--rij) * 1.75);
-}
-.pgrid__link {
-  display: block;
-  background: #E8E8E8;
-  background: color-mix(in srgb, var(--concrete) 30%, var(--paper));
-  cursor: zoom-in;
-}
-.pgrid__link img {
-  display: block;
-  width: 100%;
-  height: auto;
-  aspect-ratio: var(--r);
-}
-.pgrid__link:focus-visible { outline: 2px solid var(--red); outline-offset: 3px; }
-@media (min-width: 1200px) { .pgrid { --rij: clamp(320px, 26vw, 470px); } }
-@media (max-width: 599px) { .pgrid__item { flex: 1 1 100%; max-width: none; } }
 
 /* Homepage: cover als link naar het project, met het aantal foto's linksonder */
 .pbeeld--klik { display: block; text-decoration: none; }
@@ -1157,8 +1113,11 @@ html.lb-open { overflow: hidden; }
   color: #fff;
   grid-template-rows: auto minmax(0, 1fr);
   overflow: hidden;
+  opacity: 0;
+  transition: opacity .18s ease;
 }
 .lb[open] { display: grid; }
+.lb.is-open { opacity: 1; }
 .lb::backdrop { background: transparent; }
 .lb__kop {
   display: flex; align-items: center; justify-content: space-between;
@@ -1200,7 +1159,10 @@ html.lb-open { overflow: hidden; }
   width: auto; height: auto;
   object-fit: contain;
   min-height: 0;
+  opacity: 0;
+  transition: opacity .18s ease;
 }
+.lb__beeld img.is-geladen { opacity: 1; }
 .lb__onderschrift {
   margin-top: .8rem;
   font-size: .9rem;
@@ -1249,7 +1211,8 @@ html.lb-open { overflow: hidden; }
 @media (prefers-reduced-motion: reduce) {
   .pbeeld__aantal, .lb__knop { transition: none; }
   .pbeeld img { transition: none; }
-  .uitgelicht:hover .pbeeld img { transform: none; }
+  .project:hover .pbeeld img, .uitgelicht:hover .pbeeld img { transform: none; }
+  .lb, .lb__beeld img { transition: none; }
 }
 
 /* ======================================================================== */
@@ -1418,7 +1381,7 @@ body .sm-toggle {
   border: 1px solid var(--line);
   border-radius: 2px;
   background: rgba(255, 255, 255, .9);
-  transition: background .25s var(--ease), border-color .25s var(--ease);
+  transition: background .25s var(--ease), border-color .25s var(--ease), color .25s var(--ease);
 }
 body .sm-toggle:hover { border-color: var(--ink); }
 .heeft-fotohero .staggered-menu-wrapper:not([data-open]) .staggered-menu-header:not(.is-scrolled) .sm-toggle {

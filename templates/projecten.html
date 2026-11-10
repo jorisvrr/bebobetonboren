@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% from "_project.html" import project_galerij %}
+{% from "_project.html" import project_beeld, project_fotolijst %}
 {% block title %}Projecten | BEBO Betonboren & Zagen{% endblock %}
 {% block description %}Bekijk projecten van BEBO Betonboren & Zagen, van betonboringen en zaagwerk tot renovaties en precisiesloop.{% endblock %}
 
@@ -19,14 +19,18 @@
 </section>
 
 <!-- ================= PROJECTEN: overzicht ================= -->
-<!-- Per project: tekst en alle foto's als statisch raster (volgorde van de
-     klant, zie PROJECTEN in app.py). Klik op een foto = vergroten. -->
+<!-- Per project één grote coverfoto; klik = alle foto's in de fotoweergave
+     (volgorde van de klant, zie PROJECTEN in app.py). Op brede schermen
+     wisselt de foto per project van kant. -->
 <section class="section projecten-sectie">
   <div class="wrap">
     <div class="projecten">
       {% for p in projecten %}
-      <article class="project" id="{{ p.id }}" aria-labelledby="{{ p.id }}-titel">
-        <header class="project__kop">
+      <article class="project{% if loop.index is even %} project--om{% endif %}" id="{{ p.id }}" aria-labelledby="{{ p.id }}-titel">
+        <div class="project__beeld">
+          {{ project_beeld(p, lazy=loop.index > 1, sizes="(max-width: 999px) 100vw, 62vw", viewer=True) }}
+        </div>
+        <div class="project__kop">
           <p class="project__meta">
             <span class="project__nr">{{ p.nr }}</span>
             {% if p.label %}<span class="project__cat">{{ p.label }}</span>{% endif %}
@@ -35,9 +39,8 @@
           {% for alinea in p.tekst %}
           <p>{{ alinea }}</p>
           {% endfor %}
-          {% if p.fotos %}<p class="project__aantal">{{ p.fotos|length }} {{ "foto's" if p.fotos|length > 1 else "foto" }}</p>{% endif %}
-        </header>
-        {{ project_galerij(p, eager=3 if loop.first else 0) }}
+        </div>
+        {{ project_fotolijst(p) }}
       </article>
       {% endfor %}
     </div>

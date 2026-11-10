@@ -42,15 +42,28 @@
   if (reduce || !('IntersectionObserver' in window)) {
     reveals.forEach(function (el) { el.classList.add('in'); });
   } else {
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) {
-        if (e.isIntersecting) {
-          e.target.classList.add('in');
-          io.unobserve(e.target);
-        }
-      });
-    }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
-    reveals.forEach(function (el) { io.observe(el); });
+    var startReveal = function () {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) {
+            e.target.classList.add('in');
+            io.unobserve(e.target);
+          }
+        });
+      }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+      reveals.forEach(function (el) { io.observe(el); });
+    };
+    // Pas beginnen als het lettertype er is (hooguit 600ms wachten): anders
+    // schuift de herotekst - en de knop "Offerte aanvragen" als laatste -
+    // al in met het reservelettertype en springt hij daarna van vorm.
+    var gestart = false;
+    var eenmaal = function () { if (!gestart) { gestart = true; startReveal(); } };
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(eenmaal);
+      setTimeout(eenmaal, 600);
+    } else {
+      eenmaal();
+    }
   }
 
   /* ---- Offerte-chips ---- */

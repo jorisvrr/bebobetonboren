@@ -69,7 +69,7 @@ projectfoto's voor maximale impact:
 - [ ] Eigen domein koppelen (bebobetonboren.nl).
 - [ ] Privacy/cookie-tekst toevoegen als je later tracking/analytics gebruikt.
 
-## React Bits-effecten (TargetCursor + Beams)
+## React Bits-effecten (TargetCursor + Beams + StaggeredMenu)
 Twee echte React Bits-componenten draaien als React-"eilanden" boven de
 Flask-pagina, gebouwd met Vite:
 - **TargetCursor** (gsap) - een richtkruis-cursor in BEBO-rood die op knoppen,
@@ -89,6 +89,15 @@ npm run build      # → schrijft naar ../static/bundle/
 De gebouwde bundel staat in `static/bundle/` en is meegecommit, dus **Railway
 heeft géén Node nodig** bij deploy - Flask serveert de bundel als statische
 bestanden. Node/Vite heb je alleen lokaal nodig als je de effecten aanpast.
+
+### BEBO-aanpassingen in de componenten
+- `StaggeredMenu.jsx`: openingsvolgorde (constante `T` bovenin): eerst de knop, dan het paneel,
+  dan de links met een lichte stagger, dan nummers en contact. Verborgen links staan ver genoeg
+  omlaag en onzichtbaar (`LINK_UIT`), zodat lange links niet te vroeg uitsteken. Dubbelklik wordt
+  genegeerd; heropenen tijdens het sluiten gaat vanaf de huidige stand. Bij
+  `prefers-reduced-motion` alleen een korte vervaging.
+- `TargetCursor.jsx`: hoekjes op hele pixels, 5px vrij van het element (ook bij rode knoppen en
+  omlijnde elementen) en altijd binnen het venster; lijndikte gelijk aan `bebo-overrides.css` (2px).
 
 ### Tweaken / uitzetten
 - Kleur, snelheid en aantal van de effecten: `frontend/src/main.jsx`
@@ -110,7 +119,7 @@ signals (feiten + één quote i.p.v. logo-soup). Signatuur: het rode richtkruis 
 "het exacte punt waar geboord/gezaagd wordt".
 
 ## Projecten
-- Eén bron: `PROJECTEN` in `app.py` (elf projecten, 85 foto's, in de volgorde van de lijst:
+- Eén bron: `PROJECTEN` in `app.py` (elf projecten, 86 foto's, in de volgorde van de lijst:
   door de klant vastgesteld, niet sorteren). De homepage toont het project met
   `"uitgelicht": True` (tussen Werkzaamheden en Werkwijze); `/projecten` toont ze allemaal.
 - Titels, categorieën en teksten zijn letterlijk van de klant. Een lege `categorie` toont
@@ -125,18 +134,18 @@ bronmateriaal/projectfotos/<id>/<nr>.jpg        originelen van de klant (niet aa
                                                 gaan niet mee in de deploy). <nr> volgt
                                                 de nummering van de klant: Tr01.jpg -> 01.jpg.
                                                 .png en .webp mogen ook (zoals aangeleverd).
-static/img/projecten/<id>/<nr>-<code>-640.webp  fotoraster op telefoons
-                          <nr>-<code>-960.webp  fotoraster / cover
-                          <nr>-<code>-1280.webp fotoraster op scherpe schermen / vergroting op telefoons
-                          <nr>-<code>-groot.webp vergroting op grote schermen (max. 2000 px)
+static/img/projecten/<id>/<nr>-<code>-640.webp  cover op telefoons
+                          <nr>-<code>-960.webp  cover
+                          <nr>-<code>-1280.webp cover op scherpe schermen / fotoweergave op telefoons
+                          <nr>-<code>-groot.webp fotoweergave op grote schermen (max. 2000 px)
 static/img/projecten/fotos.json                 afmetingen + code, geschreven door het script
 tools/projectfotos.py                           maakt de webversies uit de originelen
-static/js/lightbox.js                           foto vergroten (klik in het fotoraster)
+static/js/lightbox.js                           fotoweergave (klik op een coverfoto)
 ```
 - **Foto toevoegen:** zet het origineel in de bronmap, draai `pip install pillow` en
   `python tools/projectfotos.py`, en voeg in `PROJECTEN` bij `fotos` een regel `(nr, alt)` toe.
-- **Volgorde:** de volgorde van de regels bij `fotos` is de volgorde op de site (fotoraster,
-  vergroting, teller). Omwisselen = alleen die regels omdraaien; bestanden niet hernoemen.
+- **Volgorde:** de volgorde van de regels bij `fotos` is de volgorde op de site (fotoweergave,
+  teller). Omwisselen = alleen die regels omdraaien; bestanden niet hernoemen.
   De eerste regel is de cover (tenzij `"cover"` iets anders zegt).
   `<code>` is een vingerafdruk van de inhoud: krijgt een nummer een andere foto, dan
   verandert ook de bestandsnaam, zodat geen browser of cache de oude foto blijft tonen.
@@ -147,11 +156,12 @@ static/js/lightbox.js                           foto vergroten (klik in het foto
 - Uitzondering: op foto 02 van Kinderopvang Partou is een strook met kinderfoto's, namen
   en geboortedata onherkenbaar gemaakt (`ONHERKENBAAR` in het script). Het origineel staat
   niet in de repository (`.gitignore`).
-- **/projecten:** per project de tekst en alle foto's als statisch raster. Rijen zijn even hoog,
-  elke foto in zijn eigen verhouding (geen uitsnede); ca. 3 naast elkaar op brede schermen,
-  2 op tablet, 1 kolom op telefoons. Foto's laden pas als ze in beeld komen (`loading="lazy"`).
-  Klik op een foto opent hem groot (pijltjes, Esc, vegen); zonder JavaScript opent de grote foto.
-  De eerdere Skewed Carousel is op verzoek van de klant (10-11-2026) verwijderd.
+- **/projecten:** per project één grote coverfoto (3:2, `cover_focus`) met nummer, categorie,
+  titel, tekst en het aantal foto's. Op brede schermen wisselt de foto per project van kant.
+  De overige foto's staan in een verborgen lijst; een klik op de cover opent de fotoweergave
+  (`static/js/lightbox.js`) met alle foto's van dat project, beginnend bij de cover: vorige/volgende,
+  pijltjes, Esc, vegen, teller "01 / 08", rustige vervaging. Zonder JavaScript opent de grote foto.
+  De eerdere Skewed Carousel en het fotoraster (10-11-2026) zijn op verzoek van de klant vervangen.
 - **Homepage:** het project met `"uitgelicht": True` staat tussen Werkzaamheden en Werkwijze;
-  de cover linkt naar dat project op `/projecten`.
+  de cover opent dezelfde fotoweergave.
 - Een project zonder foto's krijgt automatisch het tijdelijke beeldvlak ("Foto volgt").

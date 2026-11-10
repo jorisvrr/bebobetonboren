@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% from "_project.html" import project_beeld %}
+{% from "_project.html" import project_beeld, project_fotolijst %}
 
 {% block body_class %} class="heeft-fotohero"{% endblock %}
 
@@ -106,7 +106,8 @@
     </div>
     <article class="uitgelicht">
       <div class="uitgelicht__beeld reveal">
-        {{ project_beeld(uitgelicht, sizes="(max-width: 1000px) 100vw, 64vw", link=url_for('projecten') ~ '#' ~ uitgelicht.id) }}
+        {{ project_beeld(uitgelicht, sizes="(max-width: 1000px) 100vw, 64vw", viewer=True) }}
+        {{ project_fotolijst(uitgelicht) }}
       </div>
       <div class="uitgelicht__info reveal" data-delay="1">
         {% if uitgelicht.label %}<p class="project__meta"><span class="project__cat">{{ uitgelicht.label }}</span></p>{% endif %}
@@ -337,4 +338,8 @@
 
 {% endblock %}
 
-{% block scripts %}{% endblock %}
+{% block scripts %}
+{% if uitgelicht and uitgelicht.fotos %}
+<script src="{{ url_for('static', filename='js/lightbox.js') }}" defer></script>
+{% endif %}
+{% endblock %}

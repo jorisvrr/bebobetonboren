@@ -2,6 +2,31 @@ import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import './StaggeredMenu.css';
 
+// BEBO (10-11-2026): openingsvolgorde. Eerst reageert de knop, dan komt het
+// paneel binnen, pas als dat (bijna) staat verschijnen de links met een
+// lichte stagger, daarna nummers en contactgegevens. Tijden in seconden.
+const T = {
+  lagen: 0.12,        // gekleurde lagen schuiven in
+  lagenStagger: 0.07,
+  lagenDuur: 0.5,
+  paneel: 0.25,       // paneel begint (staat er visueel ca. 0.30s later)
+  paneelDuur: 0.55,
+  links: 0.56,        // eerste link; laatste begint ca. 0.20s later
+  linksStagger: 0.04,
+  linksDuur: 0.7,
+  nummers: 0.64,
+  contact: 0.78,      // contactkop en -links: klaar rond 1.1s
+  sluitenInhoud: 0.12,
+  sluitenPaneel: 0.4,
+  dubbelklik: 0.28    // tweede klik binnen deze tijd wordt genegeerd
+};
+// Verborgen stand van een link: ver genoeg omlaag dat ook de gekantelde
+// (en dus hogere) hoek van een lange link als "Offerte aanvragen" niet al
+// boven de onderrand van zijn regel uitsteekt, plus onzichtbaar.
+const LINK_UIT = { yPercent: 175, rotate: 6, opacity: 0 };
+const minderBeweging = () =>
+  typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
 export const StaggeredMenu = ({
   position = 'right',
   colors = ['#B497CF', '#5227FF'],
@@ -40,6 +65,7 @@ export const StaggeredMenu = ({
   const toggleBtnRef = useRef(null);
   const busyRef = useRef(false);
   const itemEntranceTweenRef = useRef(null);
+  const laatsteKlikRef = useRef(0);
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
@@ -76,6 +102,9 @@ export const StaggeredMenu = ({
     const layers = preLayerElsRef.current;
     if (!panel) return null;
 
+    // Werd het menu net gesloten (sluitanimatie nog bezig)? Dan vanaf de
+    // huidige stand terug openen, zonder de links opnieuw te verbergen.
+    const halverwegeDicht = !!(closeTweenRef.current && closeTweenRef.current.isActive());
     openTlRef.current?.kill();
     if (closeTweenRef.current) {
       closeTweenRef.current.kill();
@@ -87,96 +116,88 @@ export const StaggeredMenu = ({
     const numberEls = Array.from(panel.querySelectorAll('.sm-panel-list[data-numbering] .sm-panel-item'));
     const socialTitle = panel.querySelector('.sm-socials-title');
     const socialLinks = Array.from(panel.querySelectorAll('.sm-socials-link'));
-
-    const offscreen = position === 'left' ? -100 : 100;
-    const layerStates = layers.map(el => ({ el, start: offscreen }));
-    const panelStart = offscreen;
-
-    if (itemEls.length) {
-      gsap.set(itemEls, { yPercent: 140, rotate: 10 });
-    }
-    if (numberEls.length) {
-      gsap.set(numberEls, { '--sm-num-opacity': 0 });
-    }
-    if (socialTitle) {
-      gsap.set(socialTitle, { opacity: 0 });
-    }
-    if (socialLinks.length) {
-      gsap.set(socialLinks, { y: 25, opacity: 0 });
-    }
+    const inhoud = [...itemEls, ...numberEls, socialTitle, ...socialLinks].filter(Boolean);
+    gsap.killTweensOf(inhoud);
 
     const tl = gsap.timeline({ paused: true });
 
-    layerStates.forEach((ls, i) => {
-      tl.fromTo(ls.el, { xPercent: ls.start }, { xPercent: 0, duration: 0.5, ease: 'power4.out' }, i * 0.07);
-    });
-    const lastTime = layerStates.length ? (layerStates.length - 1) * 0.07 : 0;
-    const panelInsertTime = lastTime + (layerStates.length ? 0.08 : 0);
-    const panelDuration = 0.65;
-    tl.fromTo(
-      panel,
-      { xPercent: panelStart },
-      { xPercent: 0, duration: panelDuration, ease: 'power4.out' },
-      panelInsertTime
-    );
+    if (minderBeweging()) {
+      // prefers-reduced-motion: geen schuif- of kantelbewegingen, alleen een
+      // korte vervaging van het paneel en de inhoud.
+      gsap.set([...layers, panel], { xPercent: 0 });
+      if (itemEls.length) gsap.set(itemEls, { yPercent: 0, rotate: 0, opacity: 1 });
+      if (numberEls.length) gsap.set(numberEls, { '--sm-num-opacity': 1 });
+      if (socialTitle) gsap.set(socialTitle, { opacity: 1 });
+      if (socialLinks.length) gsap.set(socialLinks, { y: 0, opacity: 1 });
+      tl.fromTo([...layers, panel], { opacity: 0 }, { opacity: 1, duration: 0.15, ease: 'none' }, 0);
+      openTlRef.current = tl;
+      return tl;
+    }
+    gsap.set([...layers, panel], { opacity: 1 });
 
+    if (!halverwegeDicht) {
+      if (itemEls.length) gsap.set(itemEls, LINK_UIT);
+      if (numberEls.length) gsap.set(numberEls, { '--sm-num-opacity': 0 });
+      if (socialTitle) gsap.set(socialTitle, { opacity: 0 });
+      if (socialLinks.length) gsap.set(socialLinks, { y: 18, opacity: 0 });
+    }
+
+    // 1) gekleurde lagen, 2) paneel: vanaf de huidige stand (meestal buiten beeld)
+    layers.forEach((el, i) => {
+      tl.to(el, { xPercent: 0, duration: T.lagenDuur, ease: 'power4.out' }, T.lagen + i * T.lagenStagger);
+    });
+    tl.to(panel, { xPercent: 0, duration: T.paneelDuur, ease: 'power4.out' }, T.paneel);
+
+    if (halverwegeDicht) {
+      // inhoud stond nog; alleen zeker weten dat alles zichtbaar is
+      if (itemEls.length) tl.to(itemEls, { yPercent: 0, rotate: 0, opacity: 1, duration: 0.2 }, 0);
+      if (numberEls.length) tl.to(numberEls, { '--sm-num-opacity': 1, duration: 0.2 }, 0);
+      if (socialTitle) tl.to(socialTitle, { opacity: 1, duration: 0.2 }, 0);
+      if (socialLinks.length) tl.to(socialLinks, { y: 0, opacity: 1, duration: 0.2 }, 0);
+      openTlRef.current = tl;
+      return tl;
+    }
+
+    // 3) links, als één reeks (ook "Offerte aanvragen", de laatste)
     if (itemEls.length) {
-      const itemsStartRatio = 0.15;
-      const itemsStart = panelInsertTime + panelDuration * itemsStartRatio;
       tl.to(
         itemEls,
-        {
-          yPercent: 0,
-          rotate: 0,
-          duration: 1,
-          ease: 'power4.out',
-          stagger: { each: 0.1, from: 'start' }
-        },
-        itemsStart
+        { yPercent: 0, rotate: 0, duration: T.linksDuur, ease: 'power3.out', stagger: { each: T.linksStagger, from: 'start' } },
+        T.links
+      );
+      tl.to(
+        itemEls,
+        { opacity: 1, duration: 0.3, ease: 'power1.out', stagger: { each: T.linksStagger, from: 'start' } },
+        T.links
       );
       if (numberEls.length) {
         tl.to(
           numberEls,
-          {
-            duration: 0.6,
-            ease: 'power2.out',
-            '--sm-num-opacity': 1,
-            stagger: { each: 0.08, from: 'start' }
-          },
-          itemsStart + 0.1
+          { '--sm-num-opacity': 1, duration: 0.4, ease: 'power2.out', stagger: { each: T.linksStagger, from: 'start' } },
+          T.nummers
         );
       }
     }
 
-    if (socialTitle || socialLinks.length) {
-      const socialsStart = panelInsertTime + panelDuration * 0.4;
-      if (socialTitle) {
-        tl.to(
-          socialTitle,
-          {
-            opacity: 1,
-            duration: 0.5,
-            ease: 'power2.out'
-          },
-          socialsStart
-        );
-      }
-      if (socialLinks.length) {
-        tl.to(
-          socialLinks,
-          {
-            y: 0,
-            opacity: 1,
-            duration: 0.55,
-            ease: 'power3.out',
-            stagger: { each: 0.08, from: 'start' },
-            onComplete: () => {
-              gsap.set(socialLinks, { clearProps: 'opacity' });
-            }
-          },
-          socialsStart + 0.04
-        );
-      }
+    // 4) contactgegevens als laatste detail
+    if (socialTitle) {
+      tl.to(socialTitle, { opacity: 1, duration: 0.3, ease: 'power2.out' }, T.contact);
+    }
+    if (socialLinks.length) {
+      tl.to(
+        socialLinks,
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.32,
+          ease: 'power3.out',
+          stagger: { each: 0.05, from: 'start' },
+          onComplete: () => {
+            gsap.set(socialLinks, { clearProps: 'opacity' });
+          }
+        },
+        T.contact + 0.03
+      );
     }
 
     openTlRef.current = tl;
@@ -184,7 +205,6 @@ export const StaggeredMenu = ({
   }, []);
 
   const playOpen = useCallback(() => {
-    if (busyRef.current) return;
     busyRef.current = true;
     const tl = buildOpenTimeline();
     if (tl) {
@@ -206,30 +226,47 @@ export const StaggeredMenu = ({
     const layers = preLayerElsRef.current;
     if (!panel) return;
 
-    const all = [...layers, panel];
+    const itemEls = Array.from(panel.querySelectorAll('.sm-panel-itemLabel'));
+    const numberEls = Array.from(panel.querySelectorAll('.sm-panel-list[data-numbering] .sm-panel-item'));
+    const socialTitle = panel.querySelector('.sm-socials-title');
+    const socialLinks = Array.from(panel.querySelectorAll('.sm-socials-link'));
+    const inhoud = [...itemEls, socialTitle, ...socialLinks].filter(Boolean);
+
+    const herstel = () => {
+      if (itemEls.length) gsap.set(itemEls, LINK_UIT);
+      if (numberEls.length) gsap.set(numberEls, { '--sm-num-opacity': 0 });
+      if (socialTitle) gsap.set(socialTitle, { opacity: 0 });
+      if (socialLinks.length) gsap.set(socialLinks, { y: 18, opacity: 0 });
+      busyRef.current = false;
+    };
+
     closeTweenRef.current?.kill();
     const offscreen = position === 'left' ? -100 : 100;
-    closeTweenRef.current = gsap.to(all, {
-      xPercent: offscreen,
-      duration: 0.32,
-      ease: 'power3.in',
-      overwrite: 'auto',
-      onComplete: () => {
-        const itemEls = Array.from(panel.querySelectorAll('.sm-panel-itemLabel'));
-        if (itemEls.length) {
-          gsap.set(itemEls, { yPercent: 140, rotate: 10 });
+
+    if (minderBeweging()) {
+      closeTweenRef.current = gsap.to([...layers, panel], {
+        opacity: 0,
+        duration: 0.15,
+        ease: 'none',
+        onComplete: () => {
+          gsap.set([...layers, panel], { xPercent: offscreen, opacity: 1 });
+          herstel();
         }
-        const numberEls = Array.from(panel.querySelectorAll('.sm-panel-list[data-numbering] .sm-panel-item'));
-        if (numberEls.length) {
-          gsap.set(numberEls, { '--sm-num-opacity': 0 });
-        }
-        const socialTitle = panel.querySelector('.sm-socials-title');
-        const socialLinks = Array.from(panel.querySelectorAll('.sm-socials-link'));
-        if (socialTitle) gsap.set(socialTitle, { opacity: 0 });
-        if (socialLinks.length) gsap.set(socialLinks, { y: 25, opacity: 0 });
-        busyRef.current = false;
-      }
+      });
+      return;
+    }
+
+    // Sluiten: inhoud vervaagt kort, dan schuift het paneel weg en volgen
+    // de gekleurde lagen (omgekeerde volgorde van openen).
+    const tl = gsap.timeline({ onComplete: herstel });
+    gsap.killTweensOf(inhoud);
+    if (inhoud.length) tl.to(inhoud, { opacity: 0, duration: T.sluitenInhoud, ease: 'power1.out' }, 0);
+    if (numberEls.length) tl.to(numberEls, { '--sm-num-opacity': 0, duration: T.sluitenInhoud }, 0);
+    tl.to(panel, { xPercent: offscreen, duration: T.sluitenPaneel, ease: 'power3.in' }, 0.04);
+    [...layers].reverse().forEach((el, i) => {
+      tl.to(el, { xPercent: offscreen, duration: T.sluitenPaneel, ease: 'power3.in' }, 0.08 + i * 0.05);
     });
+    closeTweenRef.current = tl;
   }, [position]);
 
   const animateIcon = useCallback(opening => {
@@ -303,6 +340,10 @@ export const StaggeredMenu = ({
   }, []);
 
   const toggleMenu = useCallback(() => {
+    // Een (onbedoelde) dubbelklik mag de animatie niet halverwege omdraaien.
+    const nu = performance.now();
+    if (nu - laatsteKlikRef.current < T.dubbelklik * 1000) return;
+    laatsteKlikRef.current = nu;
     const target = !openRef.current;
     openRef.current = target;
     setOpen(target);
