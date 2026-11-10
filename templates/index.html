@@ -1,56 +1,77 @@
 {% extends "base.html" %}
-{% from "_project.html" import project_beeld, project_fotolijst %}
+{% from "_project.html" import project_beeld %}
+
+{% block body_class %} class="heeft-fotohero"{% endblock %}
+
+{% block head %}
+{% if hero.beeld %}<link rel="preload" as="image" imagesrcset="{% for pad, w in hero.beeld.bronnen %}{{ url_for('static', filename=pad) }} {{ w }}w{{ ', ' if not loop.last }}{% endfor %}" imagesizes="(max-aspect-ratio: 4/5) 200vh, (max-aspect-ratio: 16/9) 185vh, 100vw" fetchpriority="high">{% endif %}
+{% endblock %}
 
 {% block content %}
 
-<!-- ================= HERO ================= -->
-<section class="hero hero--compact">
-  <div class="wrap">
-    <div class="hero__grid">
-      <div class="hero__copy">
-        <p class="hero__loc reveal">
-          <span class="crosshair" style="width:14px;height:14px;position:relative;display:inline-block">
-            <span class="h"></span><span class="v"></span>
-          </span>
-          <span class="hero__loc-text">Berkel en Rodenrijs <b>·&nbsp;Zuid-Holland</b></span>
-        </p>
+<!-- ================= HERO: fotografisch, over de volle breedte =========
+     Beeld en kop komen uit HERO in app.py (incl. de goedgekeurde kop als
+     alternatief: /?kop=goedgekeurd). ======================================= -->
+{# sizes: de foto vult de hero als "cover". Op staande schermen is hij daardoor
+   veel breder dan het scherm (ca. 1,7-2x de schermhoogte); anders zou de
+   browser een te klein bestand kiezen. #}
+{% set hb = hero.beeld %}
+<section class="fhero" aria-labelledby="hero-kop">
+  {% if hb %}
+  <div class="fhero__media">
+    <picture>
+      {% if hb.mobiel %}<source media="(max-width: 760px)" srcset="{{ url_for('static', filename=hb.mobiel) }}">{% endif %}
+      <img class="fhero__img"
+           src="{{ url_for('static', filename=hb.src) }}"
+           srcset="{% for pad, w in hb.bronnen %}{{ url_for('static', filename=pad) }} {{ w }}w{{ ', ' if not loop.last }}{% endfor %}"
+           sizes="(max-aspect-ratio: 4/5) 200vh, (max-aspect-ratio: 16/9) 185vh, 100vw" width="{{ hb.breedte }}" height="{{ hb.hoogte }}"
+           alt="{{ hb.alt }}" fetchpriority="high" decoding="async"
+           style="--focus: {{ hero.focus }}; --focus-m: {{ hero.focus_mobiel }};">
+    </picture>
+  </div>
+  {% endif %}
+  <div class="fhero__shade" aria-hidden="true"></div>
 
-        <h1 class="display reveal" data-delay="1">
-          BEBO voor een <span class="accent">professionele start</span> van ieder project.
-        </h1>
-
-        <p class="lede hero__lede reveal" data-delay="2">
-          Boren, zagen, frezen en gericht slopen in beton en steen.
-          Schoon werk, een strak resultaat en een ploeg die nakomt wat is afgesproken.
-        </p>
-
-        <div class="hero__actions reveal" data-delay="3">
-          <a href="#offerte" class="btn btn--red btn--lg">Offerte aanvragen <span class="arrow">→</span></a>
-          <a href="#diensten" class="textlink">Bekijk werkzaamheden</a>
-        </div>
-      </div>
-
-      <!-- Zwevende merk-marker (geen kader) -->
-      <div class="hero__marker reveal" data-delay="2" aria-hidden="true">
-        <span class="crosshair crosshair--lg"><span class="h"></span><span class="v"></span><span class="ring"></span></span>
-        <span class="hero__tag">kernboring · <b>Ø&nbsp;132&nbsp;mm</b></span>
+  <div class="wrap fhero__inner">
+    <div class="fhero__copy">
+      <p class="fhero__eyebrow reveal">Betonboren / Zagen / Precisiesloop</p>
+      <h1 id="hero-kop" class="display fhero__kop reveal" data-delay="1">{{ hero.kop }}</h1>
+      <p class="fhero__lede reveal" data-delay="2">
+        Boren, zagen, frezen en gericht slopen in beton en steen.
+        Schoon werk, een strak resultaat en een ploeg die nakomt wat is afgesproken.
+      </p>
+      <div class="fhero__actions reveal" data-delay="3">
+        <a href="#offerte" class="btn btn--red btn--lg">Offerte aanvragen <span class="arrow">→</span></a>
+        <a href="{{ url_for('projecten') }}" class="btn btn--licht btn--lg">Bekijk ons werk</a>
       </div>
     </div>
 
-    <!-- Terughoudende trust-feiten -->
-    <div class="hero__facts reveal">
-      <div class="fact"><div class="n">25+</div><div class="l">jaar ervaring in de bouwsector</div></div>
-      <div class="fact"><div class="n">Ø900</div><div class="l">mm max. boordiameter</div></div>
-      <div class="fact"><div class="n">Schoon en stofarm</div><div class="l">water- en stofafzuiging</div></div>
-      <div class="fact"><div class="n">Zuid-Holland</div><div class="l">werkgebied</div></div>
+    <div class="fhero__voet">
+      <p class="fhero__loc">
+        <span class="crosshair" aria-hidden="true"><span class="h"></span><span class="v"></span></span>
+        Zuid-Holland
+      </p>
+      {% if hb and hero.project_titel %}
+      <a class="fhero__bron" href="{{ url_for('projecten') }}#{{ hero.project_id }}">Project <b>{{ hero.project_titel }}</b></a>
+      {% endif %}
     </div>
+  </div>
+</section>
+
+<!-- ================= FEITEN (terughoudende trust, direct onder de hero) === -->
+<section class="feiten" aria-label="BEBO in het kort">
+  <div class="wrap feiten__rij">
+    <div class="fact reveal"><div class="n">25+</div><div class="l">jaar ervaring in de bouwsector</div></div>
+    <div class="fact reveal" data-delay="1"><div class="n">Ø900</div><div class="l">mm max. boordiameter</div></div>
+    <div class="fact reveal" data-delay="2"><div class="n">Schoon en stofarm</div><div class="l">water- en stofafzuiging</div></div>
+    <div class="fact reveal" data-delay="3"><div class="n">Zuid-Holland</div><div class="l">werkgebied</div></div>
   </div>
 </section>
 
 <!-- ================= DIENSTEN ================= -->
 <section class="section" id="diensten">
-  <div class="wrap">
-    <div class="sec-head reveal">
+  <div class="wrap diensten-blok">
+    <div class="sec-head sec-head--zij reveal">
       <div>
         <p class="eyebrow">Werkzaamheden</p>
         <h2 class="display">Professioneel boor-, zaag- en sloopwerk.</h2>
@@ -85,8 +106,7 @@
     </div>
     <article class="uitgelicht">
       <div class="uitgelicht__beeld reveal">
-        {{ project_beeld(uitgelicht, sizes="(max-width: 760px) 80vw, (max-width: 1000px) 100vw, (max-width: 1240px) 55vw, 670px", galerij=True) }}
-        {{ project_fotolijst(uitgelicht) }}
+        {{ project_beeld(uitgelicht, sizes="(max-width: 1000px) 100vw, 64vw", link=url_for('projecten') ~ '#' ~ uitgelicht.id) }}
       </div>
       <div class="uitgelicht__info reveal" data-delay="1">
         {% if uitgelicht.label %}<p class="project__meta"><span class="project__cat">{{ uitgelicht.label }}</span></p>{% endif %}
@@ -139,24 +159,25 @@
 
 <!-- ================= WAAROM BEBO (proof + één quote) ================= -->
 <section class="section" id="waarom">
-  <div class="wrap proof__grid">
-    <div class="reveal">
+  <div class="wrap waarom">
+    <div class="waarom__kop reveal">
       <p class="eyebrow">Waarom BEBO</p>
       <h2 class="display">Vakwerk dat je<br>niet hoeft over te doen.</h2>
-      <ul class="usp">
-        <li><span class="usp__plus">+</span><div><b>Schoon en stofarm.</b> <span>Waterkoeling met vakkundige wateropvang, of droogtechniek met afzuiging op locaties waar gebruik van water geen optie is.</span></div></li>
-        <li><span class="usp__plus">+</span><div><b>Strak maatwerk.</b> <span>Diamanttechniek voor een strak resultaat.</span></div></li>
-        <li><span class="usp__plus">+</span><div><b>Betrouwbare planning.</b> <span>Eén vast aanspreekpunt, korte lijnen en een team dat nakomt wat is afgesproken.</span></div></li>
-      </ul>
     </div>
 
     <!-- Beeldvlak. De quote hier stond eerder was niet van een echte klant en is
          daarom weggelaten; zet hem terug zodra er een echte referentie is
          (REVIEWS in app.py vult de reviewsectie automatisch). -->
-    <figure class="quote quote--img reveal" data-delay="1">
+    <figure class="quote quote--img waarom__beeld reveal" data-delay="1">
       <img class="quote__img" src="{{ url_for('static', filename='img/ploeg.jpg') }}"
-           alt="Handen met een diamantkernboor">
+           alt="Handen met een diamantkernboor" loading="lazy">
     </figure>
+
+    <ul class="usp usp--rij">
+      <li class="reveal"><span class="usp__plus">+</span><div><b>Schoon en stofarm.</b> <span>Waterkoeling met vakkundige wateropvang, of droogtechniek met afzuiging op locaties waar gebruik van water geen optie is.</span></div></li>
+      <li class="reveal" data-delay="1"><span class="usp__plus">+</span><div><b>Strak maatwerk.</b> <span>Diamanttechniek voor een strak resultaat.</span></div></li>
+      <li class="reveal" data-delay="2"><span class="usp__plus">+</span><div><b>Betrouwbare planning.</b> <span>Eén vast aanspreekpunt, korte lijnen en een team dat nakomt wat is afgesproken.</span></div></li>
+    </ul>
   </div>
 </section>
 
@@ -211,14 +232,14 @@
     <div class="reveal">
       <p class="eyebrow">Werkgebied</p>
       <h2 class="display">Thuis in<br>Zuid-Holland.</h2>
-      <p class="lede" style="margin-top:1.4rem;">Gevestigd op de Industrieweg in Berkel en Rodenrijs. Van daaruit werken we door heel Zuid-Holland.</p>
+      <p class="lede regio__lede">Gevestigd op de Industrieweg in Berkel en Rodenrijs. Van daaruit werken we door heel Zuid-Holland.</p>
       <div class="regio__list">
         <span>Zuid-Holland</span><span>Vestiging Berkel en Rodenrijs</span>
       </div>
     </div>
     <div class="regio__panel reveal" data-delay="1">
       <img class="regio__img" src="{{ url_for('static', filename='img/werkgebied-beton.jpg') }}"
-           alt="Gekernde sparing in beton">
+           alt="Gekernde sparing in beton" loading="lazy">
     </div>
   </div>
 </section>
@@ -316,8 +337,4 @@
 
 {% endblock %}
 
-{% block scripts %}
-{% if uitgelicht and uitgelicht.fotos %}
-<script src="{{ url_for('static', filename='js/carrousel.js') }}" defer></script>
-{% endif %}
-{% endblock %}
+{% block scripts %}{% endblock %}

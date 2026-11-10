@@ -123,31 +123,35 @@ signals (feiten + één quote i.p.v. logo-soup). Signatuur: het rode richtkruis 
 ```
 bronmateriaal/projectfotos/<id>/<nr>.jpg        originelen van de klant (niet aanpassen;
                                                 gaan niet mee in de deploy). <nr> volgt
-                                                de nummering van de klant: Tr01.jpg -> 01.jpg
-static/img/projecten/<id>/<nr>-<code>-640.webp  cover op kleine schermen
-                          <nr>-<code>-960.webp  cover / carrousel
-                          <nr>-<code>-1280.webp cover op scherpe schermen / carrousel
-                          <nr>-<code>-groot.webp carrousel op grote schermen (max. 2000 px)
+                                                de nummering van de klant: Tr01.jpg -> 01.jpg.
+                                                .png en .webp mogen ook (zoals aangeleverd).
+static/img/projecten/<id>/<nr>-<code>-640.webp  fotoraster op telefoons
+                          <nr>-<code>-960.webp  fotoraster / cover
+                          <nr>-<code>-1280.webp fotoraster op scherpe schermen / vergroting op telefoons
+                          <nr>-<code>-groot.webp vergroting op grote schermen (max. 2000 px)
 static/img/projecten/fotos.json                 afmetingen + code, geschreven door het script
 tools/projectfotos.py                           maakt de webversies uit de originelen
-static/js/carrousel.js                          fotocarrousel (opent bij klik op een projectbeeld)
+static/js/lightbox.js                           foto vergroten (klik in het fotoraster)
 ```
 - **Foto toevoegen:** zet het origineel in de bronmap, draai `pip install pillow` en
   `python tools/projectfotos.py`, en voeg in `PROJECTEN` bij `fotos` een regel `(nr, alt)` toe.
-- Volgorde: foto 01 is de cover en de eerste foto in de carrousel; daarna 02, 03, ...
+- **Volgorde:** de volgorde van de regels bij `fotos` is de volgorde op de site (fotoraster,
+  vergroting, teller). Omwisselen = alleen die regels omdraaien; bestanden niet hernoemen.
+  De eerste regel is de cover (tenzij `"cover"` iets anders zegt).
   `<code>` is een vingerafdruk van de inhoud: krijgt een nummer een andere foto, dan
   verandert ook de bestandsnaam, zodat geen browser of cache de oude foto blijft tonen.
-- **Andere cover:** zet `"cover": "<nr>"` bij het project (standaard is dat 01). `cover_focus` bepaalt welk
-  deel in het liggende 3:2-kader valt, bijv. `"50% 20%"` voor de bovenkant van een staande foto.
+- **Andere cover:** zet `"cover": "<nr>"` bij het project. `cover_focus` bepaalt welk deel in het
+  liggende 3:2-kader valt (alleen gebruikt voor het uitgelichte project op de homepage).
 - De webversies zijn alleen verkleind en als WebP opgeslagen: geen filters, geen uitsneden,
-  geen opnamegegevens. In de carrousel staat de actieve foto altijd helemaal in beeld.
+  geen opnamegegevens.
 - Uitzondering: op foto 02 van Kinderopvang Partou is een strook met kinderfoto's, namen
   en geboortedata onherkenbaar gemaakt (`ONHERKENBAAR` in het script). Het origineel staat
   niet in de repository (`.gitignore`).
-- Laden: de homepage haalt alleen de cover van het uitgelichte project op. `/projecten`
-  haalt de covers op; de overige foto's pas als iemand de carrousel opent, en dan alleen
-  de foto's rond de actieve.
-- Carrousel: actieve foto recht in het midden, buren 60° per stap gedraaid (schaal 0,85),
-  naar het voorbeeld van React Bits Pro "Skewed Carousel" (eigen code, geen afhankelijkheden).
-  `BeboCarrousel.open({titel, fotos, start, opener})` is ook los te gebruiken.
+- **/projecten:** per project de tekst en alle foto's als statisch raster. Rijen zijn even hoog,
+  elke foto in zijn eigen verhouding (geen uitsnede); ca. 3 naast elkaar op brede schermen,
+  2 op tablet, 1 kolom op telefoons. Foto's laden pas als ze in beeld komen (`loading="lazy"`).
+  Klik op een foto opent hem groot (pijltjes, Esc, vegen); zonder JavaScript opent de grote foto.
+  De eerdere Skewed Carousel is op verzoek van de klant (10-11-2026) verwijderd.
+- **Homepage:** het project met `"uitgelicht": True` staat tussen Werkzaamheden en Werkwijze;
+  de cover linkt naar dat project op `/projecten`.
 - Een project zonder foto's krijgt automatisch het tijdelijke beeldvlak ("Foto volgt").

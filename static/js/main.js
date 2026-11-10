@@ -17,10 +17,19 @@
   var float = document.getElementById('float');
   var ident = document.getElementById('ident');
   var footerEl = document.querySelector('.footer');
+  // Fotohero (homepage): de menubalk blijft transparant boven de foto en wordt
+  // pas wit zodra de hero bijna uit beeld is. Elders: na 24px, zoals altijd.
+  var fhero = document.querySelector('.fhero');
+  var heroMedia = fhero && fhero.querySelector('.fhero__media');
   function onScroll() {
     var y = window.scrollY || window.pageYOffset;
     var smHeader = document.querySelector('.staggered-menu-header');
-    if (smHeader) smHeader.classList.toggle('is-scrolled', y > 24);
+    var drempel = fhero ? Math.max(24, fhero.offsetHeight - (smHeader ? smHeader.offsetHeight : 80)) : 24;
+    if (smHeader) smHeader.classList.toggle('is-scrolled', y > drempel);
+    // Subtiele parallax op de herofoto (niet bij prefers-reduced-motion)
+    if (heroMedia && !reduce && y <= fhero.offsetHeight) {
+      heroMedia.style.transform = 'translate3d(0,' + (y * 0.18).toFixed(1) + 'px,0)';
+    }
     var atFooter = footerEl && footerEl.getBoundingClientRect().top < window.innerHeight - 40;
     if (float) float.classList.toggle('show', y > window.innerHeight * 0.4 && !atFooter);
     if (ident) ident.classList.toggle('show', !!atFooter);

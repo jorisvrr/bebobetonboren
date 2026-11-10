@@ -67,7 +67,7 @@
 
   {% block head %}{% endblock %}
 </head>
-<body>
+<body{% block body_class %}{% endblock %}>
 
   <!-- Navigatie: React Bits StaggeredMenu (gemount via de bundel in main.jsx).
        Zonder JS valt de site terug op het eenvoudige menu hieronder. -->
@@ -94,11 +94,11 @@
   <footer class="footer">
     <div class="wrap footer__grid">
       <div class="footer__col">
-        <a href="{{ url_for('index') }}" class="brand" style="margin-bottom:1.4rem;">
+        <a href="{{ url_for('index') }}" class="brand footer__brand">
           <img class="brand__logo" src="{{ url_for('static', filename='img/brand/bebo-logo.svg') }}"
                alt="BEBO Betonboren &amp; Zagen" width="186" height="64">
         </a>
-        <p style="color:var(--ink-2);max-width:32ch;">Boren, zagen, frezen en precisiesloop in beton en steen. Schoon, recht en op maat - voor aannemers, installateurs en particulieren.</p>
+        <p class="footer__over">Boren, zagen, frezen en precisiesloop in beton en steen.<br>Voor aannemers, installateurs en particulieren.</p>
       </div>
 
       <div class="footer__col">
@@ -114,6 +114,15 @@
         {% for d in diensten %}
         <a href="{{ url_for('index') }}#diensten">{{ d.titel }}</a>
         {% endfor %}
+      </div>
+
+      <div class="footer__col">
+        <h4>Navigatie</h4>
+        <a href="{{ url_for('index') }}#werkwijze">Werkwijze</a>
+        <a href="{{ url_for('index') }}#waarom">Waarom BEBO</a>
+        <a href="{{ url_for('index') }}#werkgebied">Werkgebied</a>
+        <a href="{{ url_for('projecten') }}">Projecten</a>
+        <a href="{{ url_for('index') }}#offerte">Offerte aanvragen</a>
       </div>
     </div>
     <div class="wrap footer__bottom">

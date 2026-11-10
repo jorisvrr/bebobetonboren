@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Maakt de webversies van de projectfoto's.
 
-Bron (onaangeroerd):  bronmateriaal/projectfotos/<project-id>/<nr>.jpg
+Bron (onaangeroerd):  bronmateriaal/projectfotos/<project-id>/<nr>.jpg (of .png/.webp)
 Uitvoer (voor de site): static/img/projecten/<project-id>/<nr>-<code>-640.webp
                                                           <nr>-<code>-960.webp
                                                           <nr>-<code>-1280.webp
@@ -40,6 +40,9 @@ DOEL = ROOT / "static" / "img" / "projecten"
 BREEDTES = (640, 960, 1280)  # covers en kleinere schermen
 GROOT_MAX = 2000            # langste zijde van de grote versie
 KWALITEIT = 72
+# Bronbestanden worden aangenomen zoals de klant ze aanlevert (geen omzetting
+# vooraf naar JPEG, dus geen extra kwaliteitsverlies).
+BRONTYPES = {".jpg", ".jpeg", ".png", ".webp"}
 
 # (project-id, nr) -> vlakken (x0, y0, x1, y1) in pixels van het origineel die
 # onherkenbaar worden gemaakt (persoonsgegevens van derden).
@@ -89,7 +92,8 @@ def main():
         uit = DOEL / map_.name
         uit.mkdir(parents=True, exist_ok=True)
         maten[map_.name] = {}
-        for bron in sorted(map_.glob("*.jpg")):
+        bronnen = [f for f in map_.iterdir() if f.suffix.lower() in BRONTYPES]
+        for bron in sorted(bronnen):
             nr = bron.stem
             vlakken = ONHERKENBAAR.get((map_.name, nr), [])
             c = code(bron, vlakken)

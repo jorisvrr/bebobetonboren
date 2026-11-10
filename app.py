@@ -174,7 +174,7 @@ REVIEW_RATING = None
 #   De webversies maak je met:  python tools/projectfotos.py
 #   "fotos":       (nr, alt) in de volgorde van de klant; alt beschrijft wat er
 #                  te zien is, zonder iets toe te voegen dat we niet weten.
-#                  Deze volgorde geldt overal: cover, galerij, carrousel, teller.
+#                  Deze volgorde geldt overal: cover, fotoraster, vergroting, teller.
 #   "cover":       (optioneel) nr van een andere foto als hoofdbeeld; zonder
 #                  "cover" is de eerste foto (01) het hoofdbeeld.
 #   "cover_focus": welk deel van de foto in het liggende coverkader valt
@@ -237,8 +237,10 @@ PROJECTEN = [
         ],
         "cover_focus": "50% 50%",
         "fotos": [
-            ("01", "Medewerker op de rolsteiger bij de leidingen in de pompruimte"),
+            # 10-11-2026: op verzoek van de klant 02 vóór 01 (02 is nu de cover).
+            # Alleen de volgorde hier is omgedraaid; de bestanden houden hun nummer.
             ("02", "Pompruimte met de grote leidingen en afsluiters, met een steiger ernaast"),
+            ("01", "Medewerker op de rolsteiger bij de leidingen in de pompruimte"),
             ("03", "Pompruimte met een rolsteiger naast de leidingen en afsluiters"),
             ("04", "Pompinstallatie achter de glazen gevel, met rolsteigers en een bouwstofzuiger"),
             ("05", "Zicht door een geboorde doorvoer op een leidingflens"),
@@ -275,13 +277,14 @@ PROJECTEN = [
             "Inzagen van nieuwe deuropening.",
         ],
         "cover_focus": "50% 50%",
-        # De inzending noemt 6 foto's; er zijn er 5 aangeleverd (01-05).
+        # De inzending noemt 6 foto's; 01-05 kwamen eerst, 06 (D06.webp) op 10-11-2026.
         "fotos": [
             ("01", "Hal met gefreesde leidingsleuven en geboorde dozen in de wanden"),
             ("02", "Twee verticale sleuven met een geboorde doos in een gestucte wand"),
             ("03", "Twee gefreesde sleuven in een gestucte wand, van dichtbij"),
             ("04", "Verticale sleuf en geboorde dozen naast een boogdeur op de overloop"),
             ("05", "Nieuw ingezaagde deuropening met stalen latei"),
+            ("06", "Het monumentale pand van buiten, gezien vanaf de straat"),
         ],
         "uitgelicht": False,
     },
@@ -460,7 +463,7 @@ def _projecten() -> list:
         q = dict(p)
         q["nr"] = "{:02d}".format(i)
         q["label"] = (p.get("categorie") or "").strip().rstrip(".")
-        # foto's in de volgorde van de klant; de carrousel opent op de cover
+        # foto's in de volgorde van de klant (zo staan ze ook in het fotoraster)
         fotos = [f for f in (_foto(p["id"], nr, alt) for nr, alt in p.get("fotos", [])) if f]
         cover = next((f for f in fotos if f["nr"] == p.get("cover")), fotos[0] if fotos else None)
         q["cover"] = cover
@@ -469,6 +472,106 @@ def _projecten() -> list:
         q["cover_focus"] = p.get("cover_focus") or "50% 50%"
         uit.append(q)
     return uit
+
+
+# ---------------------------------------------------------------------------
+# HERO (homepage) - fotografische hero over de volle breedte.
+# HERO_BEELDEN: de beschikbare herofoto's. HERO["beeld"] kiest welke er staat;
+# terugzetten = die ene regel aanpassen. Vergelijken zonder code:
+#   /?hero=vmbo-trias            (vorige herofoto)
+#   /?hero=bedrijfshal-voorpagina (proef 10-11-2026)
+# Per foto:
+#   "project"/"nr": de projectfoto waar hij bij hoort (label "Project ..." en,
+#        zonder "eigen_beeld", de onbewerkte webversies van die projectfoto).
+#   "focus" / "focus_mobiel": welk deel in beeld blijft (object-position).
+#   "eigen_beeld": aangeleverde/bewerkte versie in static/img/hero/:
+#        {"bronnen": [(pad, breedte_px), ...], "breedte": px, "hoogte": px,
+#         "alt": "...", "mobiel": pad (optioneel, eigen staande uitsnede)}
+# Kop: "nieuw" is het voorstel bij de foto; "goedgekeurd" is de eerder door de
+# klant goedgekeurde kop. Vergelijken via /?kop=goedgekeurd.
+# ---------------------------------------------------------------------------
+HERO_BEELDEN = {
+    # PROEF 10-11-2026 (Marco): "Voorpagina.jpg" uit de mail. Dit is een
+    # bewerkte versie van bedrijfshal-foto 02 (persoon en losse plaat achterin
+    # weggehaald door de aanleverende partij), 896x1195. Ongewijzigd overgenomen,
+    # alleen als WebP opgeslagen. Bron: bronmateriaal/hero/voorpagina-2026-11-10.jpg
+    "bedrijfshal-voorpagina": {
+        "project": "bedrijfshal-berkel-en-rodenrijs",
+        "nr": "02",
+        "focus": "50% 40%",        # hal + boorset in beeld; de foto is staand
+        "focus_mobiel": "38% 50%",
+        "eigen_beeld": {
+            "bronnen": [("img/hero/bedrijfshal-voorpagina-90a469-groot.webp", 896)],
+            "breedte": 896,
+            "hoogte": 1195,
+        },
+    },
+    # Vorige herofoto (3-11-2026): geretoucheerde VMBO Trias 01
+    # (bron: bronmateriaal/hero/vmbo-trias-01-retouche.png, 1672x941). De
+    # linkerrand (ca. 30px, bijgemaakt door de retoucheertool) is weggesneden.
+    "vmbo-trias": {
+        "project": "vmbo-trias",
+        "nr": "01",
+        "focus": "62% 50%",
+        "focus_mobiel": "72% 50%",
+        "eigen_beeld": {
+            "bronnen": [
+                ("img/hero/vmbo-trias-01-1660b7-960.webp", 960),
+                ("img/hero/vmbo-trias-01-1660b7-1280.webp", 1280),
+                ("img/hero/vmbo-trias-01-1660b7-groot.webp", 1638),
+            ],
+            "breedte": 1638,
+            "hoogte": 941,
+        },
+    },
+}
+HERO = {
+    "beeld": "bedrijfshal-voorpagina",   # vorige: "vmbo-trias"
+    "kop": "nieuw",
+}
+HERO_KOPPEN = {
+    "nieuw": "Een sterke start voor ieder project.",
+    "goedgekeurd": "BEBO voor een professionele start van ieder project.",
+}
+
+
+def _hero():
+    """Beeld en kop voor de homepage-hero."""
+    naam = request.args.get("hero", HERO["beeld"])
+    if naam not in HERO_BEELDEN:
+        naam = HERO["beeld"]
+    keuze = HERO_BEELDEN[naam]
+    project = next((p for p in PROJECTEN if p["id"] == keuze["project"]), None)
+    alt = dict(project["fotos"]).get(keuze["nr"], "") if project else ""
+    beeld = keuze.get("eigen_beeld")
+    if beeld:
+        beeld = dict(beeld)
+        beeld.setdefault("alt", alt)
+    else:
+        f = _foto(keuze["project"], keuze["nr"], alt)
+        if f:
+            beeld = {
+                "bronnen": [(f["klein"], 640), (f["midden"], 960), (f["ruim"], 1280),
+                            (f["groot"], f["breedte"])],
+                "breedte": f["breedte"],
+                "hoogte": f["hoogte"],
+                "alt": alt,
+            }
+    if beeld:
+        # src (zonder srcset-ondersteuning): de grootste versie tot 1280px
+        passend = [b for b in beeld["bronnen"] if b[1] <= 1280] or beeld["bronnen"][:1]
+        beeld["src"] = passend[-1][0]
+    kop = request.args.get("kop", HERO["kop"])
+    if kop not in HERO_KOPPEN:
+        kop = HERO["kop"]
+    return {
+        "beeld": beeld,
+        "focus": keuze["focus"],
+        "focus_mobiel": keuze["focus_mobiel"],
+        "kop": HERO_KOPPEN[kop],
+        "project_id": keuze["project"],
+        "project_titel": project["titel"] if project else "",
+    }
 
 
 def _uitgelicht():
@@ -661,6 +764,7 @@ def index():
         reviews=REVIEWS,
         review_rating=REVIEW_RATING,
         uitgelicht=_uitgelicht(),
+        hero=_hero(),
     )
 
 
