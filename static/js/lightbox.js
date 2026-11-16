@@ -2,7 +2,11 @@
    Elk project toont één coverfoto. Klik op de cover opent deze weergave met
    álle foto's van dat project, in de volgorde van de klant, beginnend bij de
    cover. Eenvoudig: één foto tegelijk, volledig in beeld, rustige vervaging.
-   Geen 3D, geen automatische overgangen.
+   Geen 3D, geen automatische overgangen. Geen bijschriften onder de foto.
+
+   Cursor: de rode richtkruis-cursor van de site valt onder de <dialog> (die
+   staat in de 'top layer' van de browser). Daarom krijgt de bezoeker binnen
+   deze weergave de gewone muiscursor terug (zie style.css, html.lb-open).
 
    Opmaak (templates/_project.html):
      <a data-lightbox-open="<project-id>" data-start="<index>" href="<grote foto>">  cover
@@ -34,7 +38,7 @@
     return { titel: lijst.getAttribute('data-titel') || '', fotos: fotos };
   }
 
-  var dlg, img, titel, teller, onderschrift, knopVorige, knopVolgende, fig;
+  var dlg, img, titel, teller, knopVorige, knopVolgende, fig;
   var groep = null, index = 0, opener = null, wisselTimer = null;
 
   function knop(cls, label, pad) {
@@ -72,10 +76,9 @@
     img = document.createElement('img');
     img.decoding = 'async';
     img.addEventListener('load', function () { img.classList.add('is-geladen'); });
-    onderschrift = document.createElement('figcaption');
-    onderschrift.className = 'lb__onderschrift';
+    // Geen bijschrift onder de foto (wens klant 16-11-2026); de beschrijving
+    // blijft wel als alt-tekst voor schermlezers.
     fig.appendChild(img);
-    fig.appendChild(onderschrift);
 
     knopVorige = knop('lb__vorige', 'Vorige foto', 'M15 5l-7 7 7 7');
     knopVolgende = knop('lb__volgende', 'Volgende foto', 'M9 5l7 7-7 7');
@@ -137,7 +140,6 @@
     img.alt = f.alt;
     img.src = bron(f);
     if (img.complete && img.naturalWidth) img.classList.add('is-geladen');
-    onderschrift.textContent = f.alt;
     teller.textContent = ('0' + (index + 1)).slice(-2) + ' / ' + ('0' + n).slice(-2);
     // buren alvast laden
     if (n > 1) {

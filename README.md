@@ -156,12 +156,14 @@ static/js/lightbox.js                           fotoweergave (klik op een coverf
 - Uitzondering: op foto 02 van Kinderopvang Partou is een strook met kinderfoto's, namen
   en geboortedata onherkenbaar gemaakt (`ONHERKENBAAR` in het script). Het origineel staat
   niet in de repository (`.gitignore`).
-- **/projecten:** per project één grote coverfoto (3:2, `cover_focus`) met nummer, categorie,
-  titel, tekst en het aantal foto's. Op brede schermen wisselt de foto per project van kant.
-  De overige foto's staan in een verborgen lijst; een klik op de cover opent de fotoweergave
-  (`static/js/lightbox.js`) met alle foto's van dat project, beginnend bij de cover: vorige/volgende,
-  pijltjes, Esc, vegen, teller "01 / 08", rustige vervaging. Zonder JavaScript opent de grote foto.
-  De eerdere Skewed Carousel en het fotoraster (10-11-2026) zijn op verzoek van de klant vervangen.
+- **/projecten:** projecten in een raster van twee naast elkaar (telefoon: één kolom), in de
+  vaste volgorde. Per project één coverfoto (3:2, `cover_focus`, met het aantal foto's) en
+  daaronder nummer, categorie, titel en tekst. De overige foto's staan in een verborgen lijst;
+  een klik op de cover opent de fotoweergave (`static/js/lightbox.js`) met alle foto's van dat
+  project, beginnend bij de cover: vorige/volgende, pijltjes, Esc, vegen, teller "01 / 08",
+  rustige vervaging, geen bijschriften onder de foto's. In de fotoweergave staat de gewone
+  muiscursor (de richtkruis-cursor valt onder de modale dialog). Zonder JavaScript opent de
+  grote foto.
 - **Homepage:** het project met `"uitgelicht": True` staat tussen Werkzaamheden en Werkwijze;
   de cover opent dezelfde fotoweergave.
 - Een project zonder foto's krijgt automatisch het tijdelijke beeldvlak ("Foto volgt").

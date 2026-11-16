@@ -161,7 +161,8 @@ REVIEW_RATING = None
 # ---------------------------------------------------------------------------
 # PROJECTEN - één bron voor de homepage (uitgelicht project) en /projecten.
 # Titels, categorieën en teksten zijn letterlijk van de klant (inzendingen
-# BEBO-20261013-1405-5ZKN, -1422-5Z0T, -1535-F4WN en BEBO-20261015-1438-E0BZ).
+# BEBO-20261013-1405-5ZKN, -1422-5Z0T, -1535-F4WN en BEBO-20261015-1438-E0BZ;
+# categorieën en teksten bijgewerkt volgens de klant op 16-11-2026).
 # Niets bijverzinnen.
 #
 # Volgorde: precies de volgorde van deze lijst, door de klant vastgesteld
@@ -191,7 +192,7 @@ PROJECTEN = [
         "titel": "VMBO Trias",
         "categorie": "Verduurzamingsproject.",
         "tekst": [
-            "Boren van nieuwe doorvoeren en sparingen t.b.v. de nieuwe klimaatinstallatie.",
+            "Boren van nieuwe doorvoeren en sparingen voor de nieuwe klimaatinstallatie.",
         ],
         "cover_focus": "50% 50%",
         "fotos": [
@@ -211,7 +212,7 @@ PROJECTEN = [
         "titel": "Openbare basisschool De Vogelenzang",
         "categorie": "Verduurzamingsproject.",
         "tekst": [
-            "Doorvoeren geboord t.b.v. de nieuwe klimaatinstallatie.",
+            "Doorvoeren geboord voor de nieuwe klimaatinstallatie.",
         ],
         "cover_focus": "50% 50%",
         "fotos": [
@@ -225,15 +226,14 @@ PROJECTEN = [
             ("08", "Entree van de school met twee doorvoeren in de gevel ernaast"),
             ("09", "Twee doorvoeren in de buitengevel, gezien vanuit de tuin"),
         ],
-        "uitgelicht": False,
+        "uitgelicht": True,
     },
     {
         "id": "rwzi-heinenoord",
         "titel": "Rioolwaterzuiveringsinstallatie Heinenoord",
         "categorie": "Renovatie pompinstallatie.",
         "tekst": [
-            "Nieuwe doorvoeren geboord t.b.v. renovatie van de "
-            "rioolwaterzuiveringsinstallatie.",
+            "Nieuwe doorvoeren geboord tijdens de renovatie van de rioolwaterzuiveringsinstallatie.",
         ],
         "cover_focus": "50% 50%",
         "fotos": [
@@ -254,9 +254,8 @@ PROJECTEN = [
         "titel": "VvE Dedemsvaartweg Den Haag",
         "categorie": "Renovatie rookgaskanalen.",
         "tekst": [
-            "Zagen van sparingen t.b.v. renovatie van de bestaande rookgaskanalen.",
-            "Werkzaamheden zijn uitgevoerd d.m.v. droogtechniek m.b.v. bronafzuiging "
-            "en een aparte luchtreiniger om stofoverlast tot een minimum te beperken.",
+            "Zagen van sparingen voor bereikbaarheid van de bestaande rookgaskanalen.",
+            "Werkzaamheden zijn uitgevoerd door toepassing van droogtechniek met behulp van bronafzuiging en een aparte luchtreiniger om stofoverlast tot een minimum te beperken.",
         ],
         "cover_focus": "50% 61%",
         "fotos": [
@@ -266,14 +265,14 @@ PROJECTEN = [
             ("04", "Gezaagde sparing in een wand met zicht op de kanalen in de schacht"),
             ("05", "Zicht in de schacht met de rookgaskanalen"),
         ],
-        "uitgelicht": True,
+        "uitgelicht": False,
     },
     {
         "id": "monumentaal-gebouw-schiedam",
         "titel": "Monumentaal gebouw Schiedam",
         "categorie": "Voorbereiding elektra en bouwkundige aanpassingen.",
         "tekst": [
-            "Boren van dozen en frezen van sleuven t.b.v. elektra.",
+            "Boren van dozen en frezen van sleuven ter voorbereiding van de nieuwe elektra installatie.",
             "Inzagen van nieuwe deuropening.",
         ],
         "cover_focus": "50% 50%",
@@ -314,9 +313,9 @@ PROJECTEN = [
     {
         "id": "innocent-drinks",
         "titel": "Innocent drinks",
-        "categorie": "Aanpassingen technische installaties",
+        "categorie": "Uitbreiding technische installaties",
         "tekst": [
-            "Doorvoeren geboord t.b.v. aanpassingen aan de technische installaties.",
+            "Doorvoeren geboord voor uitbreiding van de technische installaties.",
         ],
         "cover_focus": "50% 50%",
         "fotos": [
@@ -334,8 +333,7 @@ PROJECTEN = [
         "titel": "Kernboringen Nieuwbouwproject RottaNova Rotterdam",
         "categorie": "Kernboringen Rotterdam Centrum",
         "tekst": [
-            "Kernboringen uitgevoerd die worden gebruikt om de kwaliteit van de "
-            "heipalen te bepalen.",
+            "Kernboringen uitgevoerd die worden gebruikt om de kwaliteit van de heipalen te bepalen.",
         ],
         "cover_focus": "50% 50%",
         "fotos": [
@@ -352,9 +350,7 @@ PROJECTEN = [
         "titel": "Bedrijfshal Berkel en Rodenrijs",
         "categorie": "Voorbereiding technische installaties",
         "tekst": [
-            "Boren van 26 stuks nieuwe doorvoeren door een 50cm dikke betonvloer. "
-            "In het onderliggende magazijn alle kernen opgevangen met behulp van "
-            "een stempelbak.",
+            "Boren van 26 stuks nieuwe doorvoeren door een 50cm dikke betonvloer. In het onderliggende magazijn alle kernen opgevangen met behulp van een stempelbak.",
         ],
         "cover_focus": "50% 50%",
         "fotos": [
@@ -396,10 +392,9 @@ PROJECTEN = [
     {
         "id": "diverse-kruipluiken",
         "titel": "Kruipluiken",
-        "categorie": "",  # niet aangeleverd door de klant; geen label tonen
+        "categorie": "Aanbrengen van sparingen voor bereikbaarheid van de kruipruimtes.",
         "tekst": [
-            "Aanbrengen van sparingen t.b.v. bereikbaarheid kruipruimtes incl. leveren "
-            "en monteren van kruipluiken.",
+            "Werkzaamheden worden uitgevoerd door middel van boren en/of zagen van een sparing incl. het leveren en monteren van kruipluiken.",
         ],
         "cover_focus": "50% 21%",
         "fotos": [

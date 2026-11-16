@@ -1047,38 +1047,32 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 .pagina-kop h1.display { font-size: clamp(2.1rem, 1.2rem + 2.9vw, 4.4rem); font-weight: 700; }
 .projecten-sectie { padding-top: clamp(2.8rem, 5vw, 4.5rem); }
 
-/* Eén project per rij: één grote coverfoto + tekst. De overige foto's zitten
-   achter de cover (klik = fotoweergave). Op brede schermen wisselt de foto
-   per project van kant (.project--om), tekst onderaan uitgelijnd. */
-.project {
-  padding-block: clamp(2.5rem, 1.5rem + 3vw, 5.5rem);
-  border-top: 1px solid var(--line);
-  scroll-margin-top: 5.5rem;
+/* Projectenraster: twee projecten naast elkaar (vanaf tablet), één kolom op
+   telefoons. Per project één coverfoto (3:2), daaronder nummer, categorie,
+   titel en tekst. De overige foto's zitten achter de cover (fotoweergave). */
+.projecten {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: clamp(1.25rem, .5rem + 2.4vw, 3.5rem);
+  row-gap: clamp(2.5rem, 1.5rem + 2.8vw, 5rem);
+  align-items: start;
 }
-.project:first-child { border-top: 0; padding-top: 0; }
-.project__beeld { margin-bottom: clamp(1.2rem, 1rem + 1vw, 1.8rem); }
+.project { scroll-margin-top: 5.5rem; }
+.project__beeld { margin-bottom: clamp(1rem, .8rem + .6vw, 1.4rem); }
 .project h2 {
-  font-size: clamp(1.6rem, 1.1rem + 1.3vw, 2.6rem);
-  margin: 0 0 .8rem;
+  font-size: clamp(1.4rem, 1.05rem + .9vw, 2.1rem);
+  margin: 0 0 .7rem;
   overflow-wrap: break-word;
   hyphens: auto;
 }
 .project__kop > p:not(.project__meta) {
   color: var(--ink-2);
-  margin: 0 0 .7rem;
-  max-width: 46ch;
+  margin: 0 0 .6rem;
+  max-width: 52ch;
   text-wrap: pretty;
 }
-@media (min-width: 1000px) {
-  .project {
-    display: grid;
-    grid-template-columns: minmax(0, 8fr) minmax(0, 4fr);
-    column-gap: calc(var(--col-gap) * 2);
-    align-items: end;
-  }
-  .project__beeld { margin-bottom: 0; }
-  .project--om { grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); }
-  .project--om .project__beeld { order: 2; }
+@media (max-width: 699px) {
+  .projecten { grid-template-columns: 1fr; }
 }
 
 /* Homepage: cover als link naar het project, met het aantal foto's linksonder */
@@ -1103,6 +1097,18 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
    Eén foto volledig in beeld op een donkere achtergrond. Geen 3D, geen
    automatische overgangen. */
 html.lb-open { overflow: hidden; }
+/* Cursor in de fotoweergave. De site verbergt de systeemcursor zodra de rode
+   richtkruis-cursor actief is (html.bebo-cursor-on, bebo-overrides.css). Een
+   modale <dialog> staat in de 'top layer' boven alle andere elementen, dus
+   ook boven die richtkruis-cursor: zonder deze regels zou er in de
+   fotoweergave helemaal geen cursor zichtbaar zijn. Hier dus tijdelijk de
+   gewone cursor (en een handje op de knoppen); na sluiten komt het
+   richtkruis vanzelf terug. */
+html.lb-open.bebo-cursor-on .lb,
+html.lb-open.bebo-cursor-on .lb * { cursor: default !important; }
+html.lb-open.bebo-cursor-on .lb .lb__knop,
+html.lb-open.bebo-cursor-on .lb .lb__knop * { cursor: pointer !important; }
+html.lb-open .target-cursor-wrapper { visibility: hidden !important; }
 .lb {
   position: fixed; inset: 0;
   width: 100%; height: 100%;
@@ -1147,7 +1153,7 @@ html.lb-open { overflow: hidden; }
   min-height: 0;
   height: 100%;
   display: grid;
-  grid-template-rows: minmax(0, 1fr) auto;
+  grid-template-rows: minmax(0, 1fr);
   justify-items: center;
   align-items: center;
   padding: 0 calc(var(--gutter) + 60px) clamp(1rem, 3vh, 2rem);
@@ -1163,13 +1169,6 @@ html.lb-open { overflow: hidden; }
   transition: opacity .18s ease;
 }
 .lb__beeld img.is-geladen { opacity: 1; }
-.lb__onderschrift {
-  margin-top: .8rem;
-  font-size: .9rem;
-  color: rgba(255, 255, 255, .78);
-  text-align: center;
-  max-width: 60ch;
-}
 .lb__knop {
   width: 48px; height: 48px;
   display: grid; place-items: center;
@@ -1191,7 +1190,6 @@ html.lb-open { overflow: hidden; }
   /* telefoon: foto over de volle breedte, knoppen onderin */
   .lb { grid-template-rows: auto minmax(0, 1fr) auto; }
   .lb__beeld { padding: 0 0 1rem; }
-  .lb__onderschrift { padding-inline: var(--gutter); font-size: .85rem; }
   .lb__vorige, .lb__volgende { position: static; transform: none; }
   .lb__vorige { grid-row: 3; justify-self: start; margin: 0 0 1rem var(--gutter); }
   .lb__volgende { grid-row: 3; justify-self: end; margin: 0 var(--gutter) 1rem 0; }

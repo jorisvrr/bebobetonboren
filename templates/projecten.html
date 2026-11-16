@@ -19,16 +19,16 @@
 </section>
 
 <!-- ================= PROJECTEN: overzicht ================= -->
-<!-- Per project één grote coverfoto; klik = alle foto's in de fotoweergave
-     (volgorde van de klant, zie PROJECTEN in app.py). Op brede schermen
-     wisselt de foto per project van kant. -->
+<!-- Twee projecten naast elkaar (telefoon: één kolom). Per project één
+     coverfoto; klik = alle foto's in de fotoweergave (volgorde van de klant,
+     zie PROJECTEN in app.py). -->
 <section class="section projecten-sectie">
   <div class="wrap">
     <div class="projecten">
       {% for p in projecten %}
-      <article class="project{% if loop.index is even %} project--om{% endif %}" id="{{ p.id }}" aria-labelledby="{{ p.id }}-titel">
+      <article class="project" id="{{ p.id }}" aria-labelledby="{{ p.id }}-titel">
         <div class="project__beeld">
-          {{ project_beeld(p, lazy=loop.index > 1, sizes="(max-width: 999px) 100vw, 62vw", viewer=True) }}
+          {{ project_beeld(p, lazy=loop.index > 2, sizes="(max-width: 699px) 100vw, 48vw", viewer=True) }}
         </div>
         <div class="project__kop">
           <p class="project__meta">
