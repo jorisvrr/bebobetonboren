@@ -1,7 +1,8 @@
 /* BEBO - automatische diashow achter de homepage-hero (17-11-2026).
    - Elke `data-interval` ms (4000) de volgende foto, met een rustige
      vervaging van `data-overgang` ms (800). Loopt rond.
-   - Geen pijlen, stippen, slepen, vegen of klikken; geen pauze bij hover.
+   - Geen pijlen, slepen, vegen of klikken; geen pauze bij hover. Rechtsonder
+     staan stipjes (één per foto) die alleen aangeven welke foto in beeld is.
    - Alleen de eerste foto laadt direct (in de HTML). Elke volgende foto wordt
      pas geladen terwijl de huidige in beeld is, en er wordt pas gewisseld als
      die foto echt klaar is (geen flits, geen lege achtergrond).
@@ -25,8 +26,7 @@
   var overgang = +media.getAttribute('data-overgang') || 800;
   media.style.setProperty('--dia-overgang', overgang + 'ms');
 
-  var bron = document.querySelector('.fhero__bron');
-  var bronTitel = bron && bron.querySelector('b');
+  var stippen = Array.prototype.slice.call(document.querySelectorAll('.fhero__stip'));
   var index = 0;
   var timer = null;
   var opruimTimer = null;
@@ -54,21 +54,8 @@
     });
   }
 
-  function toonLabel(img) {
-    if (!bron || !bronTitel) return;
-    var id = img.getAttribute('data-project-id');
-    var titel = img.getAttribute('data-project-titel');
-    bron.classList.add('is-wissel');
-    setTimeout(function () {
-      if (id && titel) {
-        bron.setAttribute('href', '/projecten#' + id);
-        bronTitel.textContent = titel;
-        bron.classList.remove('is-leeg');
-      } else {
-        bron.classList.add('is-leeg');   // foto hoort niet bij een project
-      }
-      bron.classList.remove('is-wissel');
-    }, Math.min(300, overgang / 2));
+  function toonStip(n) {
+    stippen.forEach(function (s, i) { s.classList.toggle('is-actief', i === n); });
   }
 
   function toon(n) {
@@ -82,7 +69,7 @@
     nieuw.classList.add('is-actief');    // vervaagt erin, bovenop
     index = n;
     opruimTimer = setTimeout(function () { oud.classList.remove('is-vorige'); }, overgang + 50);
-    toonLabel(nieuw);
+    toonStip(n);
     laad(dias[(n + 1) % dias.length]);  // alvast de volgende
   }
 

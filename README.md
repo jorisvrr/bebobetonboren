@@ -55,7 +55,8 @@ data/leads.jsonl       binnengekomen aanvragen (één JSON per regel)
   andere foto achter de herotekst, rustige vervaging (0,8 s), loopt rond, geen bediening.
   Volgorde: de herofoto (`HERO["beeld"]`), dan de extra foto's (nu `VP-2.jpg`), dan per project de
   eerste foto in de goedgekeurde volgorde; dubbele foto's worden overgeslagen. Per foto een
-  `focus` voor desktop en voor staande schermen. Alleen de eerste foto laadt direct; elke
+  `focus` voor desktop en voor staande schermen. Rechtsonder per foto een stipje (wit = de
+  foto in beeld); puur ter aanduiding, niet klikbaar. Geen projectnamen in de hero. Alleen de eerste foto laadt direct; elke
   volgende pas terwijl de vorige in beeld is. Bij `prefers-reduced-motion` blijft de eerste staan.
   Uitzetten: `"aan": False`.
 - **Waarom BEBO**: `static/img/site/waarom-bebo-*.webp` (bron: `bronmateriaal/site/`), in de eigen

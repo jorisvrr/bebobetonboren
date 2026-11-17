@@ -476,7 +476,7 @@ def _projecten() -> list:
 #   /?hero=vmbo-trias            (vorige herofoto)
 #   /?hero=bedrijfshal-voorpagina (proef 10-11-2026)
 # Per foto:
-#   "project"/"nr": de projectfoto waar hij bij hoort (label "Project ..." en,
+#   "project"/"nr": de projectfoto waar hij bij hoort (o.a. tegen dubbele foto's in de diashow en,
 #        zonder "eigen_beeld", de onbewerkte webversies van die projectfoto).
 #   "focus" / "focus_mobiel": welk deel in beeld blijft (object-position).
 #   "eigen_beeld": aangeleverde/bewerkte versie in static/img/hero/:
@@ -537,7 +537,8 @@ HERO_KOPPEN = {
 # de eerste foto in de goedgekeurde volgorde (Heinenoord dus 02). Dubbele
 # foto's (dezelfde projectfoto als de herofoto) worden overgeslagen.
 # "focus": welk deel van de foto in beeld blijft (desktop / staand scherm).
-# Uitzetten: "aan": False (dan alleen de herofoto, zoals voorheen).
+# Rechtsonder in de hero staat per foto een stipje (alleen ter aanduiding).
+# Uitzetten: "aan": False (dan alleen de herofoto, zonder stipjes).
 # ---------------------------------------------------------------------------
 HERO_DIASHOW = {
     "aan": True,

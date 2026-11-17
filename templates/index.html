@@ -30,7 +30,7 @@
          data-srcset="{% for pad, w in db.bronnen %}{{ url_for('static', filename=pad) }} {{ w }}w{{ ', ' if not loop.last }}{% endfor %}"
          alt="" aria-hidden="true"{% endif %}
          sizes="(max-aspect-ratio: 4/5) 200vh, (max-aspect-ratio: 16/9) 185vh, 100vw" width="{{ db.breedte }}" height="{{ db.hoogte }}"
-         decoding="async" data-project-id="{{ d.project_id }}" data-project-titel="{{ d.project_titel }}"
+         decoding="async"
          style="--focus: {{ d.focus }}; --focus-m: {{ d.focus_mobiel }};">
     {% endfor %}
   </div>
@@ -56,8 +56,12 @@
         <span class="crosshair" aria-hidden="true"><span class="h"></span><span class="v"></span></span>
         Zuid-Holland
       </p>
-      {% if hb and hero.project_titel %}
-      <a class="fhero__bron" href="{{ url_for('projecten') }}#{{ hero.project_id }}">Project <b>{{ hero.project_titel }}</b></a>
+      {% if hero.dias|length > 1 %}
+      <!-- Stipjes van de diashow: puur ter aanduiding (geen knoppen), één per
+           foto; diashow.js zet de actieve stip. -->
+      <div class="fhero__stippen" aria-hidden="true">
+        {% for d in hero.dias %}<span class="fhero__stip{% if loop.first %} is-actief{% endif %}"></span>{% endfor %}
+      </div>
       {% endif %}
     </div>
   </div>
@@ -188,6 +192,26 @@
       <li class="reveal" data-delay="1"><span class="usp__plus">+</span><div><b>Strak maatwerk.</b> <span>Diamanttechniek voor een strak resultaat.</span></div></li>
       <li class="reveal" data-delay="2"><span class="usp__plus">+</span><div><b>Betrouwbare planning.</b> <span>Eén vast aanspreekpunt, korte lijnen en een team dat nakomt wat is afgesproken.</span></div></li>
     </ul>
+  </div>
+</section>
+
+<!-- ================= WERKGEBIED (compact) =================
+     Smalle lichtgrijze band tussen twee witte secties (Waarom BEBO en Voor
+     wie): kop links, korte tekst en de twee kerngegevens rechts. Geen beeld,
+     geen animatie. Tekst: de eerder door de klant goedgekeurde zin. -->
+<section class="werkgebied" id="werkgebied" aria-labelledby="werkgebied-kop">
+  <div class="wrap werkgebied__in">
+    <div class="werkgebied__kop">
+      <p class="eyebrow">Werkgebied</p>
+      <h2 class="display" id="werkgebied-kop">Thuis in Zuid-Holland.</h2>
+    </div>
+    <div class="werkgebied__tekst">
+      <p>Gevestigd op de Industrieweg in Berkel en Rodenrijs. Van daaruit werken we door heel Zuid-Holland.</p>
+      <dl class="werkgebied__gegevens">
+        <div><dt>Vestiging</dt><dd>Berkel en Rodenrijs</dd></div>
+        <div><dt>Werkgebied</dt><dd>Heel Zuid-Holland</dd></div>
+      </dl>
+    </div>
   </div>
 </section>
 
