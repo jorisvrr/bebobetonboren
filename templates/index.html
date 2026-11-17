@@ -18,16 +18,21 @@
 {% set hb = hero.beeld %}
 <section class="fhero" aria-labelledby="hero-kop">
   {% if hb %}
-  <div class="fhero__media">
-    <picture>
-      {% if hb.mobiel %}<source media="(max-width: 760px)" srcset="{{ url_for('static', filename=hb.mobiel) }}">{% endif %}
-      <img class="fhero__img"
-           src="{{ url_for('static', filename=hb.src) }}"
-           srcset="{% for pad, w in hb.bronnen %}{{ url_for('static', filename=pad) }} {{ w }}w{{ ', ' if not loop.last }}{% endfor %}"
-           sizes="(max-aspect-ratio: 4/5) 200vh, (max-aspect-ratio: 16/9) 185vh, 100vw" width="{{ hb.breedte }}" height="{{ hb.hoogte }}"
-           alt="{{ hb.alt }}" fetchpriority="high" decoding="async"
-           style="--focus: {{ hero.focus }}; --focus-m: {{ hero.focus_mobiel }};">
-    </picture>
+  <!-- Diashow (static/js/diashow.js): elke 4 s een andere foto, rustige
+       vervaging, geen bediening. Alleen de eerste foto laadt direct; de
+       volgende pas vlak voor hij aan de beurt is. Zie HERO_DIASHOW in app.py. -->
+  <div class="fhero__media" data-diashow data-interval="{{ hero.interval }}" data-overgang="{{ hero.overgang }}">
+    {% for d in hero.dias %}{% set db = d.beeld %}
+    <img class="fhero__img{% if loop.first %} is-actief{% endif %}"
+         {% if loop.first %}src="{{ url_for('static', filename=db.src) }}"
+         srcset="{% for pad, w in db.bronnen %}{{ url_for('static', filename=pad) }} {{ w }}w{{ ', ' if not loop.last }}{% endfor %}"
+         alt="{{ db.alt }}" fetchpriority="high"{% else %}data-src="{{ url_for('static', filename=db.src) }}"
+         data-srcset="{% for pad, w in db.bronnen %}{{ url_for('static', filename=pad) }} {{ w }}w{{ ', ' if not loop.last }}{% endfor %}"
+         alt="" aria-hidden="true"{% endif %}
+         sizes="(max-aspect-ratio: 4/5) 200vh, (max-aspect-ratio: 16/9) 185vh, 100vw" width="{{ db.breedte }}" height="{{ db.hoogte }}"
+         decoding="async" data-project-id="{{ d.project_id }}" data-project-titel="{{ d.project_titel }}"
+         style="--focus: {{ d.focus }}; --focus-m: {{ d.focus_mobiel }};">
+    {% endfor %}
   </div>
   {% endif %}
   <div class="fhero__shade" aria-hidden="true"></div>
@@ -166,12 +171,16 @@
       <h2 class="display">Vakwerk dat je<br>niet hoeft over te doen.</h2>
     </div>
 
-    <!-- Beeldvlak. De quote hier stond eerder was niet van een echte klant en is
-         daarom weggelaten; zet hem terug zodra er een echte referentie is
-         (REVIEWS in app.py vult de reviewsectie automatisch). -->
-    <figure class="quote quote--img waarom__beeld reveal" data-delay="1">
-      <img class="quote__img" src="{{ url_for('static', filename='img/ploeg.jpg') }}"
-           alt="Handen met een diamantkernboor" loading="lazy">
+    <!-- Foto van de klant (Waarom BEBO.jpg, 17-11-2026): twee strak geboorde
+         doorvoeren met de uitzetlijnen nog zichtbaar. Eigen verhouding, geen
+         filter. Bron: bronmateriaal/site/waarom-bebo-2026-11-17.jpg -->
+    <figure class="waarom__beeld reveal" data-delay="1">
+      <img class="waarom__foto"
+           src="{{ url_for('static', filename='img/site/waarom-bebo-f7a3bd-1600.webp') }}"
+           srcset="{{ url_for('static', filename='img/site/waarom-bebo-f7a3bd-960.webp') }} 960w, {{ url_for('static', filename='img/site/waarom-bebo-f7a3bd-1600.webp') }} 1600w, {{ url_for('static', filename='img/site/waarom-bebo-f7a3bd-2400.webp') }} 2400w"
+           sizes="(max-width: 1000px) 100vw, 58vw" width="2400" height="1160"
+           alt="Twee strak geboorde doorvoeren in een lichte wand, met de uitzetlijnen en blauwe markering nog zichtbaar"
+           loading="lazy" decoding="async">
     </figure>
 
     <ul class="usp usp--rij">
@@ -182,7 +191,7 @@
   </div>
 </section>
 
-<!-- ================= WERKGEBIED ================= -->
+<!-- ================= VOOR WIE ================= -->
 <section class="section" id="sectoren">
   <div class="wrap">
     <div class="sec-head reveal">
@@ -227,23 +236,6 @@
   </div>
 </section>
 {% endif %}
-
-<section class="section werkwijze" id="werkgebied">
-  <div class="wrap regio__grid">
-    <div class="reveal">
-      <p class="eyebrow">Werkgebied</p>
-      <h2 class="display">Thuis in<br>Zuid-Holland.</h2>
-      <p class="lede regio__lede">Gevestigd op de Industrieweg in Berkel en Rodenrijs. Van daaruit werken we door heel Zuid-Holland.</p>
-      <div class="regio__list">
-        <span>Zuid-Holland</span><span>Vestiging Berkel en Rodenrijs</span>
-      </div>
-    </div>
-    <div class="regio__panel reveal" data-delay="1">
-      <img class="regio__img" src="{{ url_for('static', filename='img/werkgebied-beton.jpg') }}"
-           alt="Gekernde sparing in beton" loading="lazy">
-    </div>
-  </div>
-</section>
 
 <!-- ================= OFFERTE (donkere conversiesectie) ================= -->
 <section class="section offerte" id="offerte">
@@ -339,6 +331,9 @@
 {% endblock %}
 
 {% block scripts %}
+{% if hero.dias and hero.dias|length > 1 %}
+<script src="{{ url_for('static', filename='js/diashow.js') }}" defer></script>
+{% endif %}
 {% if uitgelicht and uitgelicht.fotos %}
 <script src="{{ url_for('static', filename='js/lightbox.js') }}" defer></script>
 {% endif %}

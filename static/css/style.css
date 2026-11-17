@@ -50,7 +50,13 @@
 
 * { box-sizing: border-box; }
 
-html { scroll-behavior: smooth; }
+html {
+  scroll-behavior: smooth;
+  /* telefoons mogen kleine tekst niet zelf vergroten (anders lijken labels
+     van gelijke grootte ineens verschillend) */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 
 body {
@@ -364,7 +370,7 @@ body.menu-open .burger span:nth-child(3) { transform: translateY(-5px) rotate(-4
 .hero__tag b { color: var(--red); }
 
 /* Echte foto's (cover) ------------------------------------------------- */
-.hero__img, .regio__img {
+.hero__img {
   position: absolute; inset: 0;
   width: 100%; height: 100%;
   object-fit: cover;
@@ -557,36 +563,6 @@ body.menu-open .burger span:nth-child(3) { transform: translateY(-5px) rotate(-4
 /* ======================================================================== */
 /* WERKGEBIED                                                               */
 /* ======================================================================== */
-.regio__grid {
-  display: grid;
-  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
-  gap: clamp(2.5rem, 2rem + 4vw, 8rem);
-  align-items: center;
-}
-.regio__lede { margin-top: 1.4rem; }
-.regio__list {
-  display: flex; flex-wrap: wrap; gap: .7rem;
-  margin-top: 2.2rem;
-}
-.regio__list span {
-  font-family: var(--f-mono);
-  font-size: .82rem;
-  border: 1px solid var(--line);
-  padding: .5rem .9rem;
-  border-radius: 2px;
-  color: var(--ink-2);
-}
-.regio__panel {
-  aspect-ratio: 16 / 11;
-  background: var(--concrete);
-  border: 1px solid var(--line);
-  position: relative;
-  overflow: hidden;
-}
-.regio__panel .tex { position: absolute; inset: 0; }
-.regio__pin {
-  position: absolute; top: 44%; left: 48%;
-}
 
 /* ======================================================================== */
 /* OFFERTE - donkere conversiesectie, één focuspunt                        */
@@ -805,7 +781,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
   .hero__marker { display: none; }
   .diensten { grid-template-columns: repeat(2, 1fr); }
   .steps { grid-template-columns: repeat(2, 1fr); row-gap: 2.6rem; }
-  .proof__grid, .regio__grid, .offerte__grid { grid-template-columns: 1fr; }
+  .proof__grid, .offerte__grid { grid-template-columns: 1fr; }
   .quote { order: -1; }
 }
 
@@ -1008,15 +984,23 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 
 /* Nummer + categorie boven de projecttitel */
 .project__meta {
-  display: flex; flex-wrap: wrap; align-items: baseline;
-  gap: .4rem .9rem;
+  /* nummer en categorie: precies dezelfde letter (maat, gewicht, spatiëring)
+     en dezelfde basislijn; een lange categorie loopt naast het nummer door
+     in plaats van eronder te springen */
+  --meta-maat: .72rem;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: baseline;
+  column-gap: .9rem;
   margin: 0 0 .7rem;
   font-family: var(--f-mono);
-  font-size: .72rem;
+  font-size: var(--meta-maat);
+  line-height: 1.5;
   letter-spacing: .04em;
 }
+.project__nr, .project__cat { font-size: var(--meta-maat); font-weight: 400; }
 .project__nr { color: var(--muted); }
-.project__cat { color: var(--red); }
+.project__cat { color: var(--red); text-wrap: pretty; }
 
 /* --- Homepage: één uitgelicht project ------------------------------------ */
 .uitgelicht-sectie { padding-top: 0; }
@@ -1041,8 +1025,32 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 .uitgelicht__cta { margin-top: 1.3rem; }
 
 /* --- /projecten ---------------------------------------------------------- */
-.pagina-kop { padding-top: clamp(8rem, 16vh, 11rem); padding-bottom: 0; }
+.pagina-kop { padding-top: clamp(6.5rem, 13vh, 9rem); padding-bottom: 0; }
 .pagina-kop .sec-head { margin-bottom: 0; }
+/* Terug naar home (alleen /projecten): klein, op het raster, rood accent */
+.terug {
+  display: inline-flex; align-items: center; gap: .6rem;
+  min-height: 44px;                 /* ruim raakvlak op telefoons */
+  margin: 0 0 clamp(1.2rem, 2.5vw, 2rem);
+  padding: .55rem .9rem .55rem .7rem;
+  font-family: var(--f-body);
+  font-weight: 600;
+  font-size: .95rem;
+  color: var(--ink);
+  text-decoration: none;
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  transition: border-color .25s var(--ease), color .25s var(--ease);
+}
+.terug svg { color: var(--red); transition: transform .25s var(--ease); }
+.terug:hover { border-color: var(--ink); }
+.terug:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+@media (hover: hover) and (pointer: fine) {
+  .terug:hover svg { transform: translateX(-3px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .terug, .terug svg { transition: none; }
+}
 /* Paginakop in de maat van de sectiekoppen, geen aparte grote hero */
 .pagina-kop h1.display { font-size: clamp(2.1rem, 1.2rem + 2.9vw, 4.4rem); font-weight: 700; }
 .projecten-sectie { padding-top: clamp(2.8rem, 5vw, 4.5rem); }
@@ -1235,17 +1243,28 @@ html.lb-open .target-cursor-wrapper { visibility: hidden !important; }
 .fhero__media {
   position: absolute; inset: 0;
   z-index: -2;
+  pointer-events: none;   /* diashow: klikken, slepen of vegen doet niets */
 }
-.fhero__media picture { display: block; width: 100%; height: 100%; }
+/* Diashow (static/js/diashow.js): alle foto's op dezelfde plek; de actieve
+   vervaagt erin bovenop de vorige, die volledig zichtbaar blijft tot de
+   overgang klaar is. Eén vaste verloop-laag (.fhero__shade) voor alle foto's. */
 .fhero__img {
+  position: absolute; inset: 0;
   display: block;
   width: 100%; height: 100%;
   object-fit: cover;
   object-position: var(--focus, 50% 50%);
+  opacity: 0;
+  transition: opacity var(--dia-overgang, .8s) ease-in-out;
 }
-/* Rustige binnenkomst: de foto zakt 4% terug naar ware grootte */
+.fhero__img.is-vorige { opacity: 1; z-index: 1; transition: none; }
+.fhero__img.is-actief { opacity: 1; z-index: 2; }
+/* Rustige binnenkomst: de eerste foto zakt 4% terug naar ware grootte */
 @media (prefers-reduced-motion: no-preference) {
-  .js .fhero__img { animation: fhero-in 1.8s var(--ease) both; }
+  .js .fhero__img:first-child { animation: fhero-in 1.8s var(--ease) both; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fhero__img { transition: none; }
 }
 @keyframes fhero-in { from { transform: scale(1.04); } to { transform: none; } }
 
@@ -1257,7 +1276,7 @@ html.lb-open .target-cursor-wrapper { visibility: hidden !important; }
      De bovenrand achter het menu zit op de menubalk zelf (zie verderop). */
   background:
     /* 1. tekstvlak linksonder: het donkerst, achter kop en alinea */
-    radial-gradient(ellipse 70% 80% at 0% 72%, rgba(10, 11, 14, .76) 0%, rgba(10, 11, 14, .54) 48%, rgba(10, 11, 14, 0) 100%),
+    radial-gradient(ellipse 70% 80% at 0% 72%, rgba(10, 11, 14, .8) 0%, rgba(10, 11, 14, .6) 48%, rgba(10, 11, 14, 0) 100%),
     /* 2. zachte richting van links naar rechts, loopt uit voor het onderwerp */
     linear-gradient(90deg, rgba(10, 11, 14, .5) 0%, rgba(10, 11, 14, .3) 34%, rgba(10, 11, 14, 0) 62%),
     /* 3. onderrand: draagt de voetregel (werkgebied + project) */
@@ -1344,6 +1363,10 @@ html.lb-open .target-cursor-wrapper { visibility: hidden !important; }
   transition: color .3s var(--ease);
 }
 .fhero__bron b { color: #fff; font-weight: 600; margin-left: .35rem; }
+/* het projectlabel wisselt mee met de diashow */
+.fhero__bron { transition: color .3s var(--ease), opacity .3s ease; }
+.fhero__bron.is-wissel { opacity: 0; }
+.fhero__bron.is-leeg { opacity: 0; visibility: hidden; }
 .fhero__bron:hover { color: #fff; }
 /* Menu boven de foto: wit label zolang de balk transparant is (de balk wordt
    pas wit na de hero, zie main.js). Kantlijn gelijk aan de inhoud. */
@@ -1384,7 +1407,7 @@ body .sm-toggle {
 body .sm-toggle:hover { border-color: var(--ink); }
 .heeft-fotohero .staggered-menu-wrapper:not([data-open]) .staggered-menu-header:not(.is-scrolled) .sm-toggle {
   color: #fff !important;
-  background: rgba(16, 17, 20, .55);
+  background: rgba(16, 17, 20, .74);   /* ook leesbaar boven lichte diashowfoto's */
   border-color: rgba(255, 255, 255, .34);
 }
 .heeft-fotohero .staggered-menu-wrapper:not([data-open]) .staggered-menu-header:not(.is-scrolled) .sm-toggle:hover {
@@ -1488,9 +1511,16 @@ body .sm-icon-line { transition: opacity .2s ease; }
   row-gap: clamp(2.5rem, 1.5rem + 3vw, 5rem);
   align-items: end;
 }
-.waarom__kop { grid-column: 1 / span 6; }
-.waarom__beeld { grid-column: 7 / -1; margin: 0; }
-.waarom__beeld.quote--img .quote__img { height: clamp(280px, 10rem + 18vw, 600px); }
+.waarom__kop { grid-column: 1 / span 5; }
+.waarom__beeld { grid-column: 6 / -1; margin: 0; }
+/* foto van de klant in zijn eigen verhouding (geen uitsnede, geen filter) */
+.waarom__foto {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 2400 / 1160;
+  background: var(--paper-2);
+}
 .usp--rij {
   grid-column: 1 / -1;
   display: grid;

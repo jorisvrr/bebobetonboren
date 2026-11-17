@@ -22,7 +22,6 @@ if (menuRoot) {
     { label: 'Werkzaamheden', ariaLabel: 'Naar werkzaamheden', link: '/#diensten' },
     { label: 'Werkwijze', ariaLabel: 'Naar werkwijze', link: '/#werkwijze' },
     { label: 'Waarom BEBO', ariaLabel: 'Naar waarom BEBO', link: '/#waarom' },
-    { label: 'Werkgebied', ariaLabel: 'Naar werkgebied', link: '/#werkgebied' },
     { label: 'Projecten', ariaLabel: 'Naar de projecten', link: '/projecten' },
     { label: 'Offerte aanvragen', ariaLabel: 'Naar offerteformulier', link: '/#offerte' }
   ];
@@ -60,7 +59,7 @@ if (!isTouch && !prefersReduced) {
   document.body.appendChild(host);
   createRoot(host).render(
     <TargetCursor
-      targetSelector=".btn, .textlink, .dienst, .chip, .regio__list span, .sm-toggle, .sm-panel-item, .sm-socials-link, .sm-logo, .pbeeld--klik, .sc__knop, .float a, .offerte__direct a, .footer__col a, .ident, .field input, .field textarea, .field select"
+      targetSelector=".btn, .textlink, .terug, .dienst, .chip, .sm-toggle, .sm-panel-item, .sm-socials-link, .sm-logo, .pbeeld--klik, .sc__knop, .float a, .offerte__direct a, .footer__col a, .ident, .field input, .field textarea, .field select"
       spinDuration={3}
       hideDefaultCursor={false}
     />

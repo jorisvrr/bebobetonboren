@@ -162,7 +162,7 @@ REVIEW_RATING = None
 # PROJECTEN - één bron voor de homepage (uitgelicht project) en /projecten.
 # Titels, categorieën en teksten zijn letterlijk van de klant (inzendingen
 # BEBO-20261013-1405-5ZKN, -1422-5Z0T, -1535-F4WN en BEBO-20261015-1438-E0BZ;
-# categorieën en teksten bijgewerkt volgens de klant op 16-11-2026).
+# categorieën en teksten bijgewerkt volgens de klant op 16-11-2026; Partou 17-11-2026).
 # Niets bijverzinnen.
 #
 # Volgorde: precies de volgorde van deze lijst, door de klant vastgesteld
@@ -292,7 +292,7 @@ PROJECTEN = [
         "titel": "Kinderopvang Partou",
         "categorie": "Verduurzamingsproject.",
         "tekst": [
-            "Doorvoeren geboord t.b.v. de nieuwe klimaatinstallatie.",
+            "Doorvoeren geboord voor de nieuwe klimaatinstallatie.",
         ],
         "cover_focus": "50% 50%",
         # 02: strook met kinderfoto's onherkenbaar gemaakt (tools/projectfotos.py)
@@ -521,7 +521,7 @@ HERO_BEELDEN = {
     },
 }
 HERO = {
-    "beeld": "bedrijfshal-voorpagina",   # vorige: "vmbo-trias"
+    "beeld": "bedrijfshal-voorpagina",   # vorige: "vmbo-trias"; eerste foto van de diashow
     "kop": "nieuw",
 }
 HERO_KOPPEN = {
@@ -529,12 +529,75 @@ HERO_KOPPEN = {
     "goedgekeurd": "BEBO voor een professionele start van ieder project.",
 }
 
+# ---------------------------------------------------------------------------
+# HERO-DIASHOW (17-11-2026, wens klant): achter de herotekst wisselt de foto
+# elke 4 seconden met een rustige vervaging (static/js/diashow.js). Geen
+# pijlen, stippen, slepen of vegen; klikken doet niets.
+# Volgorde: 1) de herofoto hierboven, 2) VP-2.jpg van de klant, 3) per project
+# de eerste foto in de goedgekeurde volgorde (Heinenoord dus 02). Dubbele
+# foto's (dezelfde projectfoto als de herofoto) worden overgeslagen.
+# "focus": welk deel van de foto in beeld blijft (desktop / staand scherm).
+# Uitzetten: "aan": False (dan alleen de herofoto, zoals voorheen).
+# ---------------------------------------------------------------------------
+HERO_DIASHOW = {
+    "aan": True,
+    "interval": 4000,   # ms per foto
+    "overgang": 800,    # ms vervaging
+    "extra": [
+        {   # VP-2.jpg (17-11-2026): vijf kernboringen in een betonwand, 3000x990.
+            # Bron: bronmateriaal/hero/vp-2-2026-11-17.jpg (ongewijzigd).
+            "naam": "vp-2",
+            "focus": "34% 50%",   # alle vijf boringen in beeld
+            "focus_mobiel": "46% 50%",
+            "eigen_beeld": {
+                "bronnen": [
+                    ("img/hero/vp-2-df61ea-960.webp", 960),
+                    ("img/hero/vp-2-df61ea-1600.webp", 1600),
+                    ("img/hero/vp-2-df61ea-groot.webp", 3000),
+                ],
+                "breedte": 3000,
+                "hoogte": 990,
+                "alt": "Vijf kernboringen op een rij in een betonwand",
+            },
+        },
+    ],
+    # per project: (desktop, staand scherm); niet genoemd = midden
+    "focus": {
+        "vmbo-trias": ("62% 50%", "72% 50%"),
+        "obs-de-vogelenzang": ("55% 58%", "52% 50%"),
+        "rwzi-heinenoord": ("55% 45%", "56% 50%"),
+        "vve-dedemsvaartweg-den-haag": ("50% 58%", "50% 50%"),
+        "monumentaal-gebouw-schiedam": ("55% 42%", "50% 50%"),
+        "kinderopvang-partou": ("50% 48%", "45% 50%"),
+        "innocent-drinks": ("50% 45%", "50% 50%"),
+        "rottanova-rotterdam": ("50% 55%", "50% 50%"),
+        "bedrijfshal-berkel-en-rodenrijs": ("50% 52%", "40% 50%"),
+        "leidingsleuven": ("50% 62%", "50% 50%"),
+        "diverse-kruipluiken": ("50% 32%", "50% 40%"),
+    },
+}
 
-def _hero():
-    """Beeld en kop voor de homepage-hero."""
-    naam = request.args.get("hero", HERO["beeld"])
-    if naam not in HERO_BEELDEN:
-        naam = HERO["beeld"]
+
+def _bronnen_van_foto(f):
+    return {
+        "bronnen": [(f["klein"], 640), (f["midden"], 960), (f["ruim"], 1280),
+                    (f["groot"], f["breedte"])],
+        "breedte": f["breedte"],
+        "hoogte": f["hoogte"],
+        "alt": f["alt"],
+    }
+
+
+def _met_src(beeld):
+    """src (zonder srcset-ondersteuning): de grootste versie tot 1280px."""
+    if beeld:
+        passend = [b for b in beeld["bronnen"] if b[1] <= 1280] or beeld["bronnen"][:1]
+        beeld["src"] = passend[-1][0]
+    return beeld
+
+
+def _hero_dia(naam):
+    """De herofoto (uit HERO_BEELDEN) als eerste dia."""
     keuze = HERO_BEELDEN[naam]
     project = next((p for p in PROJECTEN if p["id"] == keuze["project"]), None)
     alt = dict(project["fotos"]).get(keuze["nr"], "") if project else ""
@@ -544,28 +607,69 @@ def _hero():
         beeld.setdefault("alt", alt)
     else:
         f = _foto(keuze["project"], keuze["nr"], alt)
-        if f:
-            beeld = {
-                "bronnen": [(f["klein"], 640), (f["midden"], 960), (f["ruim"], 1280),
-                            (f["groot"], f["breedte"])],
-                "breedte": f["breedte"],
-                "hoogte": f["hoogte"],
-                "alt": alt,
-            }
-    if beeld:
-        # src (zonder srcset-ondersteuning): de grootste versie tot 1280px
-        passend = [b for b in beeld["bronnen"] if b[1] <= 1280] or beeld["bronnen"][:1]
-        beeld["src"] = passend[-1][0]
+        beeld = _bronnen_van_foto(f) if f else None
+    return {
+        "beeld": _met_src(beeld),
+        "focus": keuze["focus"],
+        "focus_mobiel": keuze["focus_mobiel"],
+        "project_id": keuze["project"],
+        "project_titel": project["titel"] if project else "",
+        "sleutel": (keuze["project"], keuze["nr"]),
+    }
+
+
+def _diashow(eerste):
+    """Alle dia's: herofoto, extra foto's, eerste foto van elk project."""
+    dias = [eerste]
+    for x in HERO_DIASHOW["extra"]:
+        dias.append({
+            "beeld": _met_src(dict(x["eigen_beeld"])),
+            "focus": x["focus"],
+            "focus_mobiel": x["focus_mobiel"],
+            "project_id": "",
+            "project_titel": "",
+            "sleutel": ("extra", x["naam"]),
+        })
+    gezien = {d["sleutel"] for d in dias}
+    for p in _projecten():
+        if not p["fotos"]:
+            continue
+        f = p["fotos"][0]   # eerste foto in de goedgekeurde volgorde
+        if (p["id"], f["nr"]) in gezien:
+            continue
+        gezien.add((p["id"], f["nr"]))
+        fd, fm = HERO_DIASHOW["focus"].get(p["id"], ("50% 50%", "50% 50%"))
+        dias.append({
+            "beeld": _met_src(_bronnen_van_foto(f)),
+            "focus": fd,
+            "focus_mobiel": fm,
+            "project_id": p["id"],
+            "project_titel": p["titel"],
+            "sleutel": (p["id"], f["nr"]),
+        })
+    return [d for d in dias if d["beeld"]]
+
+
+def _hero():
+    """Beeld(en) en kop voor de homepage-hero."""
+    naam = request.args.get("hero", HERO["beeld"])
+    if naam not in HERO_BEELDEN:
+        naam = HERO["beeld"]
+    eerste = _hero_dia(naam)
+    dias = _diashow(eerste) if HERO_DIASHOW["aan"] else [eerste]
     kop = request.args.get("kop", HERO["kop"])
     if kop not in HERO_KOPPEN:
         kop = HERO["kop"]
     return {
-        "beeld": beeld,
-        "focus": keuze["focus"],
-        "focus_mobiel": keuze["focus_mobiel"],
+        "beeld": eerste["beeld"],
+        "focus": eerste["focus"],
+        "focus_mobiel": eerste["focus_mobiel"],
         "kop": HERO_KOPPEN[kop],
-        "project_id": keuze["project"],
-        "project_titel": project["titel"] if project else "",
+        "project_id": eerste["project_id"],
+        "project_titel": eerste["project_titel"],
+        "dias": dias,
+        "interval": HERO_DIASHOW["interval"],
+        "overgang": HERO_DIASHOW["overgang"],
     }
 
 

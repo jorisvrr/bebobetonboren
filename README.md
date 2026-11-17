@@ -34,7 +34,7 @@ python app.py
 app.py                 Flask-app + offerte-afhandeling (validatie, opslag, mail)
 templates/
   base.html            nav, footer, zwevend belknopje, betontextuur-filter
-  index.html           hero, diensten, werkwijze, waarom, werkgebied, offerte
+  index.html           hero (diashow), diensten, uitgelicht project, werkwijze, waarom, voor wie, offerte
   bedankt.html         bevestiging na verzenden
   404.html
 static/css/style.css   volledige stijl (design-tokens bovenin)
@@ -50,20 +50,20 @@ data/leads.jsonl       binnengekomen aanvragen (één JSON per regel)
 - **Bedrijfsgegevens**: het dict `BEDRIJF` in `app.py`.
 - **Teksten**: in `templates/index.html`.
 
-## Foto's toevoegen (sterk aangeraden)
-Nu staan er gegenereerde betonpanelen als placeholder. Vervang ze door echte
-projectfoto's voor maximale impact:
-1. Zet je foto's in `static/img/`.
-2. In `index.html`, vervang in `.hero__panel` en `.regio__panel` het
-   `<div class="tex" ...>` door bijv.:
-   ```html
-   <img src="{{ url_for('static', filename='img/jouw-foto.jpg') }}"
-        alt="Kernboring in betonvloer" style="width:100%;height:100%;object-fit:cover">
-   ```
-   en haal de `aria-hidden` weg als de foto inhoudelijk is.
+## Foto's op de homepage
+- **Hero-diashow** (`HERO_DIASHOW` in `app.py`, `static/js/diashow.js`): elke 4 seconden een
+  andere foto achter de herotekst, rustige vervaging (0,8 s), loopt rond, geen bediening.
+  Volgorde: de herofoto (`HERO["beeld"]`), dan de extra foto's (nu `VP-2.jpg`), dan per project de
+  eerste foto in de goedgekeurde volgorde; dubbele foto's worden overgeslagen. Per foto een
+  `focus` voor desktop en voor staande schermen. Alleen de eerste foto laadt direct; elke
+  volgende pas terwijl de vorige in beeld is. Bij `prefers-reduced-motion` blijft de eerste staan.
+  Uitzetten: `"aan": False`.
+- **Waarom BEBO**: `static/img/site/waarom-bebo-*.webp` (bron: `bronmateriaal/site/`), in de eigen
+  verhouding, zonder filter.
+- Nieuwe extra foto: bron in `bronmateriaal/`, WebP-versies (960/1600/volle breedte) in
+  `static/img/hero/`, en een regel bij `HERO_DIASHOW["extra"]`.
 
 ## Nog te doen voor livegang
-- [ ] Echte projectfoto's plaatsen (hero + werkgebied).
 - [ ] De voorbeeldquote bij "Waarom BEBO" vervangen door een **echte** klantreferentie.
 - [ ] `SECRET_KEY` + (optioneel) SMTP-variabelen instellen op Railway.
 - [ ] Eigen domein koppelen (bebobetonboren.nl).
